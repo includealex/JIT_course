@@ -4,8 +4,12 @@
 namespace custom {
 
 void Graph::addBasicBlock(BasicBlock* block) {
-    block->_graph = this;
+    block->set_graph(this);
     _blocks.push_back(block);
+}
+
+BasicBlock* Graph::get_block(std::size_t idx) {
+    return _blocks[idx];
 }
 
 } // namespace custom

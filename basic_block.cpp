@@ -5,19 +5,19 @@
 namespace custom {
 
 void BasicBlock::addInstruction(Instruction* inst) {
-    inst->_basic_block = this;
+    inst->set_basic_block(this);
 
     if (_last_inst) {
-        _last_inst->_next = inst;
-        inst->_prev = _last_inst;
+        _last_inst->set_next(inst);
+        inst->set_prev(_last_inst);
         _last_inst = inst;
     } else {
         _first_inst = inst;
         _last_inst = inst;
-        inst->_prev = nullptr;
+        inst->set_prev(nullptr);
     }
 
-    inst->_next = nullptr;
+    inst->set_next(nullptr);
 
     if (isPhiInstruction(inst)) {
         if (!_first_Phi) {
@@ -41,6 +41,52 @@ Instruction* BasicBlock::getInstruction(size_t index) const {
 
 bool BasicBlock::isPhiInstruction(Instruction* inst) {
     return inst->getOpcode() == Opcode::PHI;
+}
+
+std::vector<BasicBlock*> BasicBlock::get_preds() {
+    return _preds;
+}
+
+std::vector<BasicBlock*> BasicBlock::get_succs() {
+    return _succs;
+}
+
+BasicBlock* BasicBlock::get_succs(std::size_t idx) {
+    return _succs[idx];
+}
+
+
+std::vector<Instruction*> BasicBlock::get_instructions() {
+    return _instructions;
+}
+
+
+Instruction* BasicBlock::get_first_Phi() {
+    return _first_Phi;
+}
+
+Instruction* BasicBlock::get_first_inst() {
+    return _first_inst;
+}
+
+Instruction* BasicBlock::get_last_inst() {
+    return _last_inst;
+}
+
+Graph* BasicBlock::get_graph() {
+    return _graph;
+}
+
+void BasicBlock::set_graph(Graph* other) {
+    _graph = other;
+}
+
+void BasicBlock::push_preds_back(BasicBlock* el) {
+    _preds.push_back(el);
+}
+
+void BasicBlock::push_succs_back(BasicBlock* el) {
+    _succs.push_back(el);
 }
 
 } // namespace custom

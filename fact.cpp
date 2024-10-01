@@ -10,11 +10,11 @@ custom::Graph* buildFactorialGraph() {
     custom::BasicBlock* loop = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* done = custom::IRBuilder::createBasicBlock(graph);
 
-    entry->_succs.push_back(loop);
-    loop->_preds.push_back(entry);
-    loop->_succs.push_back(loop);
-    loop->_succs.push_back(done);
-    done->_preds.push_back(loop);
+    entry->push_succs_back(loop);
+    loop->push_preds_back(entry);
+    loop->push_succs_back(loop);
+    loop->push_succs_back(done);
+    done->push_preds_back(loop);
 
     custom::IRBuilder::createInstruction(custom::Opcode::MOV, custom::Type::u64, entry);  // movi.u64 v0, 1
     custom::IRBuilder::createInstruction(custom::Opcode::MOV, custom::Type::u64, entry);  // movi.u64 v1, 2
@@ -34,9 +34,9 @@ custom::Graph* buildFactorialGraph() {
 void testFactorialGraph() {
     custom::Graph* graph = buildFactorialGraph();
 
-    custom::BasicBlock* entry = graph->_blocks[0];
-    custom::BasicBlock* loop = graph->_blocks[1];
-    custom::BasicBlock* done = graph->_blocks[2];
+    custom::BasicBlock* entry = graph->get_block(0);
+    custom::BasicBlock* loop = graph->get_block(1);
+    custom::BasicBlock* done = graph->get_block(2);
 
     assert(entry->getInstructionCount() == 3);
     assert(entry->getInstruction(0)->getOpcode() == custom::Opcode::MOV);
@@ -53,9 +53,9 @@ void testFactorialGraph() {
     assert(done->getInstructionCount() == 1);
     assert(done->getInstruction(0)->getOpcode() == custom::Opcode::RET);
 
-    assert(entry->_succs[0] == loop);
-    assert(loop->_succs[0] == loop);
-    assert(loop->_succs[1] == done);
+    assert(entry->get_succs(0) == loop);
+    assert(loop->get_succs(0) == loop);
+    assert(loop->get_succs(1) == done);
 
     // Check data flow (SSA form would require further analysis, but we'll skip that here)
     

@@ -3,6 +3,12 @@
 To run simplest program, just do:
 
 ```bash
-clang++ -std=c++17 -Wall -Wextra -o fact.out fact.cpp basic_block.cpp graph.cpp
-./fact.out
+make run_factorial_test
 ```
+
+For memory leaks check, run:
+
+```bash
+make valgrind_check
+```
+

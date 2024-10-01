@@ -19,6 +19,20 @@ class BasicBlock final {
     Instruction* getInstruction(size_t index) const;
     bool isPhiInstruction(Instruction* inst);
 
+    std::vector<BasicBlock*> get_preds();
+    std::vector<BasicBlock*> get_succs();
+    BasicBlock* get_succs(std::size_t idx);
+    std::vector<Instruction*> get_instructions();
+    Instruction* get_first_Phi();
+    Instruction* get_first_inst();
+    Instruction* get_last_inst();
+    Graph* get_graph();
+
+    void set_graph(Graph* other);
+    void push_preds_back(BasicBlock* el);
+    void push_succs_back(BasicBlock* el);
+
+ private:
     std::vector<BasicBlock*> _preds; // many!
     std::vector<BasicBlock*> _succs; // <= 2
 

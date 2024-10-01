@@ -11,7 +11,9 @@ class Graph final {
  public:
     void addBasicBlock(BasicBlock* block);
 
-    // Public members as per your test code
+    BasicBlock* get_block(std::size_t idx);
+
+ private:
     std::vector<BasicBlock*> _blocks;
 };
 

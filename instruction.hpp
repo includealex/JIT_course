@@ -2,8 +2,9 @@
 #define INSTRUCTION_HPP_
 
 #include <cstddef>
-#include <vector>
+#include <memory>
 #include <string>
+#include <vector>
 
 #include "basic_block.hpp"
 
@@ -31,20 +32,37 @@ enum class Type {
 class Instruction final {
  public:
     Instruction(Opcode opcode, Type type, BasicBlock* basicBlock)
-        : _prev(nullptr), _next(nullptr), _opcode(opcode), _type(type), _basic_block(basicBlock) { }
+        : _prev(nullptr), _next(nullptr), _opcode(opcode), _basic_block(basicBlock), _type(type) { }
 
     Opcode getOpcode() const {
         return _opcode;
     }
 
+    void set_basic_block(BasicBlock* other) {
+        _basic_block = other;
+    }
+
+    void set_next(Instruction* other) {
+        _next = other;
+    }
+
+    void set_prev(Instruction* other) {
+        _prev = other;
+    }
+
+    Type get_type() {
+        return _type;
+    }
+
+ private:
     // Intrusive linked list
     Instruction* _prev;
     Instruction* _next;
 
     // Common part
     Opcode _opcode;
-    Type _type;
     BasicBlock* _basic_block;
+    Type _type;
 };
 
 } // namespace custom
