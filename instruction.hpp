@@ -31,11 +31,25 @@ enum class Type {
 
 class Instruction final {
  public:
-    Instruction(Opcode opcode, Type type, BasicBlock* basicBlock)
-        : _prev(nullptr), _next(nullptr), _opcode(opcode), _basic_block(basicBlock), _type(type) { }
+    Instruction(Opcode opcode, Type type, BasicBlock* basicBlock, 
+                std::size_t destReg = -1, const std::vector<std::size_t>& srcRegs = {})
+        : _prev(nullptr), _next(nullptr), _opcode(opcode), _basic_block(basicBlock), 
+          _type(type), _destReg(destReg), _srcRegs(srcRegs) { }
 
     Opcode getOpcode() const {
         return _opcode;
+    }
+
+    Type get_type() const {
+        return _type;
+    }
+
+    std::size_t getDestReg() const {
+        return _destReg;
+    }
+
+    const std::vector<std::size_t>& getSrcRegs() const {
+        return _srcRegs;
     }
 
     void set_basic_block(BasicBlock* other) {
@@ -50,10 +64,6 @@ class Instruction final {
         _prev = other;
     }
 
-    Type get_type() {
-        return _type;
-    }
-
  private:
     // Intrusive linked list
     Instruction* _prev;
@@ -63,6 +73,10 @@ class Instruction final {
     Opcode _opcode;
     BasicBlock* _basic_block;
     Type _type;
+
+    // Register information
+    std::size_t _destReg;
+    std::vector<std::size_t> _srcRegs;
 };
 
 } // namespace custom

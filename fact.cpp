@@ -10,23 +10,29 @@ custom::Graph* buildFactorialGraph() {
     custom::BasicBlock* loop = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* done = custom::IRBuilder::createBasicBlock(graph);
 
-    entry->push_succs_back(loop);
+    entry->push_succs_back(loop);  // entry -> loop
     loop->push_preds_back(entry);
-    loop->push_succs_back(loop);
-    loop->push_succs_back(done);
+    loop->push_succs_back(loop);   // loop -> loop
+    loop->push_succs_back(done);   // loop -> done
     done->push_preds_back(loop);
 
-    custom::IRBuilder::createInstruction(custom::Opcode::MOV, custom::Type::u64, entry);  // movi.u64 v0, 1
-    custom::IRBuilder::createInstruction(custom::Opcode::MOV, custom::Type::u64, entry);  // movi.u64 v1, 2
-    custom::IRBuilder::createInstruction(custom::Opcode::CAST, custom::Type::u64, entry);  // u32tou64 v2, a0
+    const std::size_t v0 = 0;
+    const std::size_t v1 = 1;
+    const std::size_t v2 = 2;
 
-    custom::IRBuilder::createInstruction(custom::Opcode::CMP, custom::Type::u64, loop);   // cmp.u64 v1, v2
-    custom::IRBuilder::createInstruction(custom::Opcode::JMP, custom::Type::u64, loop);   // ja done
-    custom::IRBuilder::createInstruction(custom::Opcode::MUL, custom::Type::u64, loop);   // mul.u64 v0, v0, v1
-    custom::IRBuilder::createInstruction(custom::Opcode::ADD, custom::Type::u64, loop);   // addi.u64 v1, v1, 1
-    custom::IRBuilder::createInstruction(custom::Opcode::JMP, custom::Type::u64, loop);   // jmp loop
+    custom::IRBuilder::createInstruction(custom::Opcode::MOV, custom::Type::u64, entry, v0, {});         // movi.u64 v0, 1
+    custom::IRBuilder::createInstruction(custom::Opcode::MOV, custom::Type::u64, entry, v1, {});         // movi.u64 v1, 2
+    custom::IRBuilder::createInstruction(custom::Opcode::CAST, custom::Type::u64, entry, v2, {0});       // u32tou64 v2, a0
 
-    custom::IRBuilder::createInstruction(custom::Opcode::RET, custom::Type::u64, done);   // ret.u64 v0
+    // Instructions in 'loop' block
+    custom::IRBuilder::createInstruction(custom::Opcode::CMP, custom::Type::u64, loop, -1, {v1, v2});    // cmp.u64 v1, v2
+    custom::IRBuilder::createInstruction(custom::Opcode::JMP, custom::Type::u64, loop, -1, {});          // ja done
+    custom::IRBuilder::createInstruction(custom::Opcode::MUL, custom::Type::u64, loop, v0, {v0, v1});    // mul.u64 v0, v0, v1
+    custom::IRBuilder::createInstruction(custom::Opcode::ADD, custom::Type::u64, loop, v1, {v1});        // addi.u64 v1, v1, 1
+    custom::IRBuilder::createInstruction(custom::Opcode::JMP, custom::Type::u64, loop, -1, {});          // jmp loop
+
+    // Instructions in 'done' block
+    custom::IRBuilder::createInstruction(custom::Opcode::RET, custom::Type::u64, done, -1, {v0});        // ret.u64 v0
 
     return graph;
 }
@@ -40,25 +46,33 @@ void testFactorialGraph() {
 
     assert(entry->getInstructionCount() == 3);
     assert(entry->getInstruction(0)->getOpcode() == custom::Opcode::MOV);
+    assert(entry->getInstruction(0)->getDestReg() == 0);  // v0
     assert(entry->getInstruction(1)->getOpcode() == custom::Opcode::MOV);
+    assert(entry->getInstruction(1)->getDestReg() == 1);  // v1
     assert(entry->getInstruction(2)->getOpcode() == custom::Opcode::CAST);
+    assert(entry->getInstruction(2)->getDestReg() == 2);  // v2
 
     assert(loop->getInstructionCount() == 5);
     assert(loop->getInstruction(0)->getOpcode() == custom::Opcode::CMP);
+    assert(loop->getInstruction(0)->getSrcRegs() == (std::vector<std::size_t>{1, 2})); // v1, v2
     assert(loop->getInstruction(1)->getOpcode() == custom::Opcode::JMP);
     assert(loop->getInstruction(2)->getOpcode() == custom::Opcode::MUL);
+    assert(loop->getInstruction(2)->getDestReg() == 0);  // v0
+    assert(loop->getInstruction(2)->getSrcRegs() == (std::vector<std::size_t>{0, 1})); // v0, v1
     assert(loop->getInstruction(3)->getOpcode() == custom::Opcode::ADD);
+    assert(loop->getInstruction(3)->getDestReg() == 1);  // v1
+    assert(loop->getInstruction(3)->getSrcRegs() == std::vector<std::size_t>{1});    // v1
     assert(loop->getInstruction(4)->getOpcode() == custom::Opcode::JMP);
 
     assert(done->getInstructionCount() == 1);
     assert(done->getInstruction(0)->getOpcode() == custom::Opcode::RET);
+    assert(done->getInstruction(0)->getSrcRegs() == std::vector<std::size_t>{0});    // v0
 
+    // Test control flow between basic blocks
     assert(entry->get_succs(0) == loop);
-    assert(loop->get_succs(0) == loop);
-    assert(loop->get_succs(1) == done);
+    assert(loop->get_succs(0) == loop); // loop to loop
+    assert(loop->get_succs(1) == done); // loop to done
 
-    // Check data flow (SSA form would require further analysis, but we'll skip that here)
-    
     std::cout << "All tests passed!" << std::endl;
 }
 
@@ -67,5 +81,3 @@ int main() {
 
     return 0;
 }
-
-
