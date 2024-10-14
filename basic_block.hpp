@@ -14,7 +14,7 @@ class BasicBlock final {
     BasicBlock(Graph* graph)
         : _first_Phi(nullptr), _first_inst(nullptr), _last_inst(nullptr), _graph(graph) { }
 
-    void addInstruction(Instruction* inst);
+    void pushback_instr(Instruction* inst);
     size_t getInstructionCount() const;
     Instruction* getInstruction(size_t index) const;
     bool isPhiInstruction(Instruction* inst);

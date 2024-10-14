@@ -12,7 +12,7 @@ class IRBuilder final {
     static Instruction* createInstruction(Opcode opcode, Type type, BasicBlock* basic_block,
                                           std::size_t destReg = -1, const std::vector<std::size_t>& srcRegs = {}) {
         Instruction* inst = new Instruction(opcode, type, basic_block, destReg, srcRegs);
-        basic_block->addInstruction(inst);
+        basic_block->pushback_instr(inst);
         return inst;
     }
 

@@ -4,7 +4,7 @@
 
 namespace custom {
 
-void BasicBlock::addInstruction(Instruction* inst) {
+void BasicBlock::pushback_instr(Instruction* inst) {
     inst->set_basic_block(this);
 
     if (_last_inst) {
@@ -19,6 +19,8 @@ void BasicBlock::addInstruction(Instruction* inst) {
 
     inst->set_next(nullptr);
 
+
+    // TODO: something weird here.
     if (isPhiInstruction(inst)) {
         if (!_first_Phi) {
             _first_Phi = inst;
