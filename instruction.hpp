@@ -25,8 +25,9 @@ enum class Opcode {
 };
 
 enum class Type {
-    u32 = 0,
-    u64 = 1
+    myu32 = 0,
+    myu64 = 1,
+    myvd = 2,
 };
 
 class Instruction final {

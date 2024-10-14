@@ -55,11 +55,9 @@ BasicBlock* BasicBlock::get_succs(std::size_t idx) {
     return _succs[idx];
 }
 
-
 std::vector<Instruction*> BasicBlock::get_instructions() {
     return _instructions;
 }
-
 
 Instruction* BasicBlock::get_first_Phi() {
     return _first_Phi;

@@ -20,19 +20,19 @@ custom::Graph* buildFactorialGraph() {
     const std::size_t v1 = 1;
     const std::size_t v2 = 2;
 
-    custom::IRBuilder::createInstruction(custom::Opcode::MOV, custom::Type::u64, entry, v0, {});         // movi.u64 v0, 1
-    custom::IRBuilder::createInstruction(custom::Opcode::MOV, custom::Type::u64, entry, v1, {});         // movi.u64 v1, 2
-    custom::IRBuilder::createInstruction(custom::Opcode::CAST, custom::Type::u64, entry, v2, {0});       // u32tou64 v2, a0
+    custom::IRBuilder::createInstruction(custom::Opcode::MOV, custom::Type::myu64, entry, v0, {});         // movi.myu64 v0, 1
+    custom::IRBuilder::createInstruction(custom::Opcode::MOV, custom::Type::myu64, entry, v1, {});         // movi.myu64 v1, 2
+    custom::IRBuilder::createInstruction(custom::Opcode::CAST, custom::Type::myu64, entry, v2, {0});       // myu32tomyu64 v2, a0
 
     // Instructions in 'loop' block
-    custom::IRBuilder::createInstruction(custom::Opcode::CMP, custom::Type::u64, loop, -1, {v1, v2});    // cmp.u64 v1, v2
-    custom::IRBuilder::createInstruction(custom::Opcode::JMP, custom::Type::u64, loop, -1, {});          // ja done
-    custom::IRBuilder::createInstruction(custom::Opcode::MUL, custom::Type::u64, loop, v0, {v0, v1});    // mul.u64 v0, v0, v1
-    custom::IRBuilder::createInstruction(custom::Opcode::ADD, custom::Type::u64, loop, v1, {v1});        // addi.u64 v1, v1, 1
-    custom::IRBuilder::createInstruction(custom::Opcode::JMP, custom::Type::u64, loop, -1, {});          // jmp loop
+    custom::IRBuilder::createInstruction(custom::Opcode::CMP, custom::Type::myu64, loop, -1, {v1, v2});    // cmp.myu64 v1, v2
+    custom::IRBuilder::createInstruction(custom::Opcode::JMP, custom::Type::myu64, loop, -1, {});          // ja done
+    custom::IRBuilder::createInstruction(custom::Opcode::MUL, custom::Type::myu64, loop, v0, {v0, v1});    // mul.myu64 v0, v0, v1
+    custom::IRBuilder::createInstruction(custom::Opcode::ADD, custom::Type::myu64, loop, v1, {v1});        // addi.myu64 v1, v1, 1
+    custom::IRBuilder::createInstruction(custom::Opcode::JMP, custom::Type::myu64, loop, -1, {});          // jmp loop
 
     // Instructions in 'done' block
-    custom::IRBuilder::createInstruction(custom::Opcode::RET, custom::Type::u64, done, -1, {v0});        // ret.u64 v0
+    custom::IRBuilder::createInstruction(custom::Opcode::RET, custom::Type::myu64, done, -1, {v0});        // ret.myu64 v0
 
     return graph;
 }
