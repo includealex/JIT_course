@@ -4,39 +4,44 @@
 
 namespace custom {
 
-void BasicBlock::addInstruction(Instruction* inst) {
+void BasicBlock::pushback_instr(Instruction* inst) {
     inst->set_basic_block(this);
 
     if (_last_inst) {
+        auto prev_id = _last_inst->get_id();
         _last_inst->set_next(inst);
         inst->set_prev(_last_inst);
+        inst->set_id(prev_id + 1);
         _last_inst = inst;
-    } else {
+    } 
+    else {
         _first_inst = inst;
         _last_inst = inst;
         inst->set_prev(nullptr);
+        size_t begin_id = 0;
+        inst->set_id(begin_id);
     }
 
     inst->set_next(nullptr);
-
-    if (isPhiInstruction(inst)) {
-        if (!_first_Phi) {
-            _first_Phi = inst;
-        }
-    }
-
-    _instructions.push_back(inst);
 }
 
-size_t BasicBlock::getInstructionCount() const {
-    return _instructions.size();
+std::size_t BasicBlock::instructions_amount() const{
+    return _last_inst->get_id() + 1;
 }
 
 Instruction* BasicBlock::getInstruction(size_t index) const {
-    if (index < _instructions.size()) {
-        return _instructions[index];
+    auto cur_sz = instructions_amount();
+    if (index >= cur_sz) {
+        std::cout << "trying to get non-existant instruction" << std::endl;
+        return nullptr;
     }
-    return nullptr;
+
+    Instruction* cur = _first_inst;
+    for(size_t i = 0; i < index; ++i) {
+        cur = cur->get_next();
+    }
+
+    return cur;
 }
 
 bool BasicBlock::isPhiInstruction(Instruction* inst) {
@@ -47,19 +52,13 @@ std::vector<BasicBlock*> BasicBlock::get_preds() {
     return _preds;
 }
 
-std::vector<BasicBlock*> BasicBlock::get_succs() {
-    return _succs;
+BasicBlock* BasicBlock::get_succs_true() {
+    return _succs_true;
 }
 
-BasicBlock* BasicBlock::get_succs(std::size_t idx) {
-    return _succs[idx];
+BasicBlock* BasicBlock::get_succs_false() {
+    return _succs_false;
 }
-
-
-std::vector<Instruction*> BasicBlock::get_instructions() {
-    return _instructions;
-}
-
 
 Instruction* BasicBlock::get_first_Phi() {
     return _first_Phi;
@@ -85,8 +84,20 @@ void BasicBlock::push_preds_back(BasicBlock* el) {
     _preds.push_back(el);
 }
 
-void BasicBlock::push_succs_back(BasicBlock* el) {
-    _succs.push_back(el);
+void BasicBlock::add_succs_false(BasicBlock* el) {
+    _succs_false = el;
+}
+
+void BasicBlock::add_succs_true(BasicBlock* el) {
+    _succs_true = el;
+}
+
+void BasicBlock::set_id(std::size_t id) {
+    _basic_block_id = id;
+}
+
+std::size_t BasicBlock::get_id() {
+    return _basic_block_id;
 }
 
 } // namespace custom

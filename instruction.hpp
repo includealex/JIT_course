@@ -25,8 +25,9 @@ enum class Opcode {
 };
 
 enum class Type {
-    u32 = 0,
-    u64 = 1
+    myu32 = 0,
+    myu64 = 1,
+    myvd = 2,
 };
 
 class Instruction final {
@@ -40,7 +41,7 @@ class Instruction final {
         return _opcode;
     }
 
-    Type get_type() const {
+    Type getType() const {
         return _type;
     }
 
@@ -64,6 +65,22 @@ class Instruction final {
         _prev = other;
     }
 
+    Instruction* get_next() const{
+        return _next;
+    }
+
+    Instruction* get_prev() const{
+        return _prev;
+    }
+
+    void set_id(std::size_t id) {
+        _instr_id = id;
+    }
+
+    std::size_t get_id() {
+        return _instr_id;
+    }
+
  private:
     // Intrusive linked list
     Instruction* _prev;
@@ -77,6 +94,8 @@ class Instruction final {
     // Register information
     std::size_t _destReg;
     std::vector<std::size_t> _srcRegs;
+
+    std::size_t _instr_id;
 };
 
 } // namespace custom
