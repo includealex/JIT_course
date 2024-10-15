@@ -7,8 +7,19 @@ void DFS::run_dfs(BasicBlock* block) {
     clear_markers(block);
 }
 
-void DFS::get_dfs_ids(BasicBlock* block) {
+void DFS::run_dfs_excluded_block(BasicBlock* block, BasicBlock* excluded_block) {
+    auto id_to_excl = excluded_block->get_id();
+    get_dfs_ids(block, id_to_excl);
+    clear_markers(block);
+    return;
+}
+
+void DFS::get_dfs_ids(BasicBlock* block, std::size_t exclude_id) {
     if(block == nullptr) {
+        return;
+    }
+
+    if(block->get_id() == exclude_id) {
         return;
     }
 
@@ -16,13 +27,14 @@ void DFS::get_dfs_ids(BasicBlock* block) {
         _dfs_ids.push_back(block->get_id());
         block->set_dfs_marker(true);
     }
+
     auto right = block->get_succs_true();
-    if ((right != nullptr) && (!right->is_dfs_marker())) {
+    if ((right != nullptr) && (!right->is_dfs_marker()) && (right->get_id() != exclude_id)) {
         get_dfs_ids(right);
     }
 
     auto left = block->get_succs_false();
-    if ((left != nullptr) && (!left->is_dfs_marker())) {
+    if ((left != nullptr) && (!left->is_dfs_marker()) && (left->get_id() != exclude_id)) {
         get_dfs_ids(left);
     }
 }
@@ -42,8 +54,7 @@ void DFS::clear_markers(BasicBlock* block) {
     }
 }
 
-
-std::vector<std::size_t> DFS::get_dfs_ids() {
+std::vector<std::size_t> DFS::get_dfs_ids_arr() {
     return _dfs_ids;
 }
 
