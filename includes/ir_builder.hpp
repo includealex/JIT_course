@@ -5,6 +5,7 @@
 #include "dfs.hpp"
 #include "graph.hpp"
 #include "instruction.hpp"
+#include "domin_tree.hpp"
 
 namespace custom {
 

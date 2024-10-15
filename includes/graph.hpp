@@ -1,6 +1,7 @@
 #ifndef INCLUDES_GRAPH_HPP_
 #define INCLUDES_GRAPH_HPP_
 
+#include <cstddef>
 #include <vector>
 
 namespace custom {
@@ -13,8 +14,8 @@ class Graph final {
 
     BasicBlock* get_block(std::size_t idx);
 
- private:
     std::vector<BasicBlock*> _blocks;
+ private:
 };
 
 } // namespace custom

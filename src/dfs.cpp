@@ -29,13 +29,13 @@ void DFS::get_dfs_ids(BasicBlock* block, std::size_t exclude_id) {
     }
 
     auto right = block->get_succs_true();
-    if ((right != nullptr) && (!right->is_dfs_marker()) && (right->get_id() != exclude_id)) {
-        get_dfs_ids(right);
+    if ((right != nullptr) && (!right->is_dfs_marker())) {
+        get_dfs_ids(right, exclude_id);
     }
 
     auto left = block->get_succs_false();
-    if ((left != nullptr) && (!left->is_dfs_marker()) && (left->get_id() != exclude_id)) {
-        get_dfs_ids(left);
+    if ((left != nullptr) && (!left->is_dfs_marker())) {
+        get_dfs_ids(left, exclude_id);
     }
 }
 
