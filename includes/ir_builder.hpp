@@ -1,9 +1,10 @@
-#ifndef IR_BUILDER_HPP_
-#define IR_BUILDER_HPP_
+#ifndef INCLUDES_IR_BUILDER_HPP_
+#define INCLUDES_IR_BUILDER_HPP_
 
-#include "instruction.hpp"
 #include "basic_block.hpp"
+#include "dfs.hpp"
 #include "graph.hpp"
+#include "instruction.hpp"
 
 namespace custom {
 
@@ -29,5 +30,5 @@ class IRBuilder final {
 
 } // namespace custom
 
-#endif // IR_BUILDER_HPP_
+#endif // INCLUDES_IR_BUILDER_HPP_
 

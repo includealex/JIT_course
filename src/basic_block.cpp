@@ -100,5 +100,14 @@ std::size_t BasicBlock::get_id() {
     return _basic_block_id;
 }
 
+void BasicBlock::set_dfs_marker(bool value) {
+    _dfs_marker = value;
+}
+
+bool BasicBlock::is_dfs_marker() {
+    return _dfs_marker;
+}
+
+
 } // namespace custom
 

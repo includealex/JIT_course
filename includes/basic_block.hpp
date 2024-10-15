@@ -1,5 +1,5 @@
-#ifndef BASIC_BLOCK_HPP_
-#define BASIC_BLOCK_HPP_
+#ifndef INCLUDES_BASIC_BLOCK_HPP_
+#define INCLUDES_BASIC_BLOCK_HPP_
 
 #include <cstddef>
 #include <iostream>
@@ -38,6 +38,9 @@ class BasicBlock final {
     void set_id(std::size_t id);
     std::size_t get_id();
 
+    void set_dfs_marker(bool value);
+    bool is_dfs_marker();
+
  private:
     std::vector<BasicBlock*> _preds; // many!
 
@@ -50,10 +53,11 @@ class BasicBlock final {
 
     Graph* _graph = nullptr;
 
+    bool _dfs_marker = false;
+
     std::size_t _basic_block_id;
 };
 
 } // namespace custom
 
-#endif // BASIC_BLOCK_HPP_
-
+#endif // INCLUDES_BASIC_BLOCK_HPP_
