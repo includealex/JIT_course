@@ -1,5 +1,5 @@
-#ifndef GRAPH_HPP_
-#define GRAPH_HPP_
+#ifndef INCLUDES_GRAPH_HPP_
+#define INCLUDES_GRAPH_HPP_
 
 #include <vector>
 
@@ -19,5 +19,5 @@ class Graph final {
 
 } // namespace custom
 
-#endif // GRAPH_HPP_
+#endif // INCLUDES_GRAPH_HPP_
 

@@ -1,5 +1,5 @@
-#ifndef INSTRUCTION_HPP_
-#define INSTRUCTION_HPP_
+#ifndef INCLUDES_INSTRUCTION_HPP_
+#define INCLUDES_INSTRUCTION_HPP_
 
 #include <cstddef>
 #include <memory>
@@ -100,5 +100,5 @@ class Instruction final {
 
 } // namespace custom
 
-#endif // INSTRUCTION_HPP_
+#endif // INCLUDES_INSTRUCTION_HPP_
 
