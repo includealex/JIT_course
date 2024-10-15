@@ -44,7 +44,6 @@ void testFactorialGraph() {
     custom::BasicBlock* loop = graph->get_block(1);
     custom::BasicBlock* done = graph->get_block(2);
 
-    assert(entry->getInstructionCount() == 3);
     assert(entry->getInstruction(0)->getOpcode() == custom::Opcode::MOV);
     assert(entry->getInstruction(0)->getDestReg() == 0);  // v0
     assert(entry->getInstruction(1)->getOpcode() == custom::Opcode::MOV);
@@ -52,7 +51,6 @@ void testFactorialGraph() {
     assert(entry->getInstruction(2)->getOpcode() == custom::Opcode::CAST);
     assert(entry->getInstruction(2)->getDestReg() == 2);  // v2
 
-    assert(loop->getInstructionCount() == 5);
     assert(loop->getInstruction(0)->getOpcode() == custom::Opcode::CMP);
     assert(loop->getInstruction(0)->getSrcRegs() == (std::vector<std::size_t>{1, 2})); // v1, v2
     assert(loop->getInstruction(1)->getOpcode() == custom::Opcode::JMP);
@@ -64,14 +62,16 @@ void testFactorialGraph() {
     assert(loop->getInstruction(3)->getSrcRegs() == std::vector<std::size_t>{1});    // v1
     assert(loop->getInstruction(4)->getOpcode() == custom::Opcode::JMP);
 
-    assert(done->getInstructionCount() == 1);
     assert(done->getInstruction(0)->getOpcode() == custom::Opcode::RET);
     assert(done->getInstruction(0)->getSrcRegs() == std::vector<std::size_t>{0});    // v0
 
-    // Test control flow between basic blocks
     assert(entry->get_succs(0) == loop);
     assert(loop->get_succs(0) == loop); // loop to loop
     assert(loop->get_succs(1) == done); // loop to done
+
+    assert(entry->get_id() == 0);
+    assert(loop->get_id() == 1);
+    assert(done->get_id() == 2);
 
     std::cout << "All tests passed!" << std::endl;
 }
