@@ -41,8 +41,8 @@ class BasicBlock final {
  private:
     std::vector<BasicBlock*> _preds; // many!
 
-    BasicBlock* _succs_true = nullptr;
-    BasicBlock* _succs_false = nullptr;
+    BasicBlock* _succs_true = nullptr;  // right
+    BasicBlock* _succs_false = nullptr; // left 
 
     Instruction* _first_Phi = nullptr;
     Instruction* _first_inst = nullptr;

@@ -3,12 +3,8 @@
 To run simplest program, just do:
 
 ```bash
-make run_factorial_test
+cmake -B build -GNinja
+ninja -C build run_jit_test -j$(nproc)
 ```
 
-For memory leaks check, run:
-
-```bash
-make valgrind_check
-```
 
