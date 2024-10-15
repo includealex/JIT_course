@@ -10,10 +10,10 @@ custom::Graph* buildFactorialGraph() {
     custom::BasicBlock* loop = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* done = custom::IRBuilder::createBasicBlock(graph);
 
-    entry->push_succs_back(loop);  // entry -> loop
+    entry->add_succs_true(loop);    // entry -> loop
     loop->push_preds_back(entry);
-    loop->push_succs_back(loop);   // loop -> loop
-    loop->push_succs_back(done);   // loop -> done
+    loop->add_succs_false(loop);    // loop -> loop
+    loop->add_succs_true(done);     // loop -> done
     done->push_preds_back(loop);
 
     const std::size_t v0 = 0;
@@ -65,9 +65,9 @@ void testFactorialGraph() {
     assert(done->getInstruction(0)->getOpcode() == custom::Opcode::RET);
     assert(done->getInstruction(0)->getSrcRegs() == std::vector<std::size_t>{0});    // v0
 
-    assert(entry->get_succs(0) == loop);
-    assert(loop->get_succs(0) == loop); // loop to loop
-    assert(loop->get_succs(1) == done); // loop to done
+    assert(entry->get_succs_true() == loop);
+    assert(loop->get_succs_false() == loop); // loop to loop
+    assert(loop->get_succs_true() == done); // loop to done
 
     assert(entry->get_id() == 0);
     assert(loop->get_id() == 1);
@@ -81,3 +81,4 @@ int main() {
 
     return 0;
 }
+

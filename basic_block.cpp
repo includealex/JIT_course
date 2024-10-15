@@ -52,12 +52,12 @@ std::vector<BasicBlock*> BasicBlock::get_preds() {
     return _preds;
 }
 
-std::vector<BasicBlock*> BasicBlock::get_succs() {
-    return _succs;
+BasicBlock* BasicBlock::get_succs_true() {
+    return _succs_true;
 }
 
-BasicBlock* BasicBlock::get_succs(std::size_t idx) {
-    return _succs[idx];
+BasicBlock* BasicBlock::get_succs_false() {
+    return _succs_false;
 }
 
 Instruction* BasicBlock::get_first_Phi() {
@@ -84,8 +84,12 @@ void BasicBlock::push_preds_back(BasicBlock* el) {
     _preds.push_back(el);
 }
 
-void BasicBlock::push_succs_back(BasicBlock* el) {
-    _succs.push_back(el);
+void BasicBlock::add_succs_false(BasicBlock* el) {
+    _succs_false = el;
+}
+
+void BasicBlock::add_succs_true(BasicBlock* el) {
+    _succs_true = el;
 }
 
 void BasicBlock::set_id(std::size_t id) {

@@ -20,8 +20,8 @@ class BasicBlock final {
     bool isPhiInstruction(Instruction* inst);
 
     std::vector<BasicBlock*> get_preds();
-    std::vector<BasicBlock*> get_succs();
-    BasicBlock* get_succs(std::size_t idx);
+    BasicBlock* get_succs_true();
+    BasicBlock* get_succs_false();
 
     Instruction* get_first_Phi();
     Instruction* get_first_inst();
@@ -32,15 +32,17 @@ class BasicBlock final {
 
     void set_graph(Graph* other);
     void push_preds_back(BasicBlock* el);
-    void push_succs_back(BasicBlock* el);
+    void add_succs_false(BasicBlock* el);
+    void add_succs_true(BasicBlock* el);
+
     void set_id(std::size_t id);
     std::size_t get_id();
 
  private:
     std::vector<BasicBlock*> _preds; // many!
 
-    // TODO: change vector to true_succs, tru_pred
-    std::vector<BasicBlock*> _succs; // <= 2
+    BasicBlock* _succs_true = nullptr;
+    BasicBlock* _succs_false = nullptr;
 
     Instruction* _first_Phi = nullptr;
     Instruction* _first_inst = nullptr;
