@@ -26,7 +26,9 @@ std::unordered_map<size_t, std::vector<size_t>> DominTree::get_premap(Graph* gra
             std::back_inserter(difference)
         );
         auto it = std::find(difference.begin(), difference.end(), idx);
-        difference.erase(it);
+        if (it != difference.end()) {
+            difference.erase(it);
+        }
 
         premap.insert({idx, difference});
     }
