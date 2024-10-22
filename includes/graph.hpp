@@ -10,12 +10,13 @@ class BasicBlock;
 
 class Graph final {
  public:
-    void addBasicBlock(BasicBlock* block);
+   void addBasicBlock(BasicBlock* block);
+   BasicBlock* get_block(std::size_t idx, BasicBlock* block = _root);
+   std::size_t basic_blocks_num();
 
-    BasicBlock* get_block(std::size_t idx);
-
-    std::vector<BasicBlock*> _blocks;
  private:
+   static BasicBlock* _root;
+   std::size_t _blocks_size = 0;
 };
 
 } // namespace custom

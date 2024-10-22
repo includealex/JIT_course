@@ -13,8 +13,8 @@ std::unordered_map<size_t, std::vector<size_t>> DominTree::get_premap(Graph* gra
     std::unordered_map<size_t, std::vector<size_t>> premap;
     premap.insert({root_idx, root_ids_arr});
 
-    for (size_t idx = 1; idx < graph->_blocks.size(); ++idx) {
-        auto el = graph->_blocks[idx];
+    for (size_t idx = 1; idx < graph->basic_blocks_num(); ++idx) {
+        auto el = graph->get_block(idx);
         DFS tmp_dfs;
         tmp_dfs.run_dfs_excluded_block(root, el);
         auto tmp_root_ids_arr = tmp_dfs.get_dfs_ids_arr();
@@ -39,8 +39,8 @@ void DominTree::build_tree(Graph* graph) {
     // Root initialising
     node.cur = graph->get_block(0);
 
+    // TODO: add some implementation of tree from hmap
     for (auto& el : premap) {
-        std::cout << el.first << " aga " << std::endl;
         for (size_t i = 0; i < el.second.size(); ++i) {
             std::cout << el.second[i] << std::endl;
         }
