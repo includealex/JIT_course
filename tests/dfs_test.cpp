@@ -34,11 +34,14 @@ TEST(DFS_TEST, BasicAssertions) {
     ASSERT_EQ(dfs_l.get_dfs_ids_arr(), cmp_l);
 
     auto dfs_l_e = custom::DFS();
-    dfs_l_e.run_dfs_excluded_block(loop, done);
+    dfs_l_e.run_dfs(loop, done);
     std::vector<std::size_t> cmp_l_e = {1};
     ASSERT_EQ(dfs_l_e.get_dfs_ids_arr(), cmp_l_e);
 
     custom::DominTree dt;
     dt.build_tree(graph);
+
+    size_t search_idx = 2;
+    custom::DTNode* result = dt.find_node_by_index(search_idx);
 }
 

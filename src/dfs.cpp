@@ -2,16 +2,10 @@
 
 namespace custom {
 
-void DFS::run_dfs(BasicBlock* block) {
-    get_dfs_ids(block);
-    clear_markers(block);
-}
-
-void DFS::run_dfs_excluded_block(BasicBlock* block, BasicBlock* excluded_block) {
-    auto id_to_excl = excluded_block->get_id();
+void DFS::run_dfs(BasicBlock* block, BasicBlock* excluded_block) {
+    int id_to_excl = (excluded_block != nullptr) ? excluded_block->get_id() : -1;
     get_dfs_ids(block, id_to_excl);
     clear_markers(block);
-    return;
 }
 
 void DFS::get_dfs_ids(BasicBlock* block, std::size_t exclude_id) {
