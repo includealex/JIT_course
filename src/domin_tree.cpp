@@ -112,4 +112,18 @@ DTNode* DominTree::find_node_by_index(size_t target_idx) {
     return nullptr;
 }
 
+std::vector<size_t> DominTree::get_domin_succs(size_t id) {
+    DTNode* node = find_node_by_index(id);
+
+    if (node) {
+        std::vector<size_t> succ_idxs;
+        for (DTNode* succ : node->succs) {
+            succ_idxs.push_back(succ->idx);
+        }
+        return succ_idxs;
+    }
+
+    return {};
+}
+
 } // namespace custom

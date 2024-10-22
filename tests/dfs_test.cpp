@@ -10,7 +10,6 @@ TEST(DFS_Test, FirstExample) {
     custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* H = custom::IRBuilder::createBasicBlock(graph);
 
     A->add_succs_true(B);
     B->add_succs_false(C);
@@ -22,6 +21,9 @@ TEST(DFS_Test, FirstExample) {
 
     custom::DominTree dt;
     dt.build_tree(graph);
+    ASSERT_EQ(dt.get_domin_succs(0), (std::vector<size_t>{1}));
+    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 5, 6}));
+    ASSERT_EQ(dt.get_domin_succs(2), (std::vector<size_t>{3}));
 }
 
 TEST(DFS_Test, SecondExample) {
@@ -55,6 +57,13 @@ TEST(DFS_Test, SecondExample) {
 
     custom::DominTree dt;
     dt.build_tree(graph);
+    ASSERT_EQ(dt.get_domin_succs(0), (std::vector<size_t>{1}));
+    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 8}));
+    ASSERT_EQ(dt.get_domin_succs(2), (std::vector<size_t>{3}));
+    ASSERT_EQ(dt.get_domin_succs(3), (std::vector<size_t>{4}));
+    ASSERT_EQ(dt.get_domin_succs(4), (std::vector<size_t>{5}));
+    ASSERT_EQ(dt.get_domin_succs(5), (std::vector<size_t>{6}));
+    ASSERT_EQ(dt.get_domin_succs(6), (std::vector<size_t>{7, 9, 10}));
 }
 
 TEST(DFS_Test, ThirdExample) {
@@ -67,7 +76,6 @@ TEST(DFS_Test, ThirdExample) {
     custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* H = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* J = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* I = custom::IRBuilder::createBasicBlock(graph);
 
     A->add_succs_true(B);
@@ -86,4 +94,9 @@ TEST(DFS_Test, ThirdExample) {
 
     custom::DominTree dt;
     dt.build_tree(graph);
+    ASSERT_EQ(dt.get_domin_succs(0), (std::vector<size_t>{1}));
+    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 3, 4, 6, 8}));
+    ASSERT_EQ(dt.get_domin_succs(4), (std::vector<size_t>{5}));
+    ASSERT_EQ(dt.get_domin_succs(5), (std::vector<size_t>{7}));
 }
+
