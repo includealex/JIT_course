@@ -10,11 +10,8 @@ namespace custom {
 
 class DFS final {
 public:
-    void run_dfs (BasicBlock* block);
-    void run_dfs_excluded_block(BasicBlock* block, BasicBlock* excluded_block);
-
+    void run_dfs(BasicBlock* block, BasicBlock* excluded_block = nullptr);
     std::vector<std::size_t> get_dfs_ids_arr();
-
 
 private:
     std::vector<std::size_t> _dfs_ids;

@@ -1,41 +1,102 @@
 #include <gtest/gtest.h>
 #include "../includes/ir_builder.hpp"
 
-custom::Graph* simplest_graph() {
+TEST(DFS_Test, FirstExample) {
     custom::Graph* graph = custom::IRBuilder::createGraph();
-    custom::BasicBlock* entry = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* loop = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* done = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* C = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* D = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
 
-    entry->add_succs_true(loop);
-    loop->push_preds_back(entry);
-    loop->add_succs_false(loop);
-    loop->add_succs_true(done);
-    done->push_preds_back(loop);
+    A->add_succs_true(B);
+    B->add_succs_false(C);
+    B->add_succs_true(F);
+    C->add_succs_true(D);
+    F->add_succs_false(E);
+    F->add_succs_true(G);
+    G->add_succs_true(D);
 
-    return graph;
+    custom::DominTree dt;
+    dt.build_tree(graph);
+    ASSERT_EQ(dt.get_domin_succs(0), (std::vector<size_t>{1}));
+    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 5, 6}));
+    ASSERT_EQ(dt.get_domin_succs(2), (std::vector<size_t>{3}));
 }
 
-TEST(DFS_TEST, BasicAssertions) {
-    custom::Graph* graph = simplest_graph();
+TEST(DFS_Test, SecondExample) {
+    custom::Graph* graph = custom::IRBuilder::createGraph();
+    custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* C = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* D = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* H = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* J = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* I = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* K = custom::IRBuilder::createBasicBlock(graph);
+    
+    A->add_succs_true(B);
+    B->add_succs_true(J);
+    B->add_succs_false(C);
+    C->add_succs_true(D);
+    D->add_succs_true(E);
+    D->add_succs_false(C);
+    E->add_succs_true(F);
+    F->add_succs_true(G);
+    F->add_succs_false(E);
+    G->add_succs_true(I);
+    G->add_succs_false(H);
+    H->add_succs_true(B);
+    I->add_succs_true(K);
+    J->add_succs_true(C);
 
-    custom::BasicBlock* entry = graph->get_block(0);
-    custom::BasicBlock* loop = graph->get_block(1);
-    custom::BasicBlock* done = graph->get_block(2); 
+    custom::DominTree dt;
+    dt.build_tree(graph);
+    ASSERT_EQ(dt.get_domin_succs(0), (std::vector<size_t>{1}));
+    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 8}));
+    ASSERT_EQ(dt.get_domin_succs(2), (std::vector<size_t>{3}));
+    ASSERT_EQ(dt.get_domin_succs(3), (std::vector<size_t>{4}));
+    ASSERT_EQ(dt.get_domin_succs(4), (std::vector<size_t>{5}));
+    ASSERT_EQ(dt.get_domin_succs(5), (std::vector<size_t>{6}));
+    ASSERT_EQ(dt.get_domin_succs(6), (std::vector<size_t>{7, 9, 10}));
+}
 
-    auto dfs_e = custom::DFS();
-    dfs_e.run_dfs(entry);
-    std::vector<std::size_t> cmp_e = {0, 1, 2};
-    ASSERT_EQ(dfs_e.get_dfs_ids_arr(), cmp_e);
+TEST(DFS_Test, ThirdExample) {
+    custom::Graph* graph = custom::IRBuilder::createGraph();
+    custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* C = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* D = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* H = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* I = custom::IRBuilder::createBasicBlock(graph);
 
-    auto dfs_l = custom::DFS();
-    dfs_l.run_dfs(loop);
-    std::vector<std::size_t> cmp_l = {1, 2};
-    ASSERT_EQ(dfs_l.get_dfs_ids_arr(), cmp_l);
+    A->add_succs_true(B);
+    B->add_succs_true(C);
+    B->add_succs_false(E);
+    C->add_succs_true(D);
+    D->add_succs_true(G);
+    E->add_succs_false(F);
+    E->add_succs_true(G);
+    F->add_succs_true(H);
+    F->add_succs_false(B);
+    G->add_succs_true(I);
+    G->add_succs_false(C);
+    H->add_succs_true(G);
+    H->add_succs_false(I);
 
-    auto dfs_l_e = custom::DFS();
-    dfs_l_e.run_dfs_excluded_block(loop, done);
-    std::vector<std::size_t> cmp_l_e = {1};
-    ASSERT_EQ(dfs_l_e.get_dfs_ids_arr(), cmp_l_e);
+    custom::DominTree dt;
+    dt.build_tree(graph);
+    ASSERT_EQ(dt.get_domin_succs(0), (std::vector<size_t>{1}));
+    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 3, 4, 6, 8}));
+    ASSERT_EQ(dt.get_domin_succs(4), (std::vector<size_t>{5}));
+    ASSERT_EQ(dt.get_domin_succs(5), (std::vector<size_t>{7}));
 }
 

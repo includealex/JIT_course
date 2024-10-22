@@ -55,7 +55,7 @@ class BasicBlock final {
 
     bool _dfs_marker = false;
 
-    std::size_t _basic_block_id;
+    std::size_t _basic_block_id = -1;
 };
 
 } // namespace custom

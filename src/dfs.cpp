@@ -2,16 +2,10 @@
 
 namespace custom {
 
-void DFS::run_dfs(BasicBlock* block) {
-    get_dfs_ids(block);
-    clear_markers(block);
-}
-
-void DFS::run_dfs_excluded_block(BasicBlock* block, BasicBlock* excluded_block) {
-    auto id_to_excl = excluded_block->get_id();
+void DFS::run_dfs(BasicBlock* block, BasicBlock* excluded_block) {
+    int id_to_excl = (excluded_block != nullptr) ? excluded_block->get_id() : -1;
     get_dfs_ids(block, id_to_excl);
     clear_markers(block);
-    return;
 }
 
 void DFS::get_dfs_ids(BasicBlock* block, std::size_t exclude_id) {
@@ -29,13 +23,13 @@ void DFS::get_dfs_ids(BasicBlock* block, std::size_t exclude_id) {
     }
 
     auto right = block->get_succs_true();
-    if ((right != nullptr) && (!right->is_dfs_marker()) && (right->get_id() != exclude_id)) {
-        get_dfs_ids(right);
+    if ((right != nullptr) && (!right->is_dfs_marker()) && (right->get_id() > block->get_id())) {
+        get_dfs_ids(right, exclude_id);
     }
 
     auto left = block->get_succs_false();
-    if ((left != nullptr) && (!left->is_dfs_marker()) && (left->get_id() != exclude_id)) {
-        get_dfs_ids(left);
+    if ((left != nullptr) && (!left->is_dfs_marker()) && (left->get_id() > block->get_id())) {
+        get_dfs_ids(left, exclude_id);
     }
 }
 
