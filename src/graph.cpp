@@ -18,23 +18,35 @@ void Graph::addBasicBlock(BasicBlock* block) {
     _blocks_size++;
 }
 
-BasicBlock* Graph::get_block(std::size_t idx, BasicBlock* block) {
-    if (block == nullptr) {
-        block = _root;
+BasicBlock* Graph::get_block(std::size_t idx, BasicBlock* start_block) {
+    if (start_block == nullptr) {
+        start_block = _root;
     }
 
-    if (idx == block->get_id()) {
-        return block;
-    }
+    std::stack<BasicBlock*> stack;
+    std::set<size_t> tmp_ids;
+    stack.push(start_block);
+    tmp_ids.insert(start_block->get_id());
 
-    BasicBlock* false_block = block->get_succs_false();
-    if ((false_block != nullptr) && (false_block->get_id() > block->get_id()) ){
-        return(get_block(idx, false_block));
-    }
+    while (!stack.empty()) {
+        BasicBlock* block = stack.top();
+        stack.pop();
 
-    BasicBlock* true_block = block->get_succs_true();
-    if ((true_block != nullptr) && (true_block->get_id() > block->get_id())) {
-        return(get_block(idx, true_block));
+        if (block->get_id() == idx) {
+            return block;
+        }
+
+        tmp_ids.insert(block->get_id());
+
+        BasicBlock* false_block = block->get_succs_false();
+        if (false_block!=nullptr && (!tmp_ids.count(false_block->get_id()))) {
+            stack.push(false_block);
+        }
+
+        BasicBlock* true_block = block->get_succs_true();\
+        if (true_block!=nullptr && (!tmp_ids.count(true_block->get_id()))) {
+            stack.push(true_block);
+        }
     }
 
     return nullptr;
