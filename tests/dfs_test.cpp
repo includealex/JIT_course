@@ -22,10 +22,9 @@ TEST(DFS_Test, FirstExample) {
     custom::DominTree dt;
     dt.build_tree(graph);
 
-
-    ASSERT_EQ(dt.get_domin_succs(0), (std::vector<size_t>{1}));
-    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 3, 5}));
-    ASSERT_EQ(dt.get_domin_succs(5), (std::vector<size_t>{4, 6}));
+    ASSERT_EQ(dt.get_domin_succs(A->get_id()), (std::vector<size_t>{B->get_id()}));
+    ASSERT_EQ(dt.get_domin_succs(B->get_id()), (std::vector<size_t>{C->get_id(), D->get_id(), F->get_id()}));
+    ASSERT_EQ(dt.get_domin_succs(F->get_id()), (std::vector<size_t>{E->get_id(), G->get_id()}));
 
     delete graph;
 }
@@ -63,16 +62,14 @@ TEST(DFS_Test, SecondExample) {
     custom::DominTree dt;
     dt.build_tree(graph);
 
-
-    ASSERT_EQ(dt.get_domin_succs(0), (std::vector<size_t>{1}));
-    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 9}));
-    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 9}));
-    ASSERT_EQ(dt.get_domin_succs(2), (std::vector<size_t>{3}));
-    ASSERT_EQ(dt.get_domin_succs(3), (std::vector<size_t>{4}));
-    ASSERT_EQ(dt.get_domin_succs(4), (std::vector<size_t>{5}));
-    ASSERT_EQ(dt.get_domin_succs(5), (std::vector<size_t>{6}));
-    ASSERT_EQ(dt.get_domin_succs(6), (std::vector<size_t>{7, 8}));
-    ASSERT_EQ(dt.get_domin_succs(8), (std::vector<size_t>{10}));
+    ASSERT_EQ(dt.get_domin_succs(A->get_id()), (std::vector<size_t>{B->get_id()}));
+    ASSERT_EQ(dt.get_domin_succs(B->get_id()), (std::vector<size_t>{C->get_id(), J->get_id()}));
+    ASSERT_EQ(dt.get_domin_succs(C->get_id()), (std::vector<size_t>{D->get_id()}));
+    ASSERT_EQ(dt.get_domin_succs(D->get_id()), (std::vector<size_t>{E->get_id()}));
+    ASSERT_EQ(dt.get_domin_succs(E->get_id()), (std::vector<size_t>{F->get_id()}));
+    ASSERT_EQ(dt.get_domin_succs(F->get_id()), (std::vector<size_t>{G->get_id()}));
+    ASSERT_EQ(dt.get_domin_succs(G->get_id()), (std::vector<size_t>{H->get_id(), I->get_id()}));
+    ASSERT_EQ(dt.get_domin_succs(I->get_id()), (std::vector<size_t>{K->get_id()}));
 
     delete graph;
 }
@@ -107,11 +104,10 @@ TEST(DFS_Test, ThirdExample) {
     custom::DominTree dt;
     dt.build_tree(graph);
 
-
-    ASSERT_EQ(dt.get_domin_succs(0), (std::vector<size_t>{1}));
-    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 3, 4, 6, 8}));
-    ASSERT_EQ(dt.get_domin_succs(4), (std::vector<size_t>{5}));
-    ASSERT_EQ(dt.get_domin_succs(5), (std::vector<size_t>{7}));
+    ASSERT_EQ(dt.get_domin_succs(A->get_id()), (std::vector<size_t>{B->get_id()}));
+    ASSERT_EQ(dt.get_domin_succs(B->get_id()), (std::vector<size_t>{C->get_id(), D->get_id(), E->get_id(), G->get_id(), I->get_id()}));
+    ASSERT_EQ(dt.get_domin_succs(E->get_id()), (std::vector<size_t>{F->get_id()}));
+    ASSERT_EQ(dt.get_domin_succs(F->get_id()), (std::vector<size_t>{H->get_id()}));
 
     delete graph;
 }
