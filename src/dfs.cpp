@@ -6,7 +6,7 @@ void DFS::run_dfs(BasicBlock* block, BasicBlock* excluded_block) {
     _dfs_ids.clear();
     int id_to_excl = (excluded_block != nullptr) ? excluded_block->get_id() : -1;
     get_dfs_ids(block, id_to_excl);
-    clear_markers(block);
+    clear_dfs_markers(block);
 }
 
 void DFS::get_dfs_ids(BasicBlock* start_block, std::size_t exclude_id) {
@@ -39,7 +39,7 @@ void DFS::get_dfs_ids(BasicBlock* start_block, std::size_t exclude_id) {
     }
 }
 
-void DFS::clear_markers(BasicBlock* start_block) {
+void DFS::clear_dfs_markers(BasicBlock* start_block) {
     if (start_block == nullptr) {
         return;
     }

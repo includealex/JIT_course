@@ -10,6 +10,21 @@ namespace custom {
 class Instruction;
 class Graph;
 
+struct BasicBlockMarker final {
+ private:
+    bool _dfs_marker = false;
+    bool _loop_gray_marker = false;
+    bool _loop_black_marker = false;
+ public:
+    void set_dfs_m(bool val) {_dfs_marker = val;}
+    void set_loop_gray_m(bool val) {_loop_gray_marker = val;}
+    void set_loop_black_m(bool val) {_loop_black_marker = val;}
+
+    bool is_dfs_m() {return _dfs_marker;}
+    bool is_loop_gray_m() {return _loop_gray_marker;}
+    bool is_loop_black_m() {return _loop_black_marker;}
+};
+
 class BasicBlock final {
  public:
     BasicBlock(Graph* graph)
@@ -40,7 +55,11 @@ class BasicBlock final {
     std::size_t get_id();
 
     void set_dfs_marker(bool value);
+    void set_loop_gray_marker(bool value);
+    void set_loop_black_marker(bool value);
     bool is_dfs_marker();
+    bool is_loop_gray_marker();
+    bool is_loop_black_marker();
 
  private:
     std::vector<BasicBlock*> _preds; // many!
@@ -54,7 +73,7 @@ class BasicBlock final {
 
     Graph* _graph = nullptr;
 
-    bool _dfs_marker = false;
+    BasicBlockMarker _markers;
 
     std::size_t _basic_block_id = -1;
 };

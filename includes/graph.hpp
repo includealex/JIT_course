@@ -2,8 +2,6 @@
 #define INCLUDES_GRAPH_HPP_
 
 #include <cstddef>
-#include <stack>
-#include <set>
 #include <vector>
 
 namespace custom {
