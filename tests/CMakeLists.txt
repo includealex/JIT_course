@@ -6,7 +6,7 @@ include_directories(${GTEST_INCLUDE_DIRECTORIES})
 
 enable_testing()
 
-file(GLOB_RECURSE JIT_TEST_SOURCES fact_test.cpp dfs_test.cpp)
+file(GLOB_RECURSE JIT_TEST_SOURCES *.cpp)
 set(EXEC_NAME jit_test)
 
 add_executable(${EXEC_NAME} ${JIT_TEST_SOURCES})
