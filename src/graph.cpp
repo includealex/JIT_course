@@ -5,6 +5,13 @@ namespace custom {
 
 BasicBlock* Graph::_root = nullptr;
 
+Graph::~Graph() {
+    for (BasicBlock* block : _blocks) {
+        delete block;
+    }
+    _blocks.clear();
+}
+
 void Graph::addBasicBlock(BasicBlock* block) {
     block->set_graph(this);
     if (basic_blocks_num() == 0) {
@@ -14,47 +21,19 @@ void Graph::addBasicBlock(BasicBlock* block) {
     else {
         block->set_id(basic_blocks_num());
     }
-
+    _blocks.push_back(block);
     _blocks_size++;
 }
 
-BasicBlock* Graph::get_block(std::size_t idx, BasicBlock* start_block) {
-    if (start_block == nullptr) {
-        start_block = _root;
+BasicBlock* Graph::get_block(size_t index) const {
+    if (index < _blocks.size()) {
+        return _blocks[index];
     }
-
-    std::stack<BasicBlock*> stack;
-    std::set<size_t> tmp_ids;
-    stack.push(start_block);
-    tmp_ids.insert(start_block->get_id());
-
-    while (!stack.empty()) {
-        BasicBlock* block = stack.top();
-        stack.pop();
-
-        if (block->get_id() == idx) {
-            return block;
-        }
-
-        tmp_ids.insert(block->get_id());
-
-        BasicBlock* false_block = block->get_succs_false();
-        if (false_block!=nullptr && (!tmp_ids.count(false_block->get_id()))) {
-            stack.push(false_block);
-        }
-
-        BasicBlock* true_block = block->get_succs_true();\
-        if (true_block!=nullptr && (!tmp_ids.count(true_block->get_id()))) {
-            stack.push(true_block);
-        }
-    }
-
     return nullptr;
 }
 
-std::size_t Graph::basic_blocks_num() {
+std::size_t Graph::basic_blocks_num() const {
     return _blocks_size;
 }
 
 } // namespace custom
-

@@ -126,4 +126,17 @@ std::vector<size_t> DominTree::get_domin_succs(size_t id) {
     return {};
 }
 
+void DominTree::delete_tree(DTNode* node) {
+    if (node) {
+        for (DTNode* child : node->succs) {
+            delete_tree(child);
+        }
+        delete node;
+    }
+}
+
+DominTree::~DominTree() {
+    delete_tree(_domin_tree_root);
+}
+
 } // namespace custom

@@ -23,6 +23,7 @@ class DominTree final {
     void build_tree(Graph* graph);
     std::vector<size_t> get_domin_succs(size_t id);
     DTNode* find_node_by_index(size_t target_idx);
+    ~DominTree();
 
  private:
     DTNode* convert_to_tree(const std::unordered_map<size_t, std::vector<size_t>>& aftermap, size_t rootIdx);
@@ -31,6 +32,8 @@ class DominTree final {
 
     std::unordered_map<size_t, std::vector<size_t>> get_premap(Graph* graph);
     DTNode* _domin_tree_root;
+
+    void delete_tree(DTNode* node);
 };
 
 

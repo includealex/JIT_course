@@ -3,6 +3,7 @@
 namespace custom {
 
 void DFS::run_dfs(BasicBlock* block, BasicBlock* excluded_block) {
+    _dfs_ids.clear();
     int id_to_excl = (excluded_block != nullptr) ? excluded_block->get_id() : -1;
     get_dfs_ids(block, id_to_excl);
     clear_markers(block);
