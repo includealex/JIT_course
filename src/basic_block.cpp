@@ -108,6 +108,14 @@ bool BasicBlock::is_dfs_marker() {
     return _dfs_marker;
 }
 
+BasicBlock::~BasicBlock() {
+    Instruction* current = _first_inst;
+    while (current) {
+        Instruction* next = current->get_next();
+        delete current;
+        current = next;
+    }
+}
 
 } // namespace custom
 

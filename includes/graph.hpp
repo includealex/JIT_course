@@ -12,16 +12,20 @@ class BasicBlock;
 
 class Graph final {
  public:
-   void addBasicBlock(BasicBlock* block);
-   BasicBlock* get_block(std::size_t idx, BasicBlock* block = _root);
-   std::size_t basic_blocks_num();
+    Graph() = default;
+    ~Graph();
+
+    void addBasicBlock(BasicBlock* block);
+    BasicBlock* get_block(size_t index) const;
+
+    std::size_t basic_blocks_num() const;
 
  private:
    static BasicBlock* _root;
    std::size_t _blocks_size = 0;
+   std::vector<BasicBlock*> _blocks;
 };
 
 } // namespace custom
 
 #endif // INCLUDES_GRAPH_HPP_
-

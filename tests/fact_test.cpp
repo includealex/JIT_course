@@ -67,6 +67,8 @@ TEST(FactorialGraphTest, BasicAssertions) {
     ASSERT_EQ(entry->get_id(), 0);
     ASSERT_EQ(loop->get_id(), 1);
     ASSERT_EQ(done->get_id(), 2);
+
+    delete graph;
 }
 
 int main(int argc, char **argv) {
