@@ -8,43 +8,59 @@ void DFS::run_dfs(BasicBlock* block, BasicBlock* excluded_block) {
     clear_markers(block);
 }
 
-void DFS::get_dfs_ids(BasicBlock* block, std::size_t exclude_id) {
-    if(block == nullptr) {
+void DFS::get_dfs_ids(BasicBlock* start_block, std::size_t exclude_id) {
+    if (start_block == nullptr) {
         return;
     }
 
-    if(block->get_id() == exclude_id) {
-        return;
-    }
+    std::stack<BasicBlock*> stack;
+    stack.push(start_block);
 
-    if(!(block->is_dfs_marker())) {
+    while (!stack.empty()) {
+        BasicBlock* block = stack.top();
+        stack.pop();
+
+        if (block == nullptr || block->get_id() == exclude_id || block->is_dfs_marker()) {
+            continue;
+        }
+
         _dfs_ids.push_back(block->get_id());
         block->set_dfs_marker(true);
-    }
 
-    auto right = block->get_succs_true();
-    if ((right != nullptr) && (!right->is_dfs_marker()) && (right->get_id() > block->get_id())) {
-        get_dfs_ids(right, exclude_id);
-    }
-
-    auto left = block->get_succs_false();
-    if ((left != nullptr) && (!left->is_dfs_marker()) && (left->get_id() > block->get_id())) {
-        get_dfs_ids(left, exclude_id);
+        BasicBlock* right = block->get_succs_true();
+        if (right != nullptr) {
+            stack.push(right);
+        }
+        BasicBlock* left = block->get_succs_false();
+        if (left != nullptr) {
+            stack.push(left);
+        }
     }
 }
 
-void DFS::clear_markers(BasicBlock* block) {
-    if(block == nullptr) {
+void DFS::clear_markers(BasicBlock* start_block) {
+    if (start_block == nullptr) {
         return;
     }
-    block->set_dfs_marker(false);
-    auto right = block->get_succs_true();
-    if ((right != nullptr) && (right->is_dfs_marker())) {
-        clear_markers(right);
-    }
-    auto left = block->get_succs_false();
-    if ((left != nullptr) && (left->is_dfs_marker())) {
-        clear_markers(left);
+
+    std::stack<BasicBlock*> stack;
+    stack.push(start_block);
+
+    while (!stack.empty()) {
+        BasicBlock* block = stack.top();
+        stack.pop();
+
+        block->set_dfs_marker(false);
+
+        BasicBlock* right = block->get_succs_true();
+        if (right != nullptr && right->is_dfs_marker()) {
+            stack.push(right);
+        }
+
+        BasicBlock* left = block->get_succs_false();
+        if (left != nullptr && left->is_dfs_marker()) {
+            stack.push(left);
+        }
     }
 }
 

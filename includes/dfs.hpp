@@ -2,6 +2,7 @@
 #define INCLUDES_DFS_HPP_
 
 #include <cstddef>
+#include <stack>
 #include <vector>
 
 #include "basic_block.hpp"

@@ -21,9 +21,10 @@ TEST(DFS_Test, FirstExample) {
 
     custom::DominTree dt;
     dt.build_tree(graph);
+
     ASSERT_EQ(dt.get_domin_succs(0), (std::vector<size_t>{1}));
-    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 5, 6}));
-    ASSERT_EQ(dt.get_domin_succs(2), (std::vector<size_t>{3}));
+    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 3, 5}));
+    ASSERT_EQ(dt.get_domin_succs(5), (std::vector<size_t>{4, 6}));
 }
 
 TEST(DFS_Test, SecondExample) {
@@ -36,8 +37,8 @@ TEST(DFS_Test, SecondExample) {
     custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* H = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* J = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* I = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* J = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* K = custom::IRBuilder::createBasicBlock(graph);
     
     A->add_succs_true(B);
@@ -51,19 +52,21 @@ TEST(DFS_Test, SecondExample) {
     F->add_succs_false(E);
     G->add_succs_true(I);
     G->add_succs_false(H);
-    H->add_succs_true(B);
+    H->add_succs_true(A);
     I->add_succs_true(K);
     J->add_succs_true(C);
 
     custom::DominTree dt;
     dt.build_tree(graph);
+
     ASSERT_EQ(dt.get_domin_succs(0), (std::vector<size_t>{1}));
-    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 8}));
+    ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 9}));
     ASSERT_EQ(dt.get_domin_succs(2), (std::vector<size_t>{3}));
     ASSERT_EQ(dt.get_domin_succs(3), (std::vector<size_t>{4}));
     ASSERT_EQ(dt.get_domin_succs(4), (std::vector<size_t>{5}));
     ASSERT_EQ(dt.get_domin_succs(5), (std::vector<size_t>{6}));
-    ASSERT_EQ(dt.get_domin_succs(6), (std::vector<size_t>{7, 9, 10}));
+    ASSERT_EQ(dt.get_domin_succs(6), (std::vector<size_t>{7, 8}));
+    ASSERT_EQ(dt.get_domin_succs(8), (std::vector<size_t>{10}));
 }
 
 TEST(DFS_Test, ThirdExample) {
@@ -84,7 +87,7 @@ TEST(DFS_Test, ThirdExample) {
     C->add_succs_true(D);
     D->add_succs_true(G);
     E->add_succs_false(F);
-    E->add_succs_true(G);
+    E->add_succs_true(D);
     F->add_succs_true(H);
     F->add_succs_false(B);
     G->add_succs_true(I);
@@ -94,6 +97,7 @@ TEST(DFS_Test, ThirdExample) {
 
     custom::DominTree dt;
     dt.build_tree(graph);
+
     ASSERT_EQ(dt.get_domin_succs(0), (std::vector<size_t>{1}));
     ASSERT_EQ(dt.get_domin_succs(1), (std::vector<size_t>{2, 3, 4, 6, 8}));
     ASSERT_EQ(dt.get_domin_succs(4), (std::vector<size_t>{5}));
