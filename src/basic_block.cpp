@@ -100,6 +100,10 @@ std::size_t BasicBlock::get_id() {
     return _basic_block_id;
 }
 
+bool BasicBlock::is_root() {
+    return (_basic_block_id == 0);
+}
+
 void BasicBlock::set_dfs_marker(bool value) {
     _markers.set_dfs_m(value);
 }

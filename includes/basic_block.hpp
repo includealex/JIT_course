@@ -53,6 +53,7 @@ class BasicBlock final {
 
     void set_id(std::size_t id);
     std::size_t get_id();
+    bool is_root();
 
     void set_dfs_marker(bool value);
     void set_loop_gray_marker(bool value);
