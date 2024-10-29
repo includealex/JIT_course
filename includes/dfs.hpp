@@ -19,8 +19,7 @@ public:
     void add_loop(BasicBlock* header, BasicBlock* latch);
     const std::vector<Loop>& get_loops() const;
 
-    void populate_graph();
-
+    // void populate_graph();
     std::vector<BasicBlock*> get_basic_blocks_between(BasicBlock* start, BasicBlock* end);
 
 private:
