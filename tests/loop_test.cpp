@@ -108,6 +108,7 @@ TEST(LoopAnalyzerTest, FirstExample) {
     custom::BasicBlock* W = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* X = custom::IRBuilder::createBasicBlock(graph);
 
+    // Setup the graph edges
     A->add_succs_true(B);
     B->add_succs_true(C);
     C->add_succs_true(D);
@@ -135,7 +136,31 @@ TEST(LoopAnalyzerTest, FirstExample) {
     lt.build_tree(graph);
 
     ASSERT_NE(lt.root, nullptr) << "Root node should be initialized";
+
     ASSERT_FALSE(lt.root->get_blocks_id().empty()) << "Root should contain non-loop blocks";
+    ASSERT_EQ(lt.root->succs.size(), 1);
+
+    auto& first_child = lt.root->succs[0];
+    ASSERT_EQ(first_child->idx, A->get_id());
+    std::vector<size_t> expected_blocks = {L->get_id(), V->get_id(), D->get_id(), Q->get_id(), T->get_id(), G->get_id()};
+    std::vector<size_t> expected_latches = {I->get_id(), W->get_id(), K->get_id()};
+
+    ASSERT_EQ(first_child->get_blocks_id(), expected_blocks);
+    ASSERT_EQ(first_child->get_latches_id(), expected_latches);
+
+    ASSERT_EQ(first_child->succs.size(), C->get_id());
+    ASSERT_EQ(first_child->succs[0]->idx, E->get_id());
+    ASSERT_EQ(first_child->succs[1]->idx, B->get_id());
+
+    auto& inner_node = first_child->succs[0];
+    ASSERT_EQ(inner_node->idx, E->get_id());
+    ASSERT_EQ(inner_node->get_blocks_id(), (std::vector<size_t>{F->get_id(), H->get_id()}));
+    ASSERT_EQ(inner_node->get_latches_id(), std::vector<size_t>{O->get_id()});
+
+    auto& another_inner_node = first_child->succs[1];
+    ASSERT_EQ(another_inner_node->idx, B->get_id());
+    ASSERT_EQ(another_inner_node->get_blocks_id(), std::vector<size_t>{C->get_id()});
+    ASSERT_EQ(another_inner_node->get_latches_id(), std::vector<size_t>{R->get_id()});
 
     delete graph;
 }
