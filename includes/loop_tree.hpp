@@ -19,6 +19,7 @@ struct LTNode final{
     void set_blocks_id(std::vector<size_t> b_id) {_blocks_id = b_id;}
     void set_latches_id(std::vector<size_t> l_id) {_latches_id = l_id;}
 
+    std::size_t get_header_id() {return _header_id;}
     std::vector<std::size_t>& get_blocks_id() {return _blocks_id;}
     std::vector<std::size_t>& get_latches_id() {return _latches_id;}
 

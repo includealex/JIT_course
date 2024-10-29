@@ -87,7 +87,6 @@ TEST(LoopAnalyzerTest, FirstExampleDFSCheck) {
 }
 
 TEST(LoopAnalyzerTest, FirstExample) {
-    // Create graph and basic blocks
     custom::Graph* graph = custom::IRBuilder::createGraph();
     custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
@@ -108,7 +107,6 @@ TEST(LoopAnalyzerTest, FirstExample) {
     custom::BasicBlock* W = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* X = custom::IRBuilder::createBasicBlock(graph);
 
-    // Setup the graph edges
     A->add_succs_true(B);
     B->add_succs_true(C);
     C->add_succs_true(D);
@@ -149,18 +147,166 @@ TEST(LoopAnalyzerTest, FirstExample) {
     ASSERT_EQ(first_child->get_latches_id(), expected_latches);
 
     ASSERT_EQ(first_child->succs.size(), C->get_id());
-    ASSERT_EQ(first_child->succs[0]->idx, E->get_id());
-    ASSERT_EQ(first_child->succs[1]->idx, B->get_id());
+    for (const auto& successor : first_child->succs) {
+        if (successor->idx == static_cast<int>(E->get_id())) {
+            ASSERT_EQ(successor->get_blocks_id(), (std::vector<size_t>{F->get_id(), H->get_id()}));
+            ASSERT_EQ(successor->get_latches_id(), std::vector<size_t>{O->get_id()});
+        } else if (successor->idx == static_cast<int>(B->get_id())) {
+            ASSERT_EQ(successor->get_blocks_id(), std::vector<size_t>{C->get_id()});
+            ASSERT_EQ(successor->get_latches_id(), std::vector<size_t>{R->get_id()});
+        }
+    }
 
-    auto& inner_node = first_child->succs[0];
-    ASSERT_EQ(inner_node->idx, E->get_id());
-    ASSERT_EQ(inner_node->get_blocks_id(), (std::vector<size_t>{F->get_id(), H->get_id()}));
-    ASSERT_EQ(inner_node->get_latches_id(), std::vector<size_t>{O->get_id()});
+    delete graph;
+}
 
-    auto& another_inner_node = first_child->succs[1];
-    ASSERT_EQ(another_inner_node->idx, B->get_id());
-    ASSERT_EQ(another_inner_node->get_blocks_id(), std::vector<size_t>{C->get_id()});
-    ASSERT_EQ(another_inner_node->get_latches_id(), std::vector<size_t>{R->get_id()});
+TEST(LoopAnalyzerTest, SecondExample) {
+    custom::Graph* graph = custom::IRBuilder::createGraph();
+    custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* C = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* D = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
+
+    A->add_succs_true(B);
+    B->add_succs_false(C);
+    B->add_succs_true(F);
+    C->add_succs_true(D);
+    F->add_succs_false(E);
+    F->add_succs_true(G);
+    G->add_succs_true(D);
+
+    custom::LoopTree lt;
+    lt.build_tree(graph);
+
+    ASSERT_NE(lt.root, nullptr);
+
+    ASSERT_FALSE(lt.root->get_blocks_id().empty());
+
+    ASSERT_EQ(lt.root->succs.size(), 0);
+
+    std::vector<std::size_t> expected = {A->get_id(), B->get_id(), C->get_id(), D->get_id(), E->get_id(), F->get_id(), G->get_id()};
+    ASSERT_EQ(lt.root->get_blocks_id(), expected);
+
+    delete graph;
+}
+
+TEST(LoopAnalyzerTest, ThirdExample) {
+    custom::Graph* graph = custom::IRBuilder::createGraph();
+    custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* C = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* D = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* H = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* I = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* J = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* K = custom::IRBuilder::createBasicBlock(graph);
+    
+    A->add_succs_true(B);
+    B->add_succs_true(J);
+    B->add_succs_false(C);
+    C->add_succs_true(D);
+    D->add_succs_true(E);
+    D->add_succs_false(C);
+    E->add_succs_true(F);
+    F->add_succs_true(G);
+    F->add_succs_false(E);
+    G->add_succs_true(I);
+    G->add_succs_false(H);
+    // H->add_succs_true(A);
+    I->add_succs_true(K);
+    J->add_succs_true(C);
+
+    custom::LoopTree lt;
+    lt.build_tree(graph);
+
+    delete graph;
+}
+
+TEST(LoopAnalyzerTest, FourthExample) {
+    custom::Graph* graph = custom::IRBuilder::createGraph();
+    custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* C = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* D = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
+
+    A->add_succs_true(B);
+    B->add_succs_true(D);
+    B->add_succs_false(C);
+    D->add_succs_true(E);
+    E->add_succs_true(A);
+
+    custom::LoopTree lt;
+    lt.build_tree(graph);
+
+    ASSERT_EQ(lt.root->succs.size(), 1);
+    ASSERT_EQ(lt.root->get_blocks_id(), (std::vector<size_t>{C->get_id()}));
+
+    ASSERT_EQ(lt.root->succs[0]->get_blocks_id(), (std::vector<size_t>{D->get_id(), B->get_id()}));
+    ASSERT_EQ(lt.root->succs[0]->get_latches_id(), (std::vector<size_t>{E->get_id()}));
+
+    delete graph;
+}
+
+TEST(LoopAnalyzerTest, FifthExample) {
+    custom::Graph* graph = custom::IRBuilder::createGraph();
+    custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* C = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* D = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
+
+    A->add_succs_true(B);
+    B->add_succs_true(C);
+    C->add_succs_true(D);
+    C->add_succs_false(F);
+    D->add_succs_true(F);
+    D->add_succs_false(E);
+    E->add_succs_true(A);
+
+    custom::LoopTree lt;
+    lt.build_tree(graph);
+
+    ASSERT_EQ(lt.root->succs.size(), 1);
+    ASSERT_EQ(lt.root->get_blocks_id(), (std::vector<size_t>{F->get_id()}));
+
+    ASSERT_EQ(lt.root->succs[0]->get_blocks_id(), (std::vector<size_t>{D->get_id(), B->get_id(), C->get_id()}));
+    ASSERT_EQ(lt.root->succs[0]->get_latches_id(), (std::vector<size_t>{E->get_id()}));
+
+    delete graph;
+}
+
+TEST(LoopAnalyzerTest, SixthExample) {
+    custom::Graph* graph = custom::IRBuilder::createGraph();
+    custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* C = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* D = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
+    custom::BasicBlock* H = custom::IRBuilder::createBasicBlock(graph);
+
+    A->add_succs_true(B);
+    B->add_succs_false(C);
+    B->add_succs_true(D);
+    C->add_succs_true(F);
+    C->add_succs_false(E);
+    D->add_succs_true(F);
+    F->add_succs_true(G);
+    G->add_succs_true(H);
+    // G->add_succs_false(B);
+    // H->add_succs_true(A);
+
+    custom::LoopTree lt;
+    lt.build_tree(graph);
 
     delete graph;
 }

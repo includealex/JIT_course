@@ -55,7 +55,6 @@ TEST(DominTreeTest, SecondExample) {
     G->add_succs_true(I);
     G->add_succs_false(H);
     H->add_succs_true(A);
-    H->add_succs_true(A);
     I->add_succs_true(K);
     J->add_succs_true(C);
 
