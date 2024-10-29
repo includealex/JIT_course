@@ -32,6 +32,10 @@ BasicBlock* Graph::get_block(size_t index) const {
     return nullptr;
 }
 
+BasicBlock* Graph::get_root() const {
+    return get_block(0);
+}
+
 std::size_t Graph::basic_blocks_num() const {
     return _blocks_size;
 }

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "../includes/ir_builder.hpp"
 
-TEST(DFS_Test, FirstExample) {
+TEST(DominTreeTest, FirstExample) {
     custom::Graph* graph = custom::IRBuilder::createGraph();
     custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
@@ -29,7 +29,7 @@ TEST(DFS_Test, FirstExample) {
     delete graph;
 }
 
-TEST(DFS_Test, SecondExample) {
+TEST(DominTreeTest, SecondExample) {
     custom::Graph* graph = custom::IRBuilder::createGraph();
     custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
@@ -55,7 +55,6 @@ TEST(DFS_Test, SecondExample) {
     G->add_succs_true(I);
     G->add_succs_false(H);
     H->add_succs_true(A);
-    H->add_succs_true(A);
     I->add_succs_true(K);
     J->add_succs_true(C);
 
@@ -74,7 +73,7 @@ TEST(DFS_Test, SecondExample) {
     delete graph;
 }
 
-TEST(DFS_Test, ThirdExample) {
+TEST(DominTreeTest, ThirdExample) {
     custom::Graph* graph = custom::IRBuilder::createGraph();
     custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);

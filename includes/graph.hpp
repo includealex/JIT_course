@@ -2,8 +2,6 @@
 #define INCLUDES_GRAPH_HPP_
 
 #include <cstddef>
-#include <stack>
-#include <set>
 #include <vector>
 
 namespace custom {
@@ -17,6 +15,7 @@ class Graph final {
 
     void addBasicBlock(BasicBlock* block);
     BasicBlock* get_block(size_t index) const;
+    BasicBlock* get_root() const;
 
     std::size_t basic_blocks_num() const;
 

@@ -100,12 +100,32 @@ std::size_t BasicBlock::get_id() {
     return _basic_block_id;
 }
 
+bool BasicBlock::is_root() {
+    return (_basic_block_id == 0);
+}
+
 void BasicBlock::set_dfs_marker(bool value) {
-    _dfs_marker = value;
+    _markers.set_dfs_m(value);
 }
 
 bool BasicBlock::is_dfs_marker() {
-    return _dfs_marker;
+    return _markers.is_dfs_m();
+}
+
+void BasicBlock::set_loop_gray_marker(bool value) {
+    _markers.set_loop_gray_m(value);
+}
+
+bool BasicBlock::is_loop_gray_marker() {
+    return _markers.is_loop_gray_m();
+}
+
+void BasicBlock::set_loop_black_marker(bool value) {
+    _markers.set_loop_black_m(value);
+}
+
+bool BasicBlock::is_loop_black_marker() {
+    return _markers.is_loop_black_m();
 }
 
 BasicBlock::~BasicBlock() {
