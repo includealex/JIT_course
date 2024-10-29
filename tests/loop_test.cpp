@@ -87,6 +87,7 @@ TEST(LoopAnalyzerTest, FirstExampleDFSCheck) {
 }
 
 TEST(LoopAnalyzerTest, FirstExample) {
+    // Create graph and basic blocks
     custom::Graph* graph = custom::IRBuilder::createGraph();
     custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
     custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
@@ -132,6 +133,9 @@ TEST(LoopAnalyzerTest, FirstExample) {
 
     custom::LoopTree lt;
     lt.build_tree(graph);
+
+    ASSERT_NE(lt.root, nullptr) << "Root node should be initialized";
+    ASSERT_FALSE(lt.root->get_blocks_id().empty()) << "Root should contain non-loop blocks";
 
     delete graph;
 }
