@@ -15,7 +15,7 @@ struct LTNode final{
     int idx;
     LTNode(int index) : idx(index) {}
 
-    void set_header(size_t h_id) { _header_id = h_id;}
+    void set_header(int h_id) { _header_id = h_id;}
     void set_blocks_id(std::vector<size_t> b_id) {_blocks_id = b_id;}
     void set_latches_id(std::vector<size_t> l_id) {_latches_id = l_id;}
 
@@ -26,7 +26,8 @@ struct LTNode final{
 
     void print_node(int level = 0) const {
         std::string indent(level * 2, ' ');
-        std::cout << indent << "Node (Header ID: " << _header_id << ", ID: " << idx << ")\n";
+        std::cout << indent << "Node (ID: " << idx << ")\n";
+        std::cout << indent << " - Header ID: " << _header_id << std::endl;
         std::cout << indent << " - Blocks: ";
         for (size_t block_id : _blocks_id) {
             std::cout << block_id << " ";
@@ -37,13 +38,12 @@ struct LTNode final{
         }
         std::cout << "\n";
 
-        // Print successors recursively
         for (const auto& succ : succs) {
             succ->print_node(level + 1);
         }
     }
  private:
-    size_t _header_id;
+    int _header_id = -1;
     std::vector<size_t> _latches_id;
     std::vector<size_t> _blocks_id;
 };
@@ -66,6 +66,8 @@ class LoopTree final {
     }
  private:
     void delete_tree(LTNode* node);
+    void remove_duplicate_level_nodes(LTNode* parent);
+    void clean_outer_loop_blocks(LTNode* node);
 };
 
 } // namespace custom
