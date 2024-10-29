@@ -16,7 +16,7 @@ struct Loop final {
     
     BasicBlock* get_header() { return _header; }
     std::vector<BasicBlock*> get_latches() { return _latches; }
-    std::set<BasicBlock*> get_blocks() const { return _blocks; }
+    std::set<BasicBlock*> get_blocks() { return _blocks; }
     void add_block(BasicBlock* block) { _blocks.insert(block);}
 
     bool is_irreducible() const { return _irreducible; }

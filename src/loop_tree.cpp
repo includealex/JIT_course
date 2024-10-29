@@ -9,14 +9,14 @@ void LoopTree::build_tree (Graph* graph) {
     // Filling loops
     std::vector<size_t> headers_ids;
     std::set<size_t> looped_element_ids;
-    for (auto loop : df.get_loops()) {
+    auto loops = df.get_loops();
+    for (auto& loop : loops) {
         auto header = loop.get_header();
         headers_ids.push_back(header->get_id());
         for (auto& latch: loop.get_latches()) {
             auto res = df.get_basic_blocks_between(header, latch);
             for (auto& el: res) {
                 loop.add_block(el);
-                // if (el->get_id() != header->get_id())
                 looped_element_ids.insert(el->get_id());
             }
         }
@@ -30,6 +30,37 @@ void LoopTree::build_tree (Graph* graph) {
         }
     }
 
+
+    LTNode* root = new LTNode(0);
+
+    for (auto& loop : loops) {
+        std::size_t header_id = loop.get_header()->get_id();
+        std::vector<std::size_t> latches_id;
+        for(auto& block : loop.get_latches()) {
+            latches_id.push_back(block->get_id());
+        }
+        std::vector<std::size_t> blocks_id;
+        for(auto& block : loop.get_blocks()) {
+            blocks_id.push_back(block->get_id());
+        }
+
+        for (auto& el : latches_id) {
+            auto it = std::find(blocks_id.begin(), blocks_id.end(), el);
+            if (it != blocks_id.end()) {
+                blocks_id.erase(it);
+            }
+        }
+        auto h_it = std::find(blocks_id.begin(), blocks_id.end(), header_id);
+        if (h_it != blocks_id.end()) {
+            blocks_id.erase(h_it);
+        }
+        std::cout << "For header with id: " << header_id << std::endl;
+        for (auto& el : latches_id)
+            std::cout << "latch id is: " << el << std::endl;
+        for (auto& el : blocks_id)
+            std::cout << "block id is: " << el << std::endl;
+    }
+
     auto num_of_blocks = graph->basic_blocks_num();
 
     std::vector<size_t> v(num_of_blocks);
@@ -41,13 +72,9 @@ void LoopTree::build_tree (Graph* graph) {
             v.erase(it);
         }
     }
-
-    LTNode* root = new LTNode(0);
     // contains root_succs_ids and block
     std::vector<std::size_t> root_arr(v.begin(), v.end());
     root->set_blocks_id(root_arr);
-    // root should point to loop with header id from root_succs_ids vector.
-
 
 }
 
