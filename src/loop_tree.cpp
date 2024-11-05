@@ -104,7 +104,7 @@ void LoopTree::build_tree(Graph* graph) {
     root->set_blocks_id(all_block_ids);
     remove_duplicate_level_nodes(root);
     clean_outer_loop_blocks(root);
-    print_tree();
+//    print_tree();
 }
 
 LoopTree::~LoopTree() {

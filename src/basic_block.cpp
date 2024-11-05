@@ -86,10 +86,12 @@ void BasicBlock::push_preds_back(BasicBlock* el) {
 
 void BasicBlock::add_succs_false(BasicBlock* el) {
     _succs_false = el;
+    el->push_preds_back(this);
 }
 
 void BasicBlock::add_succs_true(BasicBlock* el) {
     _succs_true = el;
+    el->push_preds_back(this);
 }
 
 void BasicBlock::set_id(std::size_t id) {
@@ -108,8 +110,16 @@ void BasicBlock::set_dfs_marker(bool value) {
     _markers.set_dfs_m(value);
 }
 
+void BasicBlock::set_rpo_marker(bool value) {
+    _markers.set_rpo_m(value);
+}
+
 bool BasicBlock::is_dfs_marker() {
     return _markers.is_dfs_m();
+}
+
+bool BasicBlock::is_rpo_marker() {
+    return _markers.is_rpo_m();
 }
 
 void BasicBlock::set_loop_gray_marker(bool value) {
