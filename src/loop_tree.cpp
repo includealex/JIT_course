@@ -5,6 +5,7 @@ namespace custom {
 
 void LoopTree::build_tree(Graph* graph) {
     custom::DFS df;
+    custom::RPO rp;
     df.run_dfs(graph->get_root());
 
     std::unordered_map<size_t, LTNode*> loop_nodes;
@@ -17,10 +18,11 @@ void LoopTree::build_tree(Graph* graph) {
         auto header = loop.get_header();
         headers_ids.push_back(header->get_id());
         for (auto& latch : loop.get_latches()) {
-            auto res = df.get_basic_blocks_between(header, latch);
-            for (auto& el : res) {
-                loop.add_block(el);
-                looped_element_ids.insert(el->get_id());
+            rp.run_reversed_rpo(header, latch);
+            auto reversed_ids = rp.get_rpo_ids_arr();
+            for (auto& el : reversed_ids) {
+                loop.add_block(graph->get_block(el));
+                looped_element_ids.insert(el);
             }
         }
     }
@@ -104,7 +106,7 @@ void LoopTree::build_tree(Graph* graph) {
     root->set_blocks_id(all_block_ids);
     remove_duplicate_level_nodes(root);
     clean_outer_loop_blocks(root);
-//    print_tree();
+    print_tree();
 }
 
 LoopTree::~LoopTree() {

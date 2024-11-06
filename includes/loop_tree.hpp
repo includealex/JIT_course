@@ -3,6 +3,7 @@
 
 #include "graph.hpp"
 #include "dfs.hpp"
+#include "rpo.hpp"
 
 #include <algorithm>
 #include <numeric>
