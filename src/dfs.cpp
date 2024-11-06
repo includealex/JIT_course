@@ -124,19 +124,6 @@ std::vector<std::size_t> DFS::get_dfs_ids_arr() {
     return _dfs_ids;
 }
 
-// void DFS::populate_graph() {
-//     for (auto& loop : _loops) {
-//         auto header = loop.get_header();
-//         for (auto& latch: loop.get_latches()) {
-
-//             auto res = get_basic_blocks_between(header, latch);
-//             for (auto& el: res) {
-//                 loop.add_block(el);
-//             }
-//         }
-//     }
-// }
-
 std::vector<BasicBlock*> DFS::get_basic_blocks_between(BasicBlock* start, BasicBlock* end) {
     std::vector<BasicBlock*> path;
     std::unordered_set<BasicBlock*> visited;

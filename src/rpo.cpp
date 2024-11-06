@@ -69,6 +69,34 @@ void RPO::clear_rpo_markers(BasicBlock* block) {
     }
 }
 
+void RPO::run_reversed_rpo(BasicBlock* start, BasicBlock* end) {
+    _rpo_ids.clear();
+    std::unordered_set<BasicBlock*> visited;
+    std::vector<BasicBlock*> post_order;
+
+    reversed_dfs(end, visited, post_order);
+
+    for (auto it = post_order.rbegin(); it != post_order.rend(); ++it) {
+        _rpo_ids.push_back((*it)->get_id());
+        if (*it == start) break;
+    }
+}
+
+void RPO::reversed_dfs(BasicBlock* block, std::unordered_set<BasicBlock*>& visited, std::vector<BasicBlock*>& post_order) {
+    if (block == nullptr || visited.find(block) != visited.end()) {
+        return;
+    }
+
+    visited.insert(block);
+
+    for (BasicBlock* pred : block->get_preds()) {
+        reversed_dfs(pred, visited, post_order);
+    }
+
+    post_order.push_back(block);
+}
+
+
 std::vector<std::size_t> RPO::get_rpo_ids_arr() {
     return _rpo_ids;
 }
