@@ -81,7 +81,9 @@ void BasicBlock::set_graph(Graph* other) {
 }
 
 void BasicBlock::push_preds_back(BasicBlock* el) {
-    _preds.push_back(el);
+    if (!is_root()) {
+        _preds.push_back(el);
+    }
 }
 
 void BasicBlock::add_succs_false(BasicBlock* el) {
