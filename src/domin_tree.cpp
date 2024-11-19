@@ -139,4 +139,49 @@ DominTree::~DominTree() {
     delete_tree(_domin_tree_root);
 }
 
+bool DominTree::dominates(size_t maybe_dominator_idx, size_t maybe_successor_idx) {
+    DTNode* current_node = find_node_by_index(maybe_successor_idx);
+    if (!current_node) {
+        return false;
+    }
+
+    while (current_node) {
+        if (current_node->idx == maybe_dominator_idx) {
+            return true;
+        }
+
+        current_node = find_parent(current_node);
+    }
+
+    return false;
+}
+
+bool DominTree::is_dominated(size_t maybe_successor_idx, size_t maybe_dominator_idx) {
+    return dominates(maybe_dominator_idx, maybe_successor_idx);
+}
+
+DTNode* DominTree::find_parent(DTNode* node) {
+    if (node == _domin_tree_root) {
+        return nullptr;
+    }
+
+    std::stack<DTNode*> stack;
+    stack.push(_domin_tree_root);
+
+    while (!stack.empty()) {
+        DTNode* current = stack.top();
+        stack.pop();
+
+        for (DTNode* child : current->succs) {
+            if (child == node) {
+                return current;
+            }
+            stack.push(child);
+        }
+    }
+
+    return nullptr;
+}
+
+
 } // namespace custom
