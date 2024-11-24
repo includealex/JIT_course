@@ -1,15 +1,15 @@
 #ifndef INCLUDES_LOOP_TREE_HPP_
 #define INCLUDES_LOOP_TREE_HPP_
 
-#include "graph.hpp"
-#include "dfs.hpp"
-#include "domin_tree.hpp"
-#include "rpo.hpp"
-
 #include <algorithm>
 #include <memory>
 #include <numeric>
 #include <unordered_map>
+
+#include "graph.hpp"
+#include "dfs.hpp"
+#include "domin_tree.hpp"
+#include "rpo.hpp"
 
 namespace custom {
 

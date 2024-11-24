@@ -12,8 +12,9 @@ namespace custom {
 class IRBuilder final {
  public:
     static void createInstruction(Opcode opcode, Type type, BasicBlock* basic_block,
-                                          std::size_t destReg = -1, const std::vector<std::size_t>& srcRegs = {}) {
-        Instruction* inst = new Instruction(opcode, type, basic_block, destReg, srcRegs);
+                                    const std::vector<std::size_t>& destRegs = {},
+                                    const std::vector<std::size_t>& srcRegs = {}) {
+        Instruction* inst = new Instruction(opcode, type, basic_block, destRegs, srcRegs);
         basic_block->pushback_instr(inst);
         return;
     }

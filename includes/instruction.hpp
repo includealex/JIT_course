@@ -27,15 +27,20 @@ enum class Opcode {
 enum class Type {
     myu32 = 0,
     myu64 = 1,
-    myvd = 2,
+    myvoid = 2,
+    myfloat = 3,
+    mydouble = 4,
+    myint32 = 5,
+    myint64 = 6,
+    mybool = 7,
 };
 
 class Instruction final {
  public:
     Instruction(Opcode opcode, Type type, BasicBlock* basicBlock, 
-                std::size_t destReg = -1, const std::vector<std::size_t>& srcRegs = {})
+                const std::vector<std::size_t>& destRegs = {}, const std::vector<std::size_t>& srcRegs = {})
         : _prev(nullptr), _next(nullptr), _opcode(opcode), _basic_block(basicBlock), 
-          _type(type), _destReg(destReg), _srcRegs(srcRegs) { }
+          _type(type), _destRegs(destRegs), _srcRegs(srcRegs) { }
 
     Opcode getOpcode() const {
         return _opcode;
@@ -45,8 +50,8 @@ class Instruction final {
         return _type;
     }
 
-    std::size_t getDestReg() const {
-        return _destReg;
+    const std::vector<std::size_t>& getDestRegs() const {
+        return _destRegs;
     }
 
     const std::vector<std::size_t>& getSrcRegs() const {
@@ -92,7 +97,7 @@ class Instruction final {
     Type _type;
 
     // Register information
-    std::size_t _destReg;
+    std::vector<std::size_t> _destRegs;
     std::vector<std::size_t> _srcRegs;
 
     std::size_t _instr_id;

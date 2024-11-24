@@ -4,6 +4,8 @@
 #include <cstddef>
 #include <vector>
 
+#include "basic_block.hpp"
+
 namespace custom {
 
 class BasicBlock;

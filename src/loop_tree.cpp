@@ -1,5 +1,4 @@
 #include "loop_tree.hpp"
-#include <unordered_set>
 
 namespace custom {
 
@@ -104,6 +103,7 @@ std::vector<LTNode*> LoopTree::build_loop_vector(Graph* graph) {
         for (auto& cur_latch : latches) {
             auto latch_id = cur_latch->get_id();
             if (!domin_tree.is_dominated(latch_id, header_id)) {
+                loop.set_irreducible(true);
                 continue;
             }
             looped_ids.insert(latch_id);
