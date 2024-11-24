@@ -3,6 +3,16 @@ project(JITLib VERSION 1.0.0 DESCRIPTION "JIT library")
 
 file(GLOB_RECURSE ALL_CXX_SOURCE_FILES ${PROJECT_SOURCE_DIR}/*.[ch]pp)
 
+find_program(CLANG_FORMAT "clang-format" REQUIRED)
+
+add_custom_target (
+    format
+    COMMAND clang-format
+    -i
+    -style=file
+    ${ALL_CXX_SOURCE_FILES}
+)
+
 add_library(my_jit STATIC ${ALL_CXX_SOURCE_FILES})
 
 target_include_directories(my_jit PUBLIC includes/)
