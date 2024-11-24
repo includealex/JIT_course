@@ -13,21 +13,17 @@ custom::Graph* buildFactorialGraph() {
     loop->add_succs_false(loop);
     loop->add_succs_true(done);
 
-    const std::size_t v0 = 0;
-    const std::size_t v1 = 1;
-    const std::size_t v2 = 2;
+    builder.createInstruction(custom::Opcode::MOVI, custom::Type::myu64, entry, std::vector<size_t>{custom::VRegs::v0}, 0);
+    builder.createInstruction(custom::Opcode::MOVI, custom::Type::myu64, entry, std::vector<size_t>{custom::VRegs::v1}, 1);
+    builder.createInstruction(custom::Opcode::CAST, custom::Type::myu64, entry, std::vector<size_t>{custom::VRegs::v2}, std::vector<size_t>{});
 
-    builder.createInstruction(custom::Opcode::MOV, custom::Type::myu64, entry, {v0}, {});
-    builder.createInstruction(custom::Opcode::MOV, custom::Type::myu64, entry, {v1}, {});
-    builder.createInstruction(custom::Opcode::CAST, custom::Type::myu64, entry, {v2}, {});
+    builder.createInstruction(custom::Opcode::CMP, custom::Type::myu64, loop, std::vector<size_t>{}, std::vector<size_t>{custom::VRegs::v1, custom::VRegs::v2});
+    builder.createInstruction(custom::Opcode::JMP, custom::Type::myu64, loop, std::vector<size_t>{}, std::vector<size_t>{});
+    builder.createInstruction(custom::Opcode::MUL, custom::Type::myu64, loop, std::vector<size_t>{custom::VRegs::v0}, std::vector<size_t>{custom::VRegs::v0, custom::VRegs::v1});
+    builder.createInstruction(custom::Opcode::ADD, custom::Type::myu64, loop, std::vector<size_t>{custom::VRegs::v1}, std::vector<size_t>{custom::VRegs::v1});
+    builder.createInstruction(custom::Opcode::JMP, custom::Type::myu64, loop, std::vector<size_t>{}, std::vector<size_t>{});
 
-    builder.createInstruction(custom::Opcode::CMP, custom::Type::myu64, loop, {}, {v1, v2});
-    builder.createInstruction(custom::Opcode::JMP, custom::Type::myu64, loop, {}, {});
-    builder.createInstruction(custom::Opcode::MUL, custom::Type::myu64, loop, {v0}, {v0, v1});
-    builder.createInstruction(custom::Opcode::ADD, custom::Type::myu64, loop, {v1}, {v1});
-    builder.createInstruction(custom::Opcode::JMP, custom::Type::myu64, loop, {}, {});
-
-    builder.createInstruction(custom::Opcode::RET, custom::Type::myu64, done, {}, {v0});
+    builder.createInstruction(custom::Opcode::RET, custom::Type::myu64, done, std::vector<size_t>{}, std::vector<size_t>{custom::VRegs::v0});
 
     return graph;
 }
@@ -39,9 +35,9 @@ TEST(FactorialGraphTest, BasicAssertions) {
     custom::BasicBlock* loop = graph->get_block(1);
     custom::BasicBlock* done = graph->get_block(2);
 
-    ASSERT_EQ(entry->getInstruction(0)->getOpcode(), custom::Opcode::MOV);
+    ASSERT_EQ(entry->getInstruction(0)->getOpcode(), custom::Opcode::MOVI);
     ASSERT_EQ(entry->getInstruction(0)->getDestRegs(), std::vector<std::size_t>{0});
-    ASSERT_EQ(entry->getInstruction(1)->getOpcode(), custom::Opcode::MOV);
+    ASSERT_EQ(entry->getInstruction(1)->getOpcode(), custom::Opcode::MOVI);
     ASSERT_EQ(entry->getInstruction(1)->getDestRegs(), std::vector<std::size_t>{1});
     ASSERT_EQ(entry->getInstruction(2)->getOpcode(), custom::Opcode::CAST);
     ASSERT_EQ(entry->getInstruction(2)->getDestRegs(), std::vector<std::size_t>{2});

@@ -19,9 +19,10 @@ enum class Opcode {
     RET = 3,
     CONST = 4,
     MOV = 5,
-    CAST = 6,
-    CMP = 7,
-    PHI = 8
+    MOVI = 6,
+    CAST = 7,
+    CMP = 8,
+    PHI = 9,
 };
 
 enum class Type {
@@ -41,6 +42,17 @@ class Instruction final {
                 const std::vector<std::size_t>& destRegs = {}, const std::vector<std::size_t>& srcRegs = {})
         : _prev(nullptr), _next(nullptr), _opcode(opcode), _basic_block(basicBlock), 
           _type(type), _destRegs(destRegs), _srcRegs(srcRegs) { }
+
+    Instruction(Opcode opcode, Type type, BasicBlock* basicBlock, 
+                const std::vector<std::size_t>& destRegs = {}, const std::size_t value = 0) {
+                    _prev = nullptr;
+                    _next = nullptr;
+                    _opcode = opcode;
+                    _basic_block = basicBlock;
+                    _type = type;
+                    _destRegs = destRegs;
+                    _val_to_set = value;
+                }
 
     Opcode getOpcode() const {
         return _opcode;
@@ -101,6 +113,7 @@ class Instruction final {
     std::vector<std::size_t> _srcRegs;
 
     std::size_t _instr_id;
+    std::size_t _val_to_set;
 };
 
 } // namespace custom
