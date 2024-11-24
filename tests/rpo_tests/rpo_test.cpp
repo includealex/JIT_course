@@ -5,26 +5,28 @@
 
 namespace custom {
 
-TEST(LoopAnalyzerTest, RPOCheck) {
-    custom::Graph* graph = custom::IRBuilder::createGraph();
-    custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* C = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* D = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* H = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* I = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* K = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* L = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* O = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* Q = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* R = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* T = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* V = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* W = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* X = custom::IRBuilder::createBasicBlock(graph);
+TEST(RPOTest, RPOSimplest) {
+    custom::IRBuilder builder;
+
+    custom::Graph* graph = builder.createGraph();
+    custom::BasicBlock* A = builder.createBasicBlock(graph);
+    custom::BasicBlock* B = builder.createBasicBlock(graph);
+    custom::BasicBlock* C = builder.createBasicBlock(graph);
+    custom::BasicBlock* D = builder.createBasicBlock(graph);
+    custom::BasicBlock* E = builder.createBasicBlock(graph);
+    custom::BasicBlock* F = builder.createBasicBlock(graph);
+    custom::BasicBlock* G = builder.createBasicBlock(graph);
+    custom::BasicBlock* H = builder.createBasicBlock(graph);
+    custom::BasicBlock* I = builder.createBasicBlock(graph);
+    custom::BasicBlock* K = builder.createBasicBlock(graph);
+    custom::BasicBlock* L = builder.createBasicBlock(graph);
+    custom::BasicBlock* O = builder.createBasicBlock(graph);
+    custom::BasicBlock* Q = builder.createBasicBlock(graph);
+    custom::BasicBlock* R = builder.createBasicBlock(graph);
+    custom::BasicBlock* T = builder.createBasicBlock(graph);
+    custom::BasicBlock* V = builder.createBasicBlock(graph);
+    custom::BasicBlock* W = builder.createBasicBlock(graph);
+    custom::BasicBlock* X = builder.createBasicBlock(graph);
 
     A->add_succs_true(B);
     B->add_succs_true(C);
@@ -69,26 +71,28 @@ TEST(LoopAnalyzerTest, RPOCheck) {
     delete graph;
 }
 
-TEST(LoopAnalyzerTest, ReversedRPOCheck) {
-    custom::Graph* graph = custom::IRBuilder::createGraph();
-    custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* C = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* D = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* H = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* I = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* K = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* L = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* O = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* Q = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* R = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* T = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* V = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* W = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* X = custom::IRBuilder::createBasicBlock(graph);
+TEST(RPOTest, ReversedRPOSimplest) {
+    custom::IRBuilder builder;
+
+    custom::Graph* graph = builder.createGraph();
+    custom::BasicBlock* A = builder.createBasicBlock(graph);
+    custom::BasicBlock* B = builder.createBasicBlock(graph);
+    custom::BasicBlock* C = builder.createBasicBlock(graph);
+    custom::BasicBlock* D = builder.createBasicBlock(graph);
+    custom::BasicBlock* E = builder.createBasicBlock(graph);
+    custom::BasicBlock* F = builder.createBasicBlock(graph);
+    custom::BasicBlock* G = builder.createBasicBlock(graph);
+    custom::BasicBlock* H = builder.createBasicBlock(graph);
+    custom::BasicBlock* I = builder.createBasicBlock(graph);
+    custom::BasicBlock* K = builder.createBasicBlock(graph);
+    custom::BasicBlock* L = builder.createBasicBlock(graph);
+    custom::BasicBlock* O = builder.createBasicBlock(graph);
+    custom::BasicBlock* Q = builder.createBasicBlock(graph);
+    custom::BasicBlock* R = builder.createBasicBlock(graph);
+    custom::BasicBlock* T = builder.createBasicBlock(graph);
+    custom::BasicBlock* V = builder.createBasicBlock(graph);
+    custom::BasicBlock* W = builder.createBasicBlock(graph);
+    custom::BasicBlock* X = builder.createBasicBlock(graph);
 
     A->add_succs_true(B);
     B->add_succs_true(C);

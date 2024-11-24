@@ -1,15 +1,17 @@
 #include <gtest/gtest.h>
-#include "../includes/ir_builder.hpp"
+#include "ir_builder.hpp"
 
 TEST(DominTreeTest, FirstExample) {
-    custom::Graph* graph = custom::IRBuilder::createGraph();
-    custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* C = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* D = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
+    custom::IRBuilder builder;
+
+    custom::Graph* graph = builder.createGraph();
+    custom::BasicBlock* A = builder.createBasicBlock(graph);
+    custom::BasicBlock* B = builder.createBasicBlock(graph);
+    custom::BasicBlock* C = builder.createBasicBlock(graph);
+    custom::BasicBlock* D = builder.createBasicBlock(graph);
+    custom::BasicBlock* E = builder.createBasicBlock(graph);
+    custom::BasicBlock* F = builder.createBasicBlock(graph);
+    custom::BasicBlock* G = builder.createBasicBlock(graph);
 
     A->add_succs_true(B);
     B->add_succs_false(C);
@@ -30,18 +32,20 @@ TEST(DominTreeTest, FirstExample) {
 }
 
 TEST(DominTreeTest, SecondExample) {
-    custom::Graph* graph = custom::IRBuilder::createGraph();
-    custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* C = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* D = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* H = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* I = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* J = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* K = custom::IRBuilder::createBasicBlock(graph);
+    custom::IRBuilder builder;
+
+    custom::Graph* graph = builder.createGraph();
+    custom::BasicBlock* A = builder.createBasicBlock(graph);
+    custom::BasicBlock* B = builder.createBasicBlock(graph);
+    custom::BasicBlock* C = builder.createBasicBlock(graph);
+    custom::BasicBlock* D = builder.createBasicBlock(graph);
+    custom::BasicBlock* E = builder.createBasicBlock(graph);
+    custom::BasicBlock* F = builder.createBasicBlock(graph);
+    custom::BasicBlock* G = builder.createBasicBlock(graph);
+    custom::BasicBlock* H = builder.createBasicBlock(graph);
+    custom::BasicBlock* I = builder.createBasicBlock(graph);
+    custom::BasicBlock* J = builder.createBasicBlock(graph);
+    custom::BasicBlock* K = builder.createBasicBlock(graph);
     
     A->add_succs_true(B);
     B->add_succs_true(J);
@@ -74,16 +78,18 @@ TEST(DominTreeTest, SecondExample) {
 }
 
 TEST(DominTreeTest, ThirdExample) {
-    custom::Graph* graph = custom::IRBuilder::createGraph();
-    custom::BasicBlock* A = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* B = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* C = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* D = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* E = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* F = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* G = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* H = custom::IRBuilder::createBasicBlock(graph);
-    custom::BasicBlock* I = custom::IRBuilder::createBasicBlock(graph);
+    custom::IRBuilder builder;
+
+    custom::Graph* graph = builder.createGraph();
+    custom::BasicBlock* A = builder.createBasicBlock(graph);
+    custom::BasicBlock* B = builder.createBasicBlock(graph);
+    custom::BasicBlock* C = builder.createBasicBlock(graph);
+    custom::BasicBlock* D = builder.createBasicBlock(graph);
+    custom::BasicBlock* E = builder.createBasicBlock(graph);
+    custom::BasicBlock* F = builder.createBasicBlock(graph);
+    custom::BasicBlock* G = builder.createBasicBlock(graph);
+    custom::BasicBlock* H = builder.createBasicBlock(graph);
+    custom::BasicBlock* I = builder.createBasicBlock(graph);
 
     A->add_succs_true(B);
     B->add_succs_true(C);

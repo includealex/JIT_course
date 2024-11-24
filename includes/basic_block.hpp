@@ -5,6 +5,9 @@
 #include <iostream>
 #include <vector>
 
+#include "instruction.hpp"
+#include "graph.hpp"
+
 namespace custom {
 
 class Instruction;

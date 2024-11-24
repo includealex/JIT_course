@@ -2,18 +2,28 @@
 #define INCLUDES_IR_BUILDER_HPP_
 
 #include "basic_block.hpp"
+#include "domin_tree.hpp"
 #include "dfs.hpp"
 #include "graph.hpp"
 #include "instruction.hpp"
-#include "domin_tree.hpp"
+#include "regs.hpp"
 
 namespace custom {
 
 class IRBuilder final {
  public:
     static void createInstruction(Opcode opcode, Type type, BasicBlock* basic_block,
-                                          std::size_t destReg = -1, const std::vector<std::size_t>& srcRegs = {}) {
-        Instruction* inst = new Instruction(opcode, type, basic_block, destReg, srcRegs);
+                                    const std::vector<std::size_t>& destRegs = {},
+                                    const std::vector<std::size_t>& srcRegs = {}) {
+        Instruction* inst = new Instruction(opcode, type, basic_block, destRegs, srcRegs);
+        basic_block->pushback_instr(inst);
+        return;
+    }
+
+    static void createInstruction(Opcode opcode, Type type, BasicBlock* basic_block,
+                                    const std::vector<std::size_t>& destRegs = {},
+                                    const std::size_t value = 0) {
+        Instruction* inst = new Instruction(opcode, type, basic_block, destRegs, value);
         basic_block->pushback_instr(inst);
         return;
     }

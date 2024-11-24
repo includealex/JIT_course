@@ -19,23 +19,40 @@ enum class Opcode {
     RET = 3,
     CONST = 4,
     MOV = 5,
-    CAST = 6,
-    CMP = 7,
-    PHI = 8
+    MOVI = 6,
+    CAST = 7,
+    CMP = 8,
+    PHI = 9,
 };
 
 enum class Type {
     myu32 = 0,
     myu64 = 1,
-    myvd = 2,
+    myvoid = 2,
+    myfloat = 3,
+    mydouble = 4,
+    myint32 = 5,
+    myint64 = 6,
+    mybool = 7,
 };
 
 class Instruction final {
  public:
     Instruction(Opcode opcode, Type type, BasicBlock* basicBlock, 
-                std::size_t destReg = -1, const std::vector<std::size_t>& srcRegs = {})
+                const std::vector<std::size_t>& destRegs = {}, const std::vector<std::size_t>& srcRegs = {})
         : _prev(nullptr), _next(nullptr), _opcode(opcode), _basic_block(basicBlock), 
-          _type(type), _destReg(destReg), _srcRegs(srcRegs) { }
+          _type(type), _destRegs(destRegs), _srcRegs(srcRegs) { }
+
+    Instruction(Opcode opcode, Type type, BasicBlock* basicBlock, 
+                const std::vector<std::size_t>& destRegs = {}, const std::size_t value = 0) {
+                    _prev = nullptr;
+                    _next = nullptr;
+                    _opcode = opcode;
+                    _basic_block = basicBlock;
+                    _type = type;
+                    _destRegs = destRegs;
+                    _val_to_set = value;
+                }
 
     Opcode getOpcode() const {
         return _opcode;
@@ -45,8 +62,8 @@ class Instruction final {
         return _type;
     }
 
-    std::size_t getDestReg() const {
-        return _destReg;
+    const std::vector<std::size_t>& getDestRegs() const {
+        return _destRegs;
     }
 
     const std::vector<std::size_t>& getSrcRegs() const {
@@ -92,10 +109,11 @@ class Instruction final {
     Type _type;
 
     // Register information
-    std::size_t _destReg;
+    std::vector<std::size_t> _destRegs;
     std::vector<std::size_t> _srcRegs;
 
     std::size_t _instr_id;
+    std::size_t _val_to_set;
 };
 
 } // namespace custom

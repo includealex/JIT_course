@@ -1,9 +1,9 @@
 #ifndef ICNLUDES_LOOP_HPP_
 #define ICNLUDES_LOOP_HPP_
 
-#include "basic_block.hpp"
-
 #include <set>
+
+#include "basic_block.hpp"
 
 namespace custom {
 
