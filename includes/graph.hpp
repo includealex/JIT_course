@@ -12,21 +12,21 @@ class BasicBlock;
 
 class Graph final {
  public:
-    Graph() = default;
-    ~Graph();
+  Graph() = default;
+  ~Graph();
 
-    void addBasicBlock(BasicBlock* block);
-    BasicBlock* get_block(size_t index) const;
-    BasicBlock* get_root() const;
+  void addBasicBlock(BasicBlock* block);
+  BasicBlock* get_block(size_t index) const;
+  BasicBlock* get_root() const;
 
-    std::size_t basic_blocks_num() const;
+  std::size_t basic_blocks_num() const;
 
  private:
-   static BasicBlock* _root;
-   std::size_t _blocks_size = 0;
-   std::vector<BasicBlock*> _blocks;
+  static BasicBlock* _root;
+  std::size_t _blocks_size = 0;
+  std::vector<BasicBlock*> _blocks;
 };
 
-} // namespace custom
+}  // namespace custom
 
-#endif // INCLUDES_GRAPH_HPP_
+#endif  // INCLUDES_GRAPH_HPP_

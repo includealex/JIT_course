@@ -9,26 +9,42 @@ namespace custom {
 
 struct Loop final {
  public:
-    Loop(BasicBlock* header) : _header(header) {}
-    
-    void set_header(BasicBlock* header) {_header = header;}
-    void add_latch(BasicBlock* latch) {_latches.push_back(latch);}
-    
-    BasicBlock* get_header() { return _header; }
-    std::vector<BasicBlock*> get_latches() { return _latches; }
-    std::set<BasicBlock*> get_blocks() { return _blocks; }
-    void add_block(BasicBlock* block) { _blocks.insert(block);}
+  Loop(BasicBlock* header) : _header(header) {}
 
-    bool is_irreducible() const { return _irreducible; }
-    void set_irreducible(bool value) { _irreducible = value; }
+  void set_header(BasicBlock* header) {
+    _header = header;
+  }
+  void add_latch(BasicBlock* latch) {
+    _latches.push_back(latch);
+  }
+
+  BasicBlock* get_header() {
+    return _header;
+  }
+  std::vector<BasicBlock*> get_latches() {
+    return _latches;
+  }
+  std::set<BasicBlock*> get_blocks() {
+    return _blocks;
+  }
+  void add_block(BasicBlock* block) {
+    _blocks.insert(block);
+  }
+
+  bool is_irreducible() const {
+    return _irreducible;
+  }
+  void set_irreducible(bool value) {
+    _irreducible = value;
+  }
 
  private:
-    BasicBlock* _header = nullptr;
-    std::vector<BasicBlock*> _latches;
-    std::set<BasicBlock*> _blocks;
-    bool _irreducible = false;
+  BasicBlock* _header = nullptr;
+  std::vector<BasicBlock*> _latches;
+  std::set<BasicBlock*> _blocks;
+  bool _irreducible = false;
 };
 
-} // namespace custom
+}  // namespace custom
 
-#endif //ICNLUDES_LOOP_HPP_
+#endif  // ICNLUDES_LOOP_HPP_
