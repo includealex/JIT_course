@@ -2,25 +2,25 @@ Here are examples of loop tree building tests provided:
 
 ## First example:
 
-![first example](loop_analysis_examples/first_example.jpg)
+![first example](loop_analysis_examples/01_example.jpg)
 
 ## Second example:
 
-![second example](loop_analysis_examples/second_example.jpg)
+![second example](loop_analysis_examples/02_example.jpg)
 
 ## Third example:
 
-![third example](loop_analysis_examples/third_example.jpg)
+![third example](loop_analysis_examples/03_example.jpg)
 
 ## Fourth example:
 
-![fourth example](loop_analysis_examples/fourth_example.jpg)
+![fourth example](loop_analysis_examples/04_example.jpg)
 
 
 ## Fifth example:
 
-![fifth example](loop_analysis_examples/fifth_example.jpg)
+![fifth example](loop_analysis_examples/05_example.jpg)
 
 ## Sixth example:
 
-![sixth example](loop_analysis_examples/sixth_example.jpg)
+![sixth example](loop_analysis_examples/06_example.jpg)

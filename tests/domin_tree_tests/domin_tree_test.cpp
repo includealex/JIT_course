@@ -18,6 +18,7 @@ TEST(DominTreeTest, FirstExample) {
   B->add_succs_false(C);
   B->add_succs_true(F);
   C->add_succs_true(D);
+  E->add_succs_true(D);
   F->add_succs_false(E);
   F->add_succs_true(G);
   G->add_succs_true(D);
@@ -60,7 +61,7 @@ TEST(DominTreeTest, SecondExample) {
   F->add_succs_false(E);
   G->add_succs_true(I);
   G->add_succs_false(H);
-  H->add_succs_true(A);
+  H->add_succs_true(B);
   I->add_succs_true(K);
   J->add_succs_true(C);
 
