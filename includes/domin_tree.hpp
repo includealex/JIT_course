@@ -28,6 +28,8 @@ class DominTree final {
   bool dominates(size_t maybe_dominator_idx, size_t maybe_successor_idx);
   bool is_dominated(size_t maybe_successor_idx, size_t maybe_dominator_idx);
 
+  void print_tree();
+
  private:
   DTNode* find_parent(DTNode* node);
   DTNode* convert_to_tree(const std::unordered_map<size_t, std::vector<size_t>>& aftermap,
@@ -40,6 +42,9 @@ class DominTree final {
   DTNode* _domin_tree_root;
 
   void delete_tree(DTNode* node);
+
+  void print_tree_helper(DTNode* node, int depth);
+
 };
 
 }  // namespace custom

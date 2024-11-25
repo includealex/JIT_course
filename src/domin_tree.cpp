@@ -185,4 +185,29 @@ DTNode* DominTree::find_parent(DTNode* node) {
   return nullptr;
 }
 
+void DominTree::print_tree() {
+  if (!_domin_tree_root) {
+    std::cout << "The dominator tree is empty." << std::endl;
+    return;
+  }
+
+  print_tree_helper(_domin_tree_root, 0);
+}
+
+void DominTree::print_tree_helper(DTNode* node, int depth) {
+  if (!node) {
+    return;
+  }
+
+  for (int i = 0; i < depth; ++i) {
+    std::cout << "  ";
+  }
+
+  std::cout << "Node " << node->idx << std::endl;
+
+  for (DTNode* child : node->succs) {
+    print_tree_helper(child, depth + 1);
+  }
+}
+
 }  // namespace custom
