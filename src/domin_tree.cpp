@@ -185,4 +185,77 @@ DTNode* DominTree::find_parent(DTNode* node) {
   return nullptr;
 }
 
+void DominTree::print_tree() {
+  if (!_domin_tree_root) {
+    std::cout << "The dominator tree is empty." << std::endl;
+    return;
+  }
+
+  print_tree_helper(_domin_tree_root, 0);
+}
+
+void DominTree::print_tree_helper(DTNode* node, int depth) {
+  if (!node) {
+    return;
+  }
+
+  for (int i = 0; i < depth; ++i) {
+    std::cout << "  ";
+  }
+
+  std::cout << "Node " << node->idx << std::endl;
+
+  for (DTNode* child : node->succs) {
+    print_tree_helper(child, depth + 1);
+  }
+}
+
+std::vector<size_t> DominTree::preorder_traversal() {
+  std::vector<size_t> result;
+  if (!_domin_tree_root) {
+    return result;
+  }
+
+  std::stack<DTNode*> node_stack;
+  node_stack.push(_domin_tree_root);
+
+  while (!node_stack.empty()) {
+    DTNode* current_node = node_stack.top();
+    node_stack.pop();
+
+    result.push_back(current_node->idx);
+
+    for (auto it = current_node->succs.rbegin(); it != current_node->succs.rend(); ++it) {
+      node_stack.push(*it);
+    }
+  }
+
+  return result;
+}
+
+std::vector<size_t> DominTree::get_subtree(size_t start_idx) {
+  std::vector<size_t> subtree_nodes;
+
+  DTNode* start_node = find_node_by_index(start_idx);
+  if (!start_node) {
+    return subtree_nodes;
+  }
+
+  std::stack<DTNode*> node_stack;
+  node_stack.push(start_node);
+
+  while (!node_stack.empty()) {
+    DTNode* current_node = node_stack.top();
+    node_stack.pop();
+
+    subtree_nodes.push_back(current_node->idx);
+
+    for (DTNode* succ : current_node->succs) {
+      node_stack.push(succ);
+    }
+  }
+
+  return subtree_nodes;
+}
+
 }  // namespace custom
