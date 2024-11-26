@@ -37,7 +37,9 @@ struct LTNode final {
   void add_latch_id(std::size_t l_id) {
     _latches_id.push_back(l_id);
   }
-
+  void remove_latch(std::size_t l_id) {
+    _latches_id.erase(std::find(_latches_id.begin(), _latches_id.end(), l_id));
+  }
   std::size_t get_header_id() {
     return _header_id;
   }
@@ -82,6 +84,8 @@ class LoopTree final {
   ~LoopTree();
   void build_tree(Graph* graph);
 
+  std::vector<LTNode*> inorder_traversal() const;
+
   LTNode* get_root() {
     return _root;
   }
@@ -95,11 +99,14 @@ class LoopTree final {
     }
   }
 
+  // TODO: rewrite this using getters, setters
+  std::vector<LTNode*> loop_vector;
+
  private:
   LTNode* _root;
 
   LTNode* build_loop_tree(std::vector<LTNode*>& nodes);
-  std::vector<LTNode*> build_loop_vector(Graph* graph);
+  void build_loop_vector(Graph* graph);
 
   void delete_tree(LTNode* node);
 };

@@ -1,11 +1,10 @@
 #include <gtest/gtest.h>
 
 #include "ir_builder.hpp"
-#include "loop_tree.hpp"
-
+#include "linorder.hpp"
 namespace custom {
 
-TEST(DominTreeTest, SecondExample) {
+TEST(LinorderTest, FirstExample) {
   custom::IRBuilder builder;
 
   custom::Graph* graph = builder.createGraph();
@@ -46,11 +45,14 @@ TEST(DominTreeTest, SecondExample) {
   O->add_succs_true(P);
   P->add_succs_true(I);
 
-  custom::DominTree dt;
-  custom::LoopTree lt;
-
-  dt.build_tree(graph);
-  lt.build_tree(graph);
+  custom::Linorder linorder;
+  auto linorder_real = linorder.get_linorder(graph);
+  std::vector<size_t> linorder_expected = {A->get_id(), B->get_id(), C->get_id(), D->get_id(), E->get_id(),
+                                           F->get_id(), G->get_id(), H->get_id(), I->get_id(), J->get_id(),
+                                           K->get_id(), L->get_id(), M->get_id(), N->get_id(), O->get_id(),
+                                           P->get_id()};
+  
+  ASSERT_EQ(linorder_real, linorder_expected);
 
   delete graph;
 }

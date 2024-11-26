@@ -3,8 +3,8 @@
 namespace custom {
 
 void LoopTree::build_tree(Graph* graph) {
-  auto loop_vec = build_loop_vector(graph);
-  _root = build_loop_tree(loop_vec);
+  build_loop_vector(graph);
+  _root = build_loop_tree(loop_vector);
 }
 
 LTNode* LoopTree::build_loop_tree(std::vector<LTNode*>& nodes) {
@@ -76,7 +76,7 @@ LTNode* LoopTree::build_loop_tree(std::vector<LTNode*>& nodes) {
   return root;
 }
 
-std::vector<LTNode*> LoopTree::build_loop_vector(Graph* graph) {
+void LoopTree::build_loop_vector(Graph* graph) {
   custom::DFS dfs;
   custom::RPO rpo;
   custom::DominTree domin_tree;
@@ -144,8 +144,7 @@ std::vector<LTNode*> LoopTree::build_loop_vector(Graph* graph) {
   LTNode* root_node = new LTNode(root_id);
   root_node->set_blocks_id(non_looped_ids);
   res_loop_vector.push_back(root_node);
-
-  return res_loop_vector;
+  loop_vector = res_loop_vector;
 }
 
 LoopTree::~LoopTree() {
