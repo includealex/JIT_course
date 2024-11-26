@@ -57,4 +57,57 @@ TEST(LinorderTest, FirstExample) {
   delete graph;
 }
 
+TEST(LinorderTest, SecondExample) {
+  custom::IRBuilder builder;
+
+  custom::Graph* graph = builder.createGraph();
+  custom::BasicBlock* A = builder.createBasicBlock(graph);
+  custom::BasicBlock* B = builder.createBasicBlock(graph);
+  custom::BasicBlock* C = builder.createBasicBlock(graph);
+  custom::BasicBlock* D = builder.createBasicBlock(graph);
+  custom::BasicBlock* E = builder.createBasicBlock(graph);
+
+  A->add_succs_true(B);
+  B->add_succs_true(C);
+  B->add_succs_false(E);
+  C->add_succs_true(D);
+  D->add_succs_true(B);
+
+  custom::Linorder linorder;
+  auto linorder_real = linorder.get_linorder(graph);
+  std::vector<size_t> linorder_expected = {A->get_id(), B->get_id(), C->get_id(), D->get_id(), E->get_id()};
+
+  ASSERT_EQ(linorder_real, linorder_expected);
+
+  delete graph;
+}
+
+TEST(LinorderTest, ThirdExample) {
+  custom::IRBuilder builder;
+
+  custom::Graph* graph = builder.createGraph();
+  custom::BasicBlock* A = builder.createBasicBlock(graph);
+  custom::BasicBlock* B = builder.createBasicBlock(graph);
+  custom::BasicBlock* C = builder.createBasicBlock(graph);
+  custom::BasicBlock* D = builder.createBasicBlock(graph);
+  custom::BasicBlock* E = builder.createBasicBlock(graph);
+  custom::BasicBlock* F = builder.createBasicBlock(graph);
+
+  A->add_succs_true(B);
+  B->add_succs_true(C);
+  C->add_succs_true(D);
+  C->add_succs_false(F);
+  D->add_succs_true(F);
+  D->add_succs_false(E);
+  E->add_succs_true(B);
+
+  custom::Linorder linorder;
+  auto linorder_real = linorder.get_linorder(graph);
+  std::vector<size_t> linorder_expected = {A->get_id(), B->get_id(), C->get_id(), D->get_id(), E->get_id(), F->get_id()};
+  
+  ASSERT_EQ(linorder_real, linorder_expected);
+
+  delete graph;
+}
+
 } // namespace custom
