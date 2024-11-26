@@ -1,7 +1,8 @@
+#include "linorder.hpp"
+
 #include <gtest/gtest.h>
 
 #include "ir_builder.hpp"
-#include "linorder.hpp"
 namespace custom {
 
 TEST(LinorderTest, FirstExample) {
@@ -47,11 +48,23 @@ TEST(LinorderTest, FirstExample) {
 
   custom::Linorder linorder;
   auto linorder_real = linorder.get_linorder(graph);
-  std::vector<size_t> linorder_expected = {A->get_id(), B->get_id(), C->get_id(), D->get_id(), E->get_id(),
-                                           F->get_id(), G->get_id(), H->get_id(), I->get_id(), J->get_id(),
-                                           K->get_id(), L->get_id(), M->get_id(), N->get_id(), O->get_id(),
+  std::vector<size_t> linorder_expected = {A->get_id(),
+                                           B->get_id(),
+                                           C->get_id(),
+                                           D->get_id(),
+                                           E->get_id(),
+                                           F->get_id(),
+                                           G->get_id(),
+                                           H->get_id(),
+                                           I->get_id(),
+                                           J->get_id(),
+                                           K->get_id(),
+                                           L->get_id(),
+                                           M->get_id(),
+                                           N->get_id(),
+                                           O->get_id(),
                                            P->get_id()};
-  
+
   ASSERT_EQ(linorder_real, linorder_expected);
 
   delete graph;
@@ -75,7 +88,8 @@ TEST(LinorderTest, SecondExample) {
 
   custom::Linorder linorder;
   auto linorder_real = linorder.get_linorder(graph);
-  std::vector<size_t> linorder_expected = {A->get_id(), B->get_id(), C->get_id(), D->get_id(), E->get_id()};
+  std::vector<size_t> linorder_expected = {
+      A->get_id(), B->get_id(), C->get_id(), D->get_id(), E->get_id()};
 
   ASSERT_EQ(linorder_real, linorder_expected);
 
@@ -103,11 +117,12 @@ TEST(LinorderTest, ThirdExample) {
 
   custom::Linorder linorder;
   auto linorder_real = linorder.get_linorder(graph);
-  std::vector<size_t> linorder_expected = {A->get_id(), B->get_id(), C->get_id(), D->get_id(), E->get_id(), F->get_id()};
-  
+  std::vector<size_t> linorder_expected = {
+      A->get_id(), B->get_id(), C->get_id(), D->get_id(), E->get_id(), F->get_id()};
+
   ASSERT_EQ(linorder_real, linorder_expected);
 
   delete graph;
 }
 
-} // namespace custom
+}  // namespace custom

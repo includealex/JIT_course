@@ -9,15 +9,14 @@
 namespace custom {
 
 class Linorder final {
-public:
-    std::vector<size_t> get_linorder(Graph* graph);
+ public:
+  std::vector<size_t> get_linorder(Graph* graph);
 
-private:
-    void fill_linorder(Graph* graph);
-    std::vector<size_t> _linorder;
+ private:
+  void fill_linorder(Graph* graph);
+  std::vector<size_t> _linorder;
 };
 
-} // namespace custom
+}  // namespace custom
 
-
-#endif // INCLUDES_LINORDER_HPP_
+#endif  // INCLUDES_LINORDER_HPP_

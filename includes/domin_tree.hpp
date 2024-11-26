@@ -33,7 +33,6 @@ class DominTree final {
   std::vector<size_t> preorder_traversal();
   std::vector<size_t> get_subtree(size_t start_idx);
 
-
  private:
   DTNode* find_parent(DTNode* node);
   DTNode* convert_to_tree(const std::unordered_map<size_t, std::vector<size_t>>& aftermap,
@@ -48,7 +47,6 @@ class DominTree final {
   void delete_tree(DTNode* node);
 
   void print_tree_helper(DTNode* node, int depth);
-
 };
 
 }  // namespace custom
