@@ -87,6 +87,9 @@ class BasicBlock final {
   bool is_loop_gray_marker();
   bool is_loop_black_marker();
 
+  std::size_t live_start;
+  std::size_t live_end;
+
  private:
   std::vector<BasicBlock*> _preds;  // many!
 

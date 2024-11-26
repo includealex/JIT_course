@@ -23,6 +23,9 @@ enum class Opcode {
   CAST = 7,
   CMP = 8,
   PHI = 9,
+  NEQ = 10,
+  SUB = 11,
+  NEZ = 12
 };
 
 enum class Type {
@@ -108,6 +111,9 @@ class Instruction final {
   std::size_t get_id() {
     return _instr_id;
   }
+
+  std::size_t lin;
+  std::size_t live;
 
  private:
   // Intrusive linked list
