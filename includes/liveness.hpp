@@ -1,17 +1,22 @@
 #ifndef INCLUDES_LIVENESS_HPP_
 #define INCLUDES_LIVENESS_HPP_
 
+#include <algorithm>
+#include <vector>
+
 #include "linorder.hpp"
 
 namespace custom {
 
 class Liveness {
  public:
-    void run_analysis(Graph* graph);
+  void run_analysis(Graph* graph);
+
  private:
-    void set_bb_liveranges(Graph* graph);
+  void calc_live_ranges(Graph* graph);
+  void set_bb_liveranges(Graph* graph);
 };
 
-} // namespace custom
+}  // namespace custom
 
-#endif //INCLUDES_LIVENESS_HPP_
+#endif  // INCLUDES_LIVENESS_HPP_

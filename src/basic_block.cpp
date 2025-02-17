@@ -146,4 +146,36 @@ BasicBlock::~BasicBlock() {
   }
 }
 
+void BasicBlock::set_liverange_start(std::size_t val) {
+  _live_range.set_start(val);
+}
+
+void BasicBlock::set_liverange_end(std::size_t val) {
+  _live_range.set_end(val);
+}
+
+void BasicBlock::set_liverange(LiveRange lr) {
+  _live_range = lr;
+}
+
+std::size_t BasicBlock::get_liverange_start() {
+  return _live_range.get_start();
+}
+
+std::size_t BasicBlock::get_liverange_end() {
+  return _live_range.get_end();
+}
+
+LiveRange BasicBlock::get_liverange() {
+  return _live_range;
+}
+
+void BasicBlock::append_liverange(LiveRange lr) {
+  _live_range.append(lr);
+}
+
+void BasicBlock::append_liverange(std::size_t st, std::size_t ed) {
+  _live_range.append(st, ed);
+}
+
 }  // namespace custom

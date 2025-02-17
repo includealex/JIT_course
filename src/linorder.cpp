@@ -1,9 +1,16 @@
 #include "linorder.hpp"
 
 namespace custom {
+
 std::vector<size_t> Linorder::get_linorder(Graph* graph) {
   fill_linorder(graph);
   return _linorder;
+}
+
+std::vector<size_t> Linorder::get_reversed_linorder(Graph* graph) {
+  fill_linorder(graph);
+  std::vector<size_t> rev_linorder(_linorder.begin(), _linorder.end());
+  return rev_linorder;
 }
 
 void Linorder::fill_linorder(Graph* graph) {

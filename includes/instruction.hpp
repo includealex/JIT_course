@@ -131,7 +131,6 @@ class Instruction final {
 
   std::size_t _instr_id;
   std::size_t _val_to_set;
-
 };
 
 }  // namespace custom

@@ -48,6 +48,42 @@ struct BasicBlockMarker final {
   }
 };
 
+struct LiveRange final {
+ public:
+  LiveRange() {
+    _start = -1;
+    _end = -1;
+  }
+  LiveRange(std::size_t st, std::size_t ed) : _start(st), _end(ed) {}
+
+  std::size_t get_start() {
+    return _start;
+  }
+  std::size_t get_end() {
+    return _end;
+  }
+  void set_start(std::size_t st) {
+    _start = st;
+  }
+  void set_end(std::size_t ed) {
+    _end = ed;
+  }
+
+  void append(LiveRange other) {
+    _start = std::min(_start, other.get_start());
+    _end = std::max(_end, other.get_end());
+  }
+
+  void append(std::size_t st, std::size_t ed) {
+    _start = std::min(_start, st);
+    _end = std::max(_end, ed);
+  }
+
+ private:
+  std::size_t _start;
+  std::size_t _end;
+};
+
 class BasicBlock final {
  public:
   BasicBlock(Graph* graph)
@@ -87,10 +123,16 @@ class BasicBlock final {
   bool is_loop_gray_marker();
   bool is_loop_black_marker();
 
-  std::size_t live_start;
-  std::size_t live_end;
+  void set_liverange_start(std::size_t val);
+  void set_liverange_end(std::size_t val);
+  void set_liverange(LiveRange lr);
+  void append_liverange(LiveRange lr);
+  void append_liverange(std::size_t st, std::size_t ed);
+  std::size_t get_liverange_start();
+  std::size_t get_liverange_end();
+  LiveRange get_liverange();
 
-  private:
+ private:
   std::vector<BasicBlock*> _preds;  // many!
 
   BasicBlock* _succs_true = nullptr;   // right
@@ -106,6 +148,7 @@ class BasicBlock final {
 
   std::size_t _basic_block_id = -1;
 
+  LiveRange _live_range;
 };
 
 }  // namespace custom

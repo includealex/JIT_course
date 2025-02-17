@@ -1,7 +1,8 @@
+#include "liveness.hpp"
+
 #include <gtest/gtest.h>
 
 #include "ir_builder.hpp"
-#include "liveness.hpp"
 namespace custom {
 TEST(LivenessTest, FirstExample) {
   custom::IRBuilder builder;
