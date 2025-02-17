@@ -2,11 +2,11 @@
 
 namespace custom {
 
-void Liveness::run_analysis(Graph* graph) {
+LiveInterval Liveness::run_analysis(Graph* graph) {
   set_bb_liveranges(graph);
   calc_live_ranges(graph);
 
-  return;
+  return _intervals;
 }
 
 void Liveness::calc_live_ranges(Graph* graph) {
@@ -15,6 +15,7 @@ void Liveness::calc_live_ranges(Graph* graph) {
 
   for (auto& bb_id : reversed_linorder) {
     // TODO: apply some cringe here
+    // here _intervals should be modified and applied changes
   }
 }
 

@@ -178,4 +178,12 @@ void BasicBlock::append_liverange(std::size_t st, std::size_t ed) {
   _live_range.append(st, ed);
 }
 
+LiveInterval BasicBlock::get_liveIn() {
+  return _liveIn;
+}
+
+void BasicBlock::set_liveIn(LiveInterval liveIn) {
+  _liveIn = liveIn;
+}
+
 }  // namespace custom

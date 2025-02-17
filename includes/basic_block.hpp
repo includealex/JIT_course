@@ -2,7 +2,9 @@
 #define INCLUDES_BASIC_BLOCK_HPP_
 
 #include <cstddef>
+#include <initializer_list>
 #include <iostream>
+#include <map>
 #include <vector>
 
 #include "graph.hpp"
@@ -79,9 +81,50 @@ struct LiveRange final {
     _end = std::max(_end, ed);
   }
 
+  bool overlaps(const LiveRange& other) const {
+    return !(_end < other._start || other._end < _start);
+  }
+
  private:
   std::size_t _start;
   std::size_t _end;
+};
+
+struct LiveInterval final {
+ public:
+  LiveInterval() = default;
+
+  LiveInterval(std::initializer_list<LiveInterval> intervals) {
+    for (const auto& interval : intervals) {
+      for (const auto& [lin, lr] : interval._live) {
+        add(lin, lr);
+      }
+    }
+  }
+
+  void add(std::size_t lin, LiveRange lr) {
+    auto it = _live.lower_bound(lin);
+    if (it != _live.end() && it->second.overlaps(lr)) {
+      it->second.append(lr);
+    } else {
+      _live[lin] = lr;
+    }
+  }
+
+  void remove(std::size_t lin) {
+    _live.erase(lin);
+  }
+
+  void set_liveIn(std::map<std::size_t, LiveRange> other) {
+    _live = other;
+  }
+
+  std::map<std::size_t, LiveRange> get_liveIn() {
+    return _live;
+  }
+
+ private:
+  std::map<std::size_t, LiveRange> _live;
 };
 
 class BasicBlock final {
@@ -131,6 +174,8 @@ class BasicBlock final {
   std::size_t get_liverange_start();
   std::size_t get_liverange_end();
   LiveRange get_liverange();
+  LiveInterval get_liveIn();
+  void set_liveIn(LiveInterval liveIn);
 
  private:
   std::vector<BasicBlock*> _preds;  // many!
@@ -149,6 +194,7 @@ class BasicBlock final {
   std::size_t _basic_block_id = -1;
 
   LiveRange _live_range;
+  LiveInterval _liveIn;
 };
 
 }  // namespace custom

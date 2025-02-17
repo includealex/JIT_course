@@ -10,9 +10,10 @@ namespace custom {
 
 class Liveness {
  public:
-  void run_analysis(Graph* graph);
+  LiveInterval run_analysis(Graph* graph);
 
  private:
+  LiveInterval _intervals;
   void calc_live_ranges(Graph* graph);
   void set_bb_liveranges(Graph* graph);
 };
