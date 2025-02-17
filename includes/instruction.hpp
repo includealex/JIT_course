@@ -22,7 +22,9 @@ enum class Opcode {
   MOVI = 6,
   CAST = 7,
   CMP = 8,
-  PHI = 9,
+  NEQ = 9,
+  SUB = 10,
+  PHI = 11,
 };
 
 enum class Type {
@@ -125,6 +127,10 @@ class Instruction final {
 
   std::size_t _instr_id;
   std::size_t _val_to_set;
+
+  // Liveness analysis values
+  std::size_t lin;
+  std::size_t live_num;
 };
 
 }  // namespace custom

@@ -102,6 +102,9 @@ class BasicBlock final {
   BasicBlockMarker _markers;
 
   std::size_t _basic_block_id = -1;
+
+  std::size_t live_start;
+  std::size_t live_end;
 };
 
 }  // namespace custom
