@@ -111,6 +111,10 @@ class Instruction final {
     return _instr_id;
   }
 
+  // Liveness analysis values
+  std::size_t lin;
+  std::size_t live_num;
+
  private:
   // Intrusive linked list
   Instruction* _prev;
@@ -128,9 +132,6 @@ class Instruction final {
   std::size_t _instr_id;
   std::size_t _val_to_set;
 
-  // Liveness analysis values
-  std::size_t lin;
-  std::size_t live_num;
 };
 
 }  // namespace custom

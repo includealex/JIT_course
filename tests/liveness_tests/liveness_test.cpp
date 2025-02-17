@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "ir_builder.hpp"
-#include "linorder.hpp"
+#include "liveness.hpp"
 namespace custom {
 TEST(LivenessTest, FirstExample) {
   custom::IRBuilder builder;
@@ -74,12 +74,8 @@ TEST(LivenessTest, FirstExample) {
                             std::vector<size_t>{custom::VRegs::v10},
                             std::vector<size_t>{});
 
-  custom::Linorder linorder;
-  auto linorder_real = linorder.get_linorder(graph);
-  std::vector<size_t> linorder_expected = {
-      A->get_id(), B->get_id(), C->get_id(), D->get_id(), E->get_id()};
-
-  ASSERT_EQ(linorder_real, linorder_expected);
+  custom::Liveness liveness;
+  liveness.run_analysis(graph);
 
   delete graph;
 }

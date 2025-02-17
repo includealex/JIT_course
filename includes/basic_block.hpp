@@ -87,7 +87,10 @@ class BasicBlock final {
   bool is_loop_gray_marker();
   bool is_loop_black_marker();
 
- private:
+  std::size_t live_start;
+  std::size_t live_end;
+
+  private:
   std::vector<BasicBlock*> _preds;  // many!
 
   BasicBlock* _succs_true = nullptr;   // right
@@ -103,8 +106,6 @@ class BasicBlock final {
 
   std::size_t _basic_block_id = -1;
 
-  std::size_t live_start;
-  std::size_t live_end;
 };
 
 }  // namespace custom
