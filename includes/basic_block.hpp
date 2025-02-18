@@ -84,6 +84,10 @@ struct LiveRange final {
   bool overlaps(const LiveRange& other) const {
     return !(_end < other._start || other._end < _start);
   }
+  
+  void print() const {
+    std::cout << "[" << _start << ", " << _end << "]";
+  }
 
  private:
   std::size_t _start;
@@ -111,6 +115,11 @@ struct LiveInterval final {
     }
   }
 
+  void add_empty(std::size_t lin) {
+    LiveRange tmp;
+    _live[lin] = tmp;
+  }
+
   void remove(std::size_t lin) {
     _live.erase(lin);
   }
@@ -121,6 +130,15 @@ struct LiveInterval final {
 
   std::map<std::size_t, LiveRange> get_liveIn() {
     return _live;
+  }
+
+  void print() const {
+    std::cout << "LiveInterval:\n";
+    for (const auto& [lin, range] : _live) {
+        std::cout << "  Line " << lin << ": ";
+        range.print();
+        std::cout << "\n";
+    }
   }
 
  private:
