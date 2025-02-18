@@ -11,6 +11,7 @@ namespace custom {
 class Linorder final {
  public:
   std::vector<size_t> get_linorder(Graph* graph);
+  std::vector<size_t> get_reversed_linorder(Graph* graph);
 
  private:
   void fill_linorder(Graph* graph);

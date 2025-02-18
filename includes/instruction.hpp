@@ -22,7 +22,9 @@ enum class Opcode {
   MOVI = 6,
   CAST = 7,
   CMP = 8,
-  PHI = 9,
+  NEQ = 9,
+  SUB = 10,
+  PHI = 11,
 };
 
 enum class Type {
@@ -108,6 +110,10 @@ class Instruction final {
   std::size_t get_id() {
     return _instr_id;
   }
+
+  // Liveness analysis values
+  std::size_t lin;
+  std::size_t live_num;
 
  private:
   // Intrusive linked list

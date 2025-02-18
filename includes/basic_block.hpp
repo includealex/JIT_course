@@ -2,7 +2,9 @@
 #define INCLUDES_BASIC_BLOCK_HPP_
 
 #include <cstddef>
+#include <initializer_list>
 #include <iostream>
+#include <map>
 #include <vector>
 
 #include "graph.hpp"
@@ -48,6 +50,115 @@ struct BasicBlockMarker final {
   }
 };
 
+struct LiveRange final {
+ public:
+  LiveRange() {
+    _start = 666;
+    _end = 666;
+  }
+  LiveRange(std::size_t st, std::size_t ed) : _start(st), _end(ed) {}
+
+  std::size_t get_start() {
+    return _start;
+  }
+  std::size_t get_end() {
+    return _end;
+  }
+  void set_start(std::size_t st) {
+    _start = st;
+  }
+  void set_end(std::size_t ed) {
+    _end = ed;
+  }
+
+  void append(LiveRange other) {
+    _start = std::min(_start, other.get_start());
+    _end = std::max(_end, other.get_end());
+  }
+
+  void append(std::size_t st, std::size_t ed) {
+    _start = std::min(_start, st);
+    _end = std::max(_end, ed);
+  }
+
+  bool overlaps(const LiveRange& other) const {
+    return !(_end < other._start || other._end < _start);
+  }
+
+  void print() const {
+    std::cout << "[" << _start << ", " << _end << "]";
+  }
+
+  bool operator==(const LiveRange& other) const {
+    return _start == other._start && _end == other._end;
+  }
+
+ private:
+  std::size_t _start;
+  std::size_t _end;
+};
+
+struct LiveInterval final {
+ public:
+  LiveInterval() = default;
+
+  LiveInterval(std::initializer_list<LiveInterval> intervals) {
+    for (const auto& interval : intervals) {
+      for (const auto& [lin, lr] : interval._live) {
+        add(lin, lr);
+      }
+    }
+  }
+
+  void add(std::size_t lin, LiveRange lr) {
+    if (_live.count(lin)) {
+      _live[lin].append(lr);
+      return;
+    }
+    _live[lin] = lr;
+  }
+
+  void setFrom(std::size_t lin, std::size_t start) {
+    if (_live.count(lin)) {
+      _live[lin].set_start(start);
+      return;
+    }
+    _live[lin] = LiveRange(start, start + 2);
+  }
+
+  void add_empty(std::size_t lin, std::size_t livenum) {
+    _live[lin] = LiveRange(livenum, livenum + 2);
+  }
+
+  void remove(std::size_t lin) {
+    _live.erase(lin);
+  }
+
+  void set_liveIn(std::map<std::size_t, LiveRange> other) {
+    _live = other;
+  }
+
+  std::map<std::size_t, LiveRange> get_liveIn() {
+    return _live;
+  }
+
+  void print() const {
+    std::cout << "LiveInterval:\n";
+    for (const auto& [lin, range] : _live) {
+      std::cout << "  Line " << lin << ": ";
+      range.print();
+      std::cout << "\n";
+    }
+  }
+
+  bool operator==(const LiveInterval& other) const {
+    return _live == other._live;
+  }
+
+ private:
+  std::map<std::size_t, LiveRange> _live;
+};
+
 class BasicBlock final {
  public:
   BasicBlock(Graph* graph)
@@ -87,6 +198,17 @@ class BasicBlock final {
   bool is_loop_gray_marker();
   bool is_loop_black_marker();
 
+  void set_liverange_start(std::size_t val);
+  void set_liverange_end(std::size_t val);
+  void set_liverange(LiveRange lr);
+  void append_liverange(LiveRange lr);
+  void append_liverange(std::size_t st, std::size_t ed);
+  std::size_t get_liverange_start();
+  std::size_t get_liverange_end();
+  LiveRange get_liverange();
+  LiveInterval get_liveIn();
+  void set_liveIn(LiveInterval liveIn);
+
  private:
   std::vector<BasicBlock*> _preds;  // many!
 
@@ -102,6 +224,9 @@ class BasicBlock final {
   BasicBlockMarker _markers;
 
   std::size_t _basic_block_id = -1;
+
+  LiveRange _live_range;
+  LiveInterval _liveIn;
 };
 
 }  // namespace custom
