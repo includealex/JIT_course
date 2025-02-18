@@ -75,8 +75,24 @@ TEST(LivenessTest, FirstExample) {
                             std::vector<size_t>{custom::VRegs::v10},
                             std::vector<size_t>{});
 
+  LiveInterval expected;
+
+  expected.add(0, LiveRange(2, 20));
+  expected.add(1, LiveRange(4, 20));
+  expected.add(2, LiveRange(6, 22));
+  expected.add(3, LiveRange(8, 22));
+  expected.add(4, LiveRange(8, 18));
+  expected.add(5, LiveRange(10, 12));
+  expected.add(6, LiveRange(12, 14));
+  expected.add(7, LiveRange(16, 20));
+  expected.add(8, LiveRange(18, 20));
+  expected.add(9, LiveRange(22, 24));
+  expected.add(10, LiveRange(24, 26));
+
   custom::Liveness liveness;
-  liveness.run_analysis(graph);
+  auto res = liveness.run_analysis(graph);
+
+  ASSERT_EQ(res, expected);
 
   delete graph;
 }

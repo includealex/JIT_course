@@ -36,11 +36,11 @@ void Liveness::calc_live_ranges(Graph* graph) {
 
     // live = union of successor.liveIn for each successor of b
     for (auto& tmp_succ : {cur_block->get_succs_true(), cur_block->get_succs_false()}) {
-        if (tmp_succ == nullptr) {
-            continue;
-        }
+      if (tmp_succ == nullptr) {
+        continue;
+      }
 
-        live = {live, tmp_succ->get_liveIn()};
+      live = {live, tmp_succ->get_liveIn()};
     }
 
     // for each phi function phi of successors of b do
@@ -52,7 +52,7 @@ void Liveness::calc_live_ranges(Graph* graph) {
         cur_dest_regs.insert(el);
       }
 
-      cur_instr = cur_instr->get_next();      
+      cur_instr = cur_instr->get_next();
     }
 
     for (auto& tmp_succ : {cur_block->get_succs_true(), cur_block->get_succs_false()}) {
@@ -122,7 +122,7 @@ void Liveness::calc_live_ranges(Graph* graph) {
       if (cur_block->get_id() == loop->get_header_id()) {
         // Single-latched loop expected here
         BasicBlock* loopEnd;
-        for (auto& el: loop->get_latches_id()) {
+        for (auto& el : loop->get_latches_id()) {
           if (el != cur_block->get_id()) {
             loopEnd = graph->get_block(el);
           }
@@ -139,19 +139,18 @@ void Liveness::calc_live_ranges(Graph* graph) {
   }
 
   fix_inervals_with_late_starts();
-  _intervals.print();
 }
 
 void Liveness::fix_inervals_with_late_starts() {
   auto tmp_copy = _intervals.get_liveIn();
-    
-  for (auto& [key, interval] : tmp_copy) {  
-      if (interval.get_start() < _helper_intervals[key]) {
-          interval.set_start(_helper_intervals[key]);
-      }
+
+  for (auto& [key, interval] : tmp_copy) {
+    if (interval.get_start() < _helper_intervals[key]) {
+      interval.set_start(_helper_intervals[key]);
+    }
   }
 
-  _intervals.set_liveIn(std::move(tmp_copy));  
+  _intervals.set_liveIn(std::move(tmp_copy));
 }
 
 void Liveness::set_bb_liveranges(Graph* graph) {

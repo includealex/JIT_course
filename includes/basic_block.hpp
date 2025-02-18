@@ -89,6 +89,10 @@ struct LiveRange final {
     std::cout << "[" << _start << ", " << _end << "]";
   }
 
+  bool operator==(const LiveRange& other) const {
+    return _start == other._start && _end == other._end;
+  }
+
  private:
   std::size_t _start;
   std::size_t _end;
@@ -119,11 +123,11 @@ struct LiveInterval final {
       _live[lin].set_start(start);
       return;
     }
-    _live[lin] = LiveRange(start, start+2);
+    _live[lin] = LiveRange(start, start + 2);
   }
 
   void add_empty(std::size_t lin, std::size_t livenum) {
-    _live[lin] = LiveRange(livenum, livenum+2);
+    _live[lin] = LiveRange(livenum, livenum + 2);
   }
 
   void remove(std::size_t lin) {
@@ -145,6 +149,10 @@ struct LiveInterval final {
       range.print();
       std::cout << "\n";
     }
+  }
+
+  bool operator==(const LiveInterval& other) const {
+    return _live == other._live;
   }
 
  private:
