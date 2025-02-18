@@ -58,10 +58,10 @@ struct LiveRange final {
   }
   LiveRange(std::size_t st, std::size_t ed) : _start(st), _end(ed) {}
 
-  std::size_t get_start() {
+  std::size_t get_start() const {
     return _start;
   }
-  std::size_t get_end() {
+  std::size_t get_end() const {
     return _end;
   }
   void set_start(std::size_t st) {

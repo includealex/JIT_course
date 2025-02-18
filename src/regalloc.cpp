@@ -3,51 +3,61 @@
 namespace custom {
 
 void Regalloc::run_analysis(Graph* graph) {
-    Liveness lv;
-    auto intervals = lv.run_analysis(graph).get_liveIn();
+  Liveness lv;
+  auto intervals = lv.run_analysis(graph).get_liveIn();
 
-    for (auto& interval_i : intervals) {
-        ExpireOldIntervals(interval_i);
-        if (_active_regs.size() == _reg_num) {
-            SpillAllInterval(interval_i);
-        }
-        else {
-            _active_regs.push_back(interval_i); // register removed from pool of free registers
-        }
+  for (const auto& interval_i : intervals) {
+    ExpireOldIntervals(interval_i);
+    if (_active_regs.size() >= _reg_num) {
+      SpillAllInterval(interval_i);
+    } else {
+      AssignRegister(interval_i);
     }
-
-    return;
+  }
 }
 
-void Regalloc::ExpireOldIntervals(std::pair<const std::size_t, custom::LiveRange> interval_i) {
-    for (auto& interval_j : _active_regs) {
-        if (interval_j.second.get_end() > interval_i.second.get_end()) {
-            return;
-        }
-        // TODO:
-        // remove interval_j from _active_regs
-        // add register[j] to pool of free registers
+void Regalloc::ExpireOldIntervals(
+    const std::pair<const std::size_t, custom::LiveRange>& interval_i) {
+  for (auto it = _active_regs.begin(); it != _active_regs.end();) {
+    if (it->second.get_end() < interval_i.second.get_start()) {
+      std::size_t reg = _allocated_registers[it->first];
+      _free_registers.push_back(reg);
+      _allocated_registers.erase(it->first);
+      it = _active_regs.erase(it);
+    } else {
+      ++it;
     }
-
-    return;
+  }
 }
 
-void Regalloc::SpillAllInterval(std::pair<const std::size_t, custom::LiveRange> interval_i) {
-    // spill is last interval in _active_regs
-    auto spill = _active_regs.back();
-    if (spill.second.get_end() > interval_i.second.get_end()) {
-        // TODO:
-        // register[interval_i] is register[spill]
-        // location[spill] is new stack location
-        // remove spill from active
-        // add interval_i to active, sorted by increasing end point
-    }
-    else {
-        // TODO:
-        // location[i] is new stack location
-    }
+void Regalloc::SpillAllInterval(const std::pair<const std::size_t, custom::LiveRange>& interval_i) {
+  auto spill_it = std::prev(_active_regs.end());
 
-    return;
+  if (spill_it->second.get_end() > interval_i.second.get_end()) {
+    _stack_location[spill_it->first] = AllocateStackLocation();
+    _allocated_registers[interval_i.first] = _allocated_registers[spill_it->first];
+    _allocated_registers.erase(spill_it->first);
+    _active_regs.erase(spill_it);
+    _active_regs[interval_i.first] = interval_i.second;
+  } else {
+    _stack_location[interval_i.first] = AllocateStackLocation();
+  }
 }
 
-} // namespace custom
+void Regalloc::AssignRegister(const std::pair<const std::size_t, custom::LiveRange>& interval_i) {
+  if (!_free_registers.empty()) {
+    std::size_t reg = _free_registers.back();
+    _free_registers.pop_back();
+    _allocated_registers[interval_i.first] = reg;
+  } else {
+    _allocated_registers[interval_i.first] = _allocated_registers.size();
+  }
+  _active_regs[interval_i.first] = interval_i.second;
+}
+
+std::size_t Regalloc::AllocateStackLocation() {
+  static std::size_t stack_offset = 0;
+  return stack_offset++;
+}
+
+}  // namespace custom
