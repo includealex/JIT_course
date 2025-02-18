@@ -9,7 +9,7 @@ std::vector<size_t> Linorder::get_linorder(Graph* graph) {
 
 std::vector<size_t> Linorder::get_reversed_linorder(Graph* graph) {
   fill_linorder(graph);
-  std::vector<size_t> rev_linorder(_linorder.begin(), _linorder.end());
+  std::vector<size_t> rev_linorder(_linorder.rbegin(), _linorder.rend());
   return rev_linorder;
 }
 

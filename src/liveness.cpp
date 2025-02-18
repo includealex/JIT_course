@@ -10,6 +10,22 @@ LiveInterval Liveness::run_analysis(Graph* graph) {
 }
 
 void Liveness::calc_live_ranges(Graph* graph) {
+  LoopTree lt;
+  lt.build_tree(graph);
+
+  auto preloop_vec = lt.loop_vector;
+  std::vector<custom::LTNode*> loop_vec;
+  for (auto& el : preloop_vec) {
+    if (el->idx == -1)
+      continue;
+    loop_vec.push_back(el);
+  }
+
+  std::vector<size_t> headers_ids;
+  for (auto& loop : loop_vec) {
+    headers_ids.push_back(loop->get_header_id());
+  }
+
   Linorder linorder;
   auto reversed_linorder = linorder.get_reversed_linorder(graph);
 
@@ -17,81 +33,94 @@ void Liveness::calc_live_ranges(Graph* graph) {
     auto cur_block = graph->get_block(bb_id);
 
     LiveInterval live;
+
+    // live = union of successor.liveIn for each successor of b
     for (auto& tmp_succ : {cur_block->get_succs_true(), cur_block->get_succs_false()}) {
         if (tmp_succ == nullptr) {
             continue;
         }
 
-        // live = union of successor.liveIn for each successor of b
         live = {live, tmp_succ->get_liveIn()};
-
-        // for each phi function phi of successors of b do
-        //    live.add(phi.inputOf(b)) 
-        auto cur_instr = tmp_succ->get_first_inst();
-        while (cur_instr != nullptr) {
-            if (cur_instr->getOpcode() == Opcode::PHI) {
-                for (auto& el : cur_instr->getSrcRegs()) {
-                    live.add_empty(el);
-                }
-            }
-            cur_instr = cur_instr->get_next();
-        }
-
-        // for each opd in live do
-        //    intervals[opd].addRange(b.from, b.to)
-        LiveRange bb_start_end(cur_block->get_liverange());
-        std::map<std::size_t, LiveRange> new_liveIn;
-        for (auto const& [key, _] : live.get_liveIn()) {
-            new_liveIn[key] = bb_start_end;
-        }
-        _intervals.set_liveIn(new_liveIn);
-        new_liveIn.clear();
-
-        // for each operation op of b in reverse order do
-        //    for each output operand opd of op do
-        //         intervals[opd].setFrom(op.id)
-        //         live.remove(opd)
-        //    for each input operand opd of op do
-        //         intervals[opd].addRange(b.from, op.id)
-        //         live.add(opd)
-        cur_instr = cur_block->get_last_inst();
-        while (cur_instr != nullptr) {
-            for (auto& el : cur_instr->getDestRegs()) {
-                new_liveIn[el] = LiveRange(cur_instr->live_num,cur_instr->live_num+2);
-                live.remove(el);
-            }
-            for (auto& el : cur_instr->getSrcRegs()) {
-                new_liveIn[el] = LiveRange(cur_block->get_liverange_start(),cur_instr->live_num);
-                live.add_empty(el);
-            }
-            cur_instr = cur_instr->get_prev();
-        }
-
-        // for each phi function phi of b do
-        //    live.remove(phi.output)
-        cur_instr = cur_block->get_first_inst();
-        while (cur_instr != nullptr) {
-            if (cur_instr->getOpcode() != Opcode::PHI) {
-                cur_instr = cur_instr->get_next();
-                continue;
-            }
-
-            for (auto& el : cur_instr->getDestRegs()) {
-                live.remove(el);
-            }
-            cur_instr = cur_instr->get_next();
-        }
-
-        // TODO:
-        // if b is loop header then
-        //    loopEnd = last block of the loop starting at b
-        //    for each opd in live do
-        //        intervals[opd].addRange(b.from, loopEnd.to)
-
-        cur_block->set_liveIn(live);
-        _intervals.print();
     }
+
+    // for each phi function phi of successors of b do
+    //    live.add(phi.inputOf(b))
+    for (auto& tmp_succ : {cur_block->get_succs_true(), cur_block->get_succs_false()}) {
+      if (tmp_succ == nullptr) {
+        continue;
+      }
+      auto cur_instr = tmp_succ->get_first_inst();
+      while (cur_instr != nullptr) {
+        if (cur_instr->getOpcode() == Opcode::PHI) {
+          for (auto& el : cur_instr->getSrcRegs()) {
+            live.add_empty(el);
+          }
+        }
+        cur_instr = cur_instr->get_next();
+      }
+    }
+
+    // for each opd in live do
+    //    intervals[opd].addRange(b.from, b.to)
+    auto bb_start_end = cur_block->get_liverange();
+    for (auto const& [key, _] : live.get_liveIn()) {
+      _intervals.add(key, bb_start_end);
+    }
+
+    // for each operation op of b in reverse order do
+    //    for each output operand opd of op do
+    //         intervals[opd].setFrom(op.id)
+    //         live.remove(opd)
+    //    for each input operand opd of op do
+    //         intervals[opd].addRange(b.from, op.id)
+    //         live.add(opd)
+    auto cur_instr = cur_block->get_last_inst();
+    while (cur_instr != nullptr) {
+      for (auto& el : cur_instr->getDestRegs()) {
+        _intervals.setFrom(el, cur_instr->live_num);
+        live.remove(el);
+      }
+      for (auto& el : cur_instr->getSrcRegs()) {
+        _intervals.add(el, LiveRange(cur_block->get_liverange_start(), cur_instr->live_num));
+        live.add_empty(el);
+      }
+      cur_instr = cur_instr->get_prev();
+    }
+
+    // for each phi function phi of b do
+    //    live.remove(phi.output)
+    cur_instr = cur_block->get_first_inst();
+    while (cur_instr != nullptr) {
+      if (cur_instr->getOpcode() != Opcode::PHI) {
+        cur_instr = cur_instr->get_next();
+        continue;
+      }
+
+      for (auto& el : cur_instr->getDestRegs()) {
+        live.remove(el);
+      }
+      cur_instr = cur_instr->get_next();
+    }
+
+    // if b is loop header then
+    //    loopEnd = last block of the loop starting at b
+    //    for each opd in live do
+    //        intervals[opd].addRange(b.from, loopEnd.to)
+    for (auto& loop : loop_vec) {
+      if (cur_block->get_id() == loop->get_header_id()) {
+        // FIXME: Single-latched loop expected here
+        auto loopEnd = graph->get_block(loop->get_latches_id()[1]);
+        for (auto const& [key, _] : live.get_liveIn()) {
+          _intervals.add(key,
+                         LiveRange(cur_block->get_liverange_start(), loopEnd->get_liverange_end()));
+        }
+      }
+    }
+
+    // b.liveIn = live
+    cur_block->set_liveIn(live);
   }
+  _intervals.print();
 }
 
 void Liveness::set_bb_liveranges(Graph* graph) {

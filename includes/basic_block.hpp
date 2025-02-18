@@ -53,8 +53,8 @@ struct BasicBlockMarker final {
 struct LiveRange final {
  public:
   LiveRange() {
-    _start = -1;
-    _end = -1;
+    _start = 666;
+    _end = 666;
   }
   LiveRange(std::size_t st, std::size_t ed) : _start(st), _end(ed) {}
 
@@ -84,7 +84,7 @@ struct LiveRange final {
   bool overlaps(const LiveRange& other) const {
     return !(_end < other._start || other._end < _start);
   }
-  
+
   void print() const {
     std::cout << "[" << _start << ", " << _end << "]";
   }
@@ -107,12 +107,20 @@ struct LiveInterval final {
   }
 
   void add(std::size_t lin, LiveRange lr) {
-    auto it = _live.lower_bound(lin);
-    if (it != _live.end() && it->second.overlaps(lr)) {
-      it->second.append(lr);
-    } else {
-      _live[lin] = lr;
+    if (_live.count(lin)) {
+      _live[lin].append(lr);
+      return;
     }
+    _live[lin] = lr;
+  }
+
+  void setFrom(std::size_t lin, std::size_t start) {
+    if (_live.count(lin)) {
+      _live[lin].set_start(start);
+      return;
+    }
+    std::cout << "WARNING: unexpexted set From call. For lin " << lin << "set end as start + 2" << std::endl;
+    _live[lin] = LiveRange(start, start+2);
   }
 
   void add_empty(std::size_t lin) {
@@ -135,9 +143,9 @@ struct LiveInterval final {
   void print() const {
     std::cout << "LiveInterval:\n";
     for (const auto& [lin, range] : _live) {
-        std::cout << "  Line " << lin << ": ";
-        range.print();
-        std::cout << "\n";
+      std::cout << "  Line " << lin << ": ";
+      range.print();
+      std::cout << "\n";
     }
   }
 

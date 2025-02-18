@@ -49,7 +49,7 @@ TEST(LivenessTest, FirstExample) {
                             custom::Type::myu64,
                             B,
                             std::vector<size_t>{custom::VRegs::v6},
-                            std::vector<size_t>{custom::VRegs::v5, 0});
+                            std::vector<size_t>{custom::VRegs::v5});
 
   builder.createInstruction(custom::Opcode::MUL,
                             custom::Type::myu64,

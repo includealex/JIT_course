@@ -84,8 +84,6 @@ class LoopTree final {
   ~LoopTree();
   void build_tree(Graph* graph);
 
-  std::vector<LTNode*> inorder_traversal() const;
-
   LTNode* get_root() {
     return _root;
   }
