@@ -14,8 +14,10 @@ class Liveness {
 
  private:
   LiveInterval _intervals;
+  std::map<std::size_t, std::size_t> _helper_intervals;
   void calc_live_ranges(Graph* graph);
   void set_bb_liveranges(Graph* graph);
+  void fix_inervals_with_late_starts();
 };
 
 }  // namespace custom

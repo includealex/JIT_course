@@ -119,13 +119,11 @@ struct LiveInterval final {
       _live[lin].set_start(start);
       return;
     }
-    std::cout << "WARNING: unexpexted set From call. For lin " << lin << "set end as start + 2" << std::endl;
     _live[lin] = LiveRange(start, start+2);
   }
 
-  void add_empty(std::size_t lin) {
-    LiveRange tmp;
-    _live[lin] = tmp;
+  void add_empty(std::size_t lin, std::size_t livenum) {
+    _live[lin] = LiveRange(livenum, livenum+2);
   }
 
   void remove(std::size_t lin) {
