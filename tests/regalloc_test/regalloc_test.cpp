@@ -1,5 +1,6 @@
 #include "regalloc.hpp"
 
+#include <string>
 #include <gtest/gtest.h>
 
 #include "ir_builder.hpp"
@@ -77,7 +78,8 @@ TEST(RegallocTest, FirstExample) {
                             std::vector<size_t>{});
 
   custom::Regalloc rg;
-  rg.run_analysis(graph);
+  auto res = rg.run_analysis(graph);
+
 
   delete graph;
 }
