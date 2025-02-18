@@ -97,4 +97,57 @@ TEST(LivenessTest, FirstExample) {
   delete graph;
 }
 
+TEST(LivenessTest, SecondExample) {
+  custom::IRBuilder builder;
+
+  custom::Graph* graph = builder.createGraph();
+  custom::BasicBlock* A = builder.createBasicBlock(graph);
+  custom::BasicBlock* B = builder.createBasicBlock(graph);
+  custom::BasicBlock* C = builder.createBasicBlock(graph);
+
+  A->add_succs_true(B);
+  B->add_succs_true(C);
+
+  builder.createInstruction(
+      custom::Opcode::MOVI, custom::Type::myu64, A, std::vector<size_t>{custom::VRegs::v0}, 1);
+  builder.createInstruction(
+      custom::Opcode::MOVI, custom::Type::myu64, A, std::vector<size_t>{custom::VRegs::v1}, 10);
+  builder.createInstruction(
+      custom::Opcode::MOVI, custom::Type::myu64, A, std::vector<size_t>{custom::VRegs::v2}, 20);
+
+  builder.createInstruction(custom::Opcode::ADD,
+                            custom::Type::myu64,
+                            B,
+                            std::vector<size_t>{custom::VRegs::v3},
+                            std::vector<size_t>{custom::VRegs::v2, custom::VRegs::v1});
+
+  builder.createInstruction(custom::Opcode::ADD,
+                            custom::Type::myu64,
+                            B,
+                            std::vector<size_t>{custom::VRegs::v4},
+                            std::vector<size_t>{custom::VRegs::v1, custom::VRegs::v0});
+
+  builder.createInstruction(custom::Opcode::MUL,
+                            custom::Type::myu64,
+                            C,
+                            std::vector<size_t>{custom::VRegs::v5},
+                            std::vector<size_t>{custom::VRegs::v4, custom::VRegs::v3});
+
+  LiveInterval expected;
+
+  expected.add(0, LiveRange(2, 12));
+  expected.add(1, LiveRange(4, 12));
+  expected.add(2, LiveRange(6, 10));
+  expected.add(3, LiveRange(10, 16));
+  expected.add(4, LiveRange(12, 16));
+  expected.add(5, LiveRange(16, 18));
+
+  custom::Liveness liveness;
+  auto res = liveness.run_analysis(graph);
+
+  ASSERT_EQ(res, expected);
+
+  delete graph;
+}
+
 }  // namespace custom
