@@ -7,7 +7,7 @@
 #include "ir_builder.hpp"
 
 namespace custom {
-TEST(RegallocTest, FirstExample) {
+TEST(FloatRegallocTest, FirstExample) {
   custom::IRBuilder builder;
 
   custom::Graph* graph = builder.createGraph();
@@ -78,13 +78,13 @@ TEST(RegallocTest, FirstExample) {
                             std::vector<size_t>{custom::VRegs::v10},
                             std::vector<size_t>{});
 
-  custom::Regalloc rg;
+  custom::FloatRegalloc rg;
   auto res = rg.run_analysis(graph);
 
   delete graph;
 }
 
-TEST(RegallocTest, SecondExample) {
+TEST(FloatRegallocTest, SecondExample) {
   custom::IRBuilder builder;
 
   custom::Graph* graph = builder.createGraph();
@@ -120,13 +120,13 @@ TEST(RegallocTest, SecondExample) {
                             std::vector<size_t>{custom::VRegs::v5},
                             std::vector<size_t>{custom::VRegs::v4, custom::VRegs::v3});
 
-  custom::Regalloc rg;
+  custom::FloatRegalloc rg;
   auto res = rg.run_analysis(graph);
 
   delete graph;
 }
 
-TEST(RegallocTest, ThirdExample) {
+TEST(FloatRegallocTest, ThirdExample) {
   custom::IRBuilder builder;
 
   custom::Graph* graph = builder.createGraph();
@@ -177,7 +177,7 @@ TEST(RegallocTest, ThirdExample) {
                             std::vector<size_t>{custom::VRegs::v6},
                             std::vector<size_t>{custom::VRegs::v5, custom::VRegs::v4});
 
-  custom::Regalloc rg;
+  custom::FloatRegalloc rg;
   auto res = rg.run_analysis(graph);
 
   delete graph;
