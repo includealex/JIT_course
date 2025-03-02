@@ -7,7 +7,37 @@
 
 namespace custom {
 
-TEST(RPOTest, RPOSimplest) {
+TEST(RPOTest, RPOsimplest) {
+  custom::IRBuilder builder;
+
+  custom::Graph* graph = builder.createGraph();
+  custom::BasicBlock* A = builder.createBasicBlock(graph);
+  custom::BasicBlock* B = builder.createBasicBlock(graph);
+  custom::BasicBlock* C = builder.createBasicBlock(graph);
+  custom::BasicBlock* D = builder.createBasicBlock(graph);
+
+  A->add_succs_true(B);
+  A->add_succs_false(C);
+  C->add_succs_true(D);
+  B->add_succs_true(D);
+
+  custom::RPO rpo;
+  rpo.run_rpo(graph->get_root());
+
+  std::vector<std::size_t> rpo_ids = rpo.get_rpo_ids_arr();
+
+  std::vector<std::size_t> expected_rpo = {A->get_id(), B->get_id(), C->get_id(), D->get_id()};
+
+  EXPECT_EQ(rpo_ids.size(), expected_rpo.size());
+
+  for (size_t i = 0; i < rpo_ids.size(); ++i) {
+    EXPECT_EQ(rpo_ids[i], expected_rpo[i]);
+  }
+
+  delete graph;
+}
+
+TEST(RPOTest, RPOhuge) {
   custom::IRBuilder builder;
 
   custom::Graph* graph = builder.createGraph();
@@ -58,24 +88,24 @@ TEST(RPOTest, RPOSimplest) {
 
   std::vector<std::size_t> rpo_ids = rpo.get_rpo_ids_arr();
 
-  std::vector<std::size_t> expected_rpo = {B->get_id(),
-                                           R->get_id(),
-                                           A->get_id(),
-                                           I->get_id(),
-                                           L->get_id(),
-                                           W->get_id(),
-                                           Q->get_id(),
-                                           G->get_id(),
-                                           E->get_id(),
-                                           O->get_id(),
-                                           K->get_id(),
-                                           X->get_id(),
-                                           V->get_id(),
-                                           T->get_id(),
-                                           H->get_id(),
-                                           F->get_id(),
+  std::vector<std::size_t> expected_rpo = {A->get_id(),
+                                           B->get_id(),
+                                           C->get_id(),
                                            D->get_id(),
-                                           C->get_id()};
+                                           E->get_id(),
+                                           F->get_id(),
+                                           H->get_id(),
+                                           T->get_id(),
+                                           V->get_id(),
+                                           X->get_id(),
+                                           K->get_id(),
+                                           O->get_id(),
+                                           G->get_id(),
+                                           Q->get_id(),
+                                           W->get_id(),
+                                           L->get_id(),
+                                           I->get_id(),
+                                           R->get_id()};
 
   EXPECT_EQ(rpo_ids.size(), expected_rpo.size());
 
