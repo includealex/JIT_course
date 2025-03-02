@@ -16,30 +16,32 @@ void RPO::get_rpo_ids(BasicBlock* block, std::size_t exclude_id) {
 
   std::stack<BasicBlock*> stack;
   std::unordered_set<BasicBlock*> visited;
+  std::vector<std::size_t> postorder;
+
   stack.push(block);
 
   while (!stack.empty()) {
     BasicBlock* curr = stack.top();
 
-    if (curr->is_rpo_marker() || curr->get_id() == exclude_id) {
-      stack.pop();
-      continue;
-    }
-
-    if (visited.find(curr) != visited.end()) {
-      _rpo_ids.push_back(curr->get_id());
-      curr->set_rpo_marker(true);
-      stack.pop();
-    } else {
+    if (visited.find(curr) == visited.end()) {
       visited.insert(curr);
-      stack.push(curr);
-      for (BasicBlock* succ : {curr->get_succs_true(), curr->get_succs_false()}) {
-        if (succ != nullptr && !succ->is_rpo_marker()) {
-          stack.push(succ);
-        }
+
+      if (curr->get_succs_true() && visited.find(curr->get_succs_true()) == visited.end() &&
+          curr->get_succs_true()->get_id() != exclude_id) {
+        stack.push(curr->get_succs_true());
       }
+
+      if (curr->get_succs_false() && visited.find(curr->get_succs_false()) == visited.end() &&
+          curr->get_succs_false()->get_id() != exclude_id) {
+        stack.push(curr->get_succs_false());
+      }
+    } else {
+      stack.pop();
+      postorder.push_back(curr->get_id());
     }
   }
+
+  _rpo_ids.assign(postorder.rbegin(), postorder.rend());
 }
 
 void RPO::clear_all_markers(BasicBlock* block) {
