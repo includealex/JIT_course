@@ -27,7 +27,7 @@ std::size_t BasicBlock::instructions_amount() const {
   for (auto* instr = get_first_inst(); instr != nullptr; instr = instr->get_next()) {
     counter++;
   }
-  
+
   return counter;
 }
 
@@ -192,8 +192,9 @@ void BasicBlock::set_liveIn(LiveInterval liveIn) {
 }
 
 void BasicBlock::remove_instruction(Instruction* instr) {
-  if (!instr)
+  if (!instr) {
     return;
+  }
 
   Instruction* prev = instr->get_prev();
   Instruction* next = instr->get_next();

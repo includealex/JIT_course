@@ -14,7 +14,8 @@ namespace custom {
 
 class Optimizer {
  public:
-  void constant_fold(Graph* graph);
+  void constant_fold(Graph* graph, IRBuilder* builder);
+  void peephole(Graph* graph, IRBuilder* builder);
 };
 
 }  // namespace custom
