@@ -25,6 +25,8 @@ enum class Opcode {
   NEQ = 9,
   SUB = 10,
   PHI = 11,
+  ASHR = 12,
+  XOR = 13
 };
 
 enum class Type {
@@ -109,6 +111,10 @@ class Instruction final {
 
   std::size_t get_id() {
     return _instr_id;
+  }
+
+  std::size_t getImmediateValue() {
+    return _val_to_set;
   }
 
   // Liveness analysis values

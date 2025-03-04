@@ -18,11 +18,13 @@ class Graph final {
   void addBasicBlock(BasicBlock* block);
   BasicBlock* get_block(size_t index) const;
   BasicBlock* get_root() const;
+  // FIXME: remove it
+  // void remove_block(BasicBlock* block);
 
   std::size_t basic_blocks_num() const;
 
  private:
-  static BasicBlock* _root;
+  BasicBlock* _root;
   std::size_t _blocks_size = 0;
   std::vector<BasicBlock*> _blocks;
 };

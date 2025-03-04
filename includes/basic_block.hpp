@@ -166,6 +166,7 @@ class BasicBlock final {
 
   ~BasicBlock();
   void pushback_instr(Instruction* inst);
+  void remove_instruction(Instruction* instr);
   Instruction* getInstruction(size_t index) const;
   bool isPhiInstruction(Instruction* inst);
 
@@ -174,7 +175,7 @@ class BasicBlock final {
   BasicBlock* get_succs_false();
 
   Instruction* get_first_Phi();
-  Instruction* get_first_inst();
+  Instruction* get_first_inst() const;
   Instruction* get_last_inst();
   std::size_t instructions_amount() const;
 
