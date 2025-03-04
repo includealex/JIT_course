@@ -22,7 +22,7 @@ class Graph final {
   std::size_t basic_blocks_num() const;
 
  private:
-  static BasicBlock* _root;
+  BasicBlock* _root;
   std::size_t _blocks_size = 0;
   std::vector<BasicBlock*> _blocks;
 };

@@ -2,8 +2,6 @@
 
 namespace custom {
 
-BasicBlock* Graph::_root = nullptr;
-
 Graph::~Graph() {
   for (BasicBlock* block : _blocks) {
     delete block;

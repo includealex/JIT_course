@@ -23,7 +23,12 @@ void BasicBlock::pushback_instr(Instruction* inst) {
 }
 
 std::size_t BasicBlock::instructions_amount() const {
-  return _last_inst->get_id() + 1;
+  std::size_t counter = 0;
+  for (auto* instr = get_first_inst(); instr != nullptr; instr = instr->get_next()) {
+    counter++;
+  }
+  
+  return counter;
 }
 
 Instruction* BasicBlock::getInstruction(size_t index) const {
@@ -61,7 +66,7 @@ Instruction* BasicBlock::get_first_Phi() {
   return _first_Phi;
 }
 
-Instruction* BasicBlock::get_first_inst() {
+Instruction* BasicBlock::get_first_inst() const {
   return _first_inst;
 }
 
@@ -184,6 +189,28 @@ LiveInterval BasicBlock::get_liveIn() {
 
 void BasicBlock::set_liveIn(LiveInterval liveIn) {
   _liveIn = liveIn;
+}
+
+void BasicBlock::remove_instruction(Instruction* instr) {
+  if (!instr)
+    return;
+
+  Instruction* prev = instr->get_prev();
+  Instruction* next = instr->get_next();
+
+  if (prev) {
+    prev->set_next(next);
+  } else {
+    _first_inst = next;
+  }
+
+  if (next) {
+    next->set_prev(prev);
+  } else {
+    _last_inst = prev;
+  }
+
+  delete instr;
 }
 
 }  // namespace custom
