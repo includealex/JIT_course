@@ -48,10 +48,7 @@ void Liveness::calc_live_ranges(Graph* graph) {
     std::set<std::size_t> cur_dest_regs;
     auto cur_instr = cur_block->get_first_inst();
     while (cur_instr != nullptr) {
-      for (auto& el : cur_instr->getDestRegs()) {
-        cur_dest_regs.insert(el);
-      }
-
+      cur_dest_regs.insert(cur_instr->get_lin());
       cur_instr = cur_instr->get_next();
     }
 
@@ -88,10 +85,8 @@ void Liveness::calc_live_ranges(Graph* graph) {
     //         live.add(opd)
     cur_instr = cur_block->get_last_inst();
     while (cur_instr != nullptr) {
-      for (auto& el : cur_instr->getDestRegs()) {
-        _intervals.setFrom(el, cur_instr->get_livenum());
-        live.remove(el);
-      }
+      _intervals.setFrom(cur_instr->get_lin(), cur_instr->get_livenum());
+      live.remove(cur_instr->get_lin());
       for (auto& el : cur_instr->getSrcRegs()) {
         _intervals.add(el, LiveRange(cur_block->get_liverange_start(), cur_instr->get_livenum()));
         live.add_empty(el, cur_instr->get_livenum());
@@ -108,9 +103,7 @@ void Liveness::calc_live_ranges(Graph* graph) {
         continue;
       }
 
-      for (auto& el : cur_instr->getDestRegs()) {
-        live.remove(el);
-      }
+      live.remove(cur_instr->get_lin());
       cur_instr = cur_instr->get_next();
     }
 
