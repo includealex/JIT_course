@@ -7,157 +7,16 @@
 #include <map>
 #include <vector>
 
+#include "basic_block_marker.hpp"
 #include "graph.hpp"
 #include "instruction.hpp"
+#include "liveinterval.hpp"
+#include "liverange.hpp"
 
 namespace custom {
 
 class Instruction;
 class Graph;
-
-struct BasicBlockMarker final {
- private:
-  bool _dfs_marker = false;
-  bool _loop_gray_marker = false;
-  bool _loop_black_marker = false;
-  bool _rpo_marker = false;
-
- public:
-  void set_dfs_m(bool val) {
-    _dfs_marker = val;
-  }
-  void set_rpo_m(bool val) {
-    _rpo_marker = val;
-  }
-  void set_loop_gray_m(bool val) {
-    _loop_gray_marker = val;
-  }
-  void set_loop_black_m(bool val) {
-    _loop_black_marker = val;
-  }
-
-  bool is_dfs_m() {
-    return _dfs_marker;
-  }
-  bool is_rpo_m() {
-    return _rpo_marker;
-  }
-  bool is_loop_gray_m() {
-    return _loop_gray_marker;
-  }
-  bool is_loop_black_m() {
-    return _loop_black_marker;
-  }
-};
-
-struct LiveRange final {
- public:
-  LiveRange() {
-    _start = 666;
-    _end = 666;
-  }
-  LiveRange(std::size_t st, std::size_t ed) : _start(st), _end(ed) {}
-
-  std::size_t get_start() const {
-    return _start;
-  }
-  std::size_t get_end() const {
-    return _end;
-  }
-  void set_start(std::size_t st) {
-    _start = st;
-  }
-  void set_end(std::size_t ed) {
-    _end = ed;
-  }
-
-  void append(LiveRange other) {
-    _start = std::min(_start, other.get_start());
-    _end = std::max(_end, other.get_end());
-  }
-
-  void append(std::size_t st, std::size_t ed) {
-    _start = std::min(_start, st);
-    _end = std::max(_end, ed);
-  }
-
-  bool overlaps(const LiveRange& other) const {
-    return !(_end < other._start || other._end < _start);
-  }
-
-  void print() const {
-    std::cout << "[" << _start << ", " << _end << "]";
-  }
-
-  bool operator==(const LiveRange& other) const {
-    return _start == other._start && _end == other._end;
-  }
-
- private:
-  std::size_t _start;
-  std::size_t _end;
-};
-
-struct LiveInterval final {
- public:
-  LiveInterval() = default;
-
-  LiveInterval(std::initializer_list<LiveInterval> intervals) {
-    for (const auto& interval : intervals) {
-      for (const auto& [lin, lr] : interval._live) {
-        add(lin, lr);
-      }
-    }
-  }
-
-  void add(std::size_t lin, LiveRange lr) {
-    if (_live.count(lin)) {
-      _live[lin].append(lr);
-      return;
-    }
-    _live[lin] = lr;
-  }
-
-  void setFrom(std::size_t lin, std::size_t start) {
-    if (_live.count(lin)) {
-      _live[lin].set_start(start);
-      return;
-    }
-    _live[lin] = LiveRange(start, start + 2);
-  }
-
-  void add_empty(std::size_t lin, std::size_t livenum) {
-    _live[lin] = LiveRange(livenum, livenum + 2);
-  }
-
-  void remove(std::size_t lin) {
-    _live.erase(lin);
-  }
-
-  void set_liveIn(std::map<std::size_t, LiveRange> other) {
-    _live = other;
-  }
-
-  std::map<std::size_t, LiveRange> get_liveIn() {
-    return _live;
-  }
-
-  void print() const {
-    std::cout << "LiveInterval:\n";
-    for (const auto& [lin, range] : _live) {
-      std::cout << "  Line " << lin << ": ";
-      range.print();
-      std::cout << "\n";
-    }
-  }
-
-  bool operator==(const LiveInterval& other) const {
-    return _live == other._live;
-  }
-
- private:
-  std::map<std::size_t, LiveRange> _live;
-};
 
 class BasicBlock final {
  public:
