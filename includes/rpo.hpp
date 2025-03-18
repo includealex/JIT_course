@@ -1,5 +1,5 @@
-#ifndef INCLUDES_DFS_RPO_HPP_
-#define INCLUDES_DFS_RPO_HPP_
+#ifndef INCLUDES_RPO_HPP_
+#define INCLUDES_RPO_HPP_
 
 #include <algorithm>
 #include <cstddef>
@@ -30,4 +30,4 @@ class RPO final {
 
 }  // namespace custom
 
-#endif  // INCLUDES_DFS_RPO_HPP_
+#endif  // INCLUDES_RPO_HPP_
