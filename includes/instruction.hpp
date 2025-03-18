@@ -7,38 +7,12 @@
 #include <vector>
 
 #include "basic_block.hpp"
+#include "opcode.hpp"
+#include "type.hpp"
 
 namespace custom {
 
 class BasicBlock;
-
-enum class Opcode {
-  ADD = 0,
-  MUL = 1,
-  JMP = 2,
-  RET = 3,
-  CONST = 4,
-  MOV = 5,
-  MOVI = 6,
-  CAST = 7,
-  CMP = 8,
-  NEQ = 9,
-  SUB = 10,
-  PHI = 11,
-  ASHR = 12,
-  XOR = 13
-};
-
-enum class Type {
-  myu32 = 0,
-  myu64 = 1,
-  myvoid = 2,
-  myfloat = 3,
-  mydouble = 4,
-  myint32 = 5,
-  myint64 = 6,
-  mybool = 7,
-};
 
 class Instruction final {
  public:
@@ -109,11 +83,11 @@ class Instruction final {
     _instr_id = id;
   }
 
-  std::size_t get_id() {
+  std::size_t get_id() const {
     return _instr_id;
   }
 
-  std::size_t getImmediateValue() {
+  std::size_t getImmediateValue() const {
     return _val_to_set;
   }
 
