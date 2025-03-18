@@ -13,7 +13,7 @@ void Liveness::calc_live_ranges(Graph* graph) {
   LoopTree lt;
   lt.build_tree(graph);
 
-  auto preloop_vec = lt.loop_vector;
+  auto preloop_vec = lt.get_loop_vector();
   std::vector<custom::LTNode*> loop_vec;
   for (auto& el : preloop_vec) {
     if (el->idx == -1)
