@@ -4,7 +4,11 @@ namespace custom {
 
 void LoopTree::build_tree(Graph* graph) {
   build_loop_vector(graph);
-  _root = build_loop_tree(loop_vector);
+  _root = build_loop_tree(_loop_vector);
+}
+
+const std::vector<LTNode*>& LoopTree::get_loop_vector() const {
+  return _loop_vector;
 }
 
 LTNode* LoopTree::build_loop_tree(std::vector<LTNode*>& nodes) {
@@ -144,7 +148,7 @@ void LoopTree::build_loop_vector(Graph* graph) {
   LTNode* root_node = new LTNode(root_id);
   root_node->set_blocks_id(non_looped_ids);
   res_loop_vector.push_back(root_node);
-  loop_vector = res_loop_vector;
+  _loop_vector = res_loop_vector;
 }
 
 LoopTree::~LoopTree() {

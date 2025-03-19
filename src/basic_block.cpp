@@ -46,23 +46,23 @@ Instruction* BasicBlock::getInstruction(size_t index) const {
   return cur;
 }
 
-bool BasicBlock::isPhiInstruction(Instruction* inst) {
+bool BasicBlock::isPhiInstruction(Instruction* inst) const {
   return inst->getOpcode() == Opcode::PHI;
 }
 
-std::vector<BasicBlock*> BasicBlock::get_preds() {
+std::vector<BasicBlock*> BasicBlock::get_preds() const {
   return _preds;
 }
 
-BasicBlock* BasicBlock::get_succs_true() {
+BasicBlock* BasicBlock::get_succs_true() const {
   return _succs_true;
 }
 
-BasicBlock* BasicBlock::get_succs_false() {
+BasicBlock* BasicBlock::get_succs_false() const {
   return _succs_false;
 }
 
-Instruction* BasicBlock::get_first_Phi() {
+Instruction* BasicBlock::get_first_Phi() const {
   return _first_Phi;
 }
 
@@ -70,11 +70,11 @@ Instruction* BasicBlock::get_first_inst() const {
   return _first_inst;
 }
 
-Instruction* BasicBlock::get_last_inst() {
+Instruction* BasicBlock::get_last_inst() const {
   return _last_inst;
 }
 
-Graph* BasicBlock::get_graph() {
+Graph* BasicBlock::get_graph() const {
   return _graph;
 }
 
@@ -102,11 +102,11 @@ void BasicBlock::set_id(std::size_t id) {
   _basic_block_id = id;
 }
 
-std::size_t BasicBlock::get_id() {
+std::size_t BasicBlock::get_id() const {
   return _basic_block_id;
 }
 
-bool BasicBlock::is_root() {
+bool BasicBlock::is_root() const {
   return (_basic_block_id == 0);
 }
 
@@ -118,11 +118,11 @@ void BasicBlock::set_rpo_marker(bool value) {
   _markers.set_rpo_m(value);
 }
 
-bool BasicBlock::is_dfs_marker() {
+bool BasicBlock::is_dfs_marker() const {
   return _markers.is_dfs_m();
 }
 
-bool BasicBlock::is_rpo_marker() {
+bool BasicBlock::is_rpo_marker() const {
   return _markers.is_rpo_m();
 }
 
@@ -130,7 +130,7 @@ void BasicBlock::set_loop_gray_marker(bool value) {
   _markers.set_loop_gray_m(value);
 }
 
-bool BasicBlock::is_loop_gray_marker() {
+bool BasicBlock::is_loop_gray_marker() const {
   return _markers.is_loop_gray_m();
 }
 
@@ -138,7 +138,7 @@ void BasicBlock::set_loop_black_marker(bool value) {
   _markers.set_loop_black_m(value);
 }
 
-bool BasicBlock::is_loop_black_marker() {
+bool BasicBlock::is_loop_black_marker() const {
   return _markers.is_loop_black_m();
 }
 
@@ -163,15 +163,15 @@ void BasicBlock::set_liverange(LiveRange lr) {
   _live_range = lr;
 }
 
-std::size_t BasicBlock::get_liverange_start() {
+std::size_t BasicBlock::get_liverange_start() const {
   return _live_range.get_start();
 }
 
-std::size_t BasicBlock::get_liverange_end() {
+std::size_t BasicBlock::get_liverange_end() const {
   return _live_range.get_end();
 }
 
-LiveRange BasicBlock::get_liverange() {
+LiveRange BasicBlock::get_liverange() const {
   return _live_range;
 }
 
@@ -183,7 +183,7 @@ void BasicBlock::append_liverange(std::size_t st, std::size_t ed) {
   _live_range.append(st, ed);
 }
 
-LiveInterval BasicBlock::get_liveIn() {
+LiveInterval BasicBlock::get_liveIn() const {
   return _liveIn;
 }
 

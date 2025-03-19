@@ -14,88 +14,43 @@ namespace custom {
 
 class BasicBlock;
 
-class Instruction final {
+class Instruction {
  public:
   Instruction(Opcode opcode,
               Type type,
               BasicBlock* basicBlock,
               const std::vector<std::size_t>& destRegs = {},
-              const std::vector<std::size_t>& srcRegs = {})
-      : _prev(nullptr),
-        _next(nullptr),
-        _opcode(opcode),
-        _basic_block(basicBlock),
-        _type(type),
-        _destRegs(destRegs),
-        _srcRegs(srcRegs) {}
+              const std::vector<std::size_t>& srcRegs = {});
 
   Instruction(Opcode opcode,
               Type type,
               BasicBlock* basicBlock,
               const std::vector<std::size_t>& destRegs = {},
-              const std::size_t value = 0) {
-    _prev = nullptr;
-    _next = nullptr;
-    _opcode = opcode;
-    _basic_block = basicBlock;
-    _type = type;
-    _destRegs = destRegs;
-    _val_to_set = value;
-  }
+              const std::size_t value = 0);
 
-  Opcode getOpcode() const {
-    return _opcode;
-  }
+  virtual ~Instruction() = default;
 
-  Type getType() const {
-    return _type;
-  }
+  Opcode getOpcode() const;
+  Type getType() const;
+  Instruction* get_next() const;
+  Instruction* get_prev() const;
+  std::size_t get_lin() const;
+  std::size_t get_livenum() const;
+  std::size_t get_id() const;
+  std::size_t getImmediateValue() const;
+  const std::vector<std::size_t>& getDestRegs() const;
+  const std::vector<std::size_t>& getSrcRegs() const;
 
-  const std::vector<std::size_t>& getDestRegs() const {
-    return _destRegs;
-  }
-
-  const std::vector<std::size_t>& getSrcRegs() const {
-    return _srcRegs;
-  }
-
-  void set_basic_block(BasicBlock* other) {
-    _basic_block = other;
-  }
-
-  void set_next(Instruction* other) {
-    _next = other;
-  }
-
-  void set_prev(Instruction* other) {
-    _prev = other;
-  }
-
-  Instruction* get_next() const {
-    return _next;
-  }
-
-  Instruction* get_prev() const {
-    return _prev;
-  }
-
-  void set_id(std::size_t id) {
-    _instr_id = id;
-  }
-
-  std::size_t get_id() const {
-    return _instr_id;
-  }
-
-  std::size_t getImmediateValue() const {
-    return _val_to_set;
-  }
-
-  // Liveness analysis values
-  std::size_t lin;
-  std::size_t live_num;
+  void set_id(std::size_t id);
+  void set_next(Instruction* other);
+  void set_prev(Instruction* other);
+  void set_basic_block(BasicBlock* other);
+  void set_lin(std::size_t num);
+  void set_livenum(std::size_t num);
 
  private:
+  std::size_t _instr_id;
+
   // Intrusive linked list
   Instruction* _prev;
   Instruction* _next;
@@ -109,8 +64,11 @@ class Instruction final {
   std::vector<std::size_t> _destRegs;
   std::vector<std::size_t> _srcRegs;
 
-  std::size_t _instr_id;
-  std::size_t _val_to_set;
+  // Liveness analysis values
+  std::size_t _lin;
+  std::size_t _live_num;
+
+  std::size_t _imm;
 };
 
 }  // namespace custom

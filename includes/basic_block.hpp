@@ -27,18 +27,18 @@ class BasicBlock final {
   void pushback_instr(Instruction* inst);
   void remove_instruction(Instruction* instr);
   Instruction* getInstruction(size_t index) const;
-  bool isPhiInstruction(Instruction* inst);
+  bool isPhiInstruction(Instruction* inst) const;
 
-  std::vector<BasicBlock*> get_preds();
-  BasicBlock* get_succs_true();
-  BasicBlock* get_succs_false();
+  std::vector<BasicBlock*> get_preds() const;
+  BasicBlock* get_succs_true() const;
+  BasicBlock* get_succs_false() const;
 
-  Instruction* get_first_Phi();
+  Instruction* get_first_Phi() const;
   Instruction* get_first_inst() const;
-  Instruction* get_last_inst();
+  Instruction* get_last_inst() const;
   std::size_t instructions_amount() const;
 
-  Graph* get_graph();
+  Graph* get_graph() const;
 
   void set_graph(Graph* other);
   void push_preds_back(BasicBlock* el);
@@ -46,27 +46,27 @@ class BasicBlock final {
   void add_succs_true(BasicBlock* el);
 
   void set_id(std::size_t id);
-  std::size_t get_id();
-  bool is_root();
+  std::size_t get_id() const;
+  bool is_root() const;
 
   void set_dfs_marker(bool value);
   void set_rpo_marker(bool value);
   void set_loop_gray_marker(bool value);
   void set_loop_black_marker(bool value);
-  bool is_dfs_marker();
-  bool is_rpo_marker();
-  bool is_loop_gray_marker();
-  bool is_loop_black_marker();
+  bool is_dfs_marker() const;
+  bool is_rpo_marker() const;
+  bool is_loop_gray_marker() const;
+  bool is_loop_black_marker() const;
 
   void set_liverange_start(std::size_t val);
   void set_liverange_end(std::size_t val);
   void set_liverange(LiveRange lr);
   void append_liverange(LiveRange lr);
   void append_liverange(std::size_t st, std::size_t ed);
-  std::size_t get_liverange_start();
-  std::size_t get_liverange_end();
-  LiveRange get_liverange();
-  LiveInterval get_liveIn();
+  std::size_t get_liverange_start() const;
+  std::size_t get_liverange_end() const;
+  LiveRange get_liverange() const;
+  LiveInterval get_liveIn() const;
   void set_liveIn(LiveInterval liveIn);
 
  private:

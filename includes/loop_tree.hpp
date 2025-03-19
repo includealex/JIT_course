@@ -97,8 +97,7 @@ class LoopTree final {
     }
   }
 
-  // TODO: rewrite this using getters, setters
-  std::vector<LTNode*> loop_vector;
+  const std::vector<LTNode*>& get_loop_vector() const;
 
  private:
   LTNode* _root;
@@ -107,6 +106,7 @@ class LoopTree final {
   void build_loop_vector(Graph* graph);
 
   void delete_tree(LTNode* node);
+  std::vector<LTNode*> _loop_vector;
 };
 
 }  // namespace custom
