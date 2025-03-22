@@ -12,6 +12,7 @@ namespace custom {
 
 class IRBuilder final {
  public:
+  // TODO: remove this method
   static void createInstruction(Opcode opcode,
                                 Type type,
                                 BasicBlock* basic_block,
@@ -22,6 +23,7 @@ class IRBuilder final {
     return;
   }
 
+  // TODO: remove this method
   static void createInstruction(Opcode opcode,
                                 Type type,
                                 BasicBlock* basic_block,

@@ -16,12 +16,20 @@ class BasicBlock;
 
 class Instruction {
  public:
+  Instruction(Opcode Opcode,
+              Type type,
+              BasicBlock* basicBlock,
+              Instruction* next_instr,
+              Instruction* prev_instr);
+
+  // TODO: remove this method
   Instruction(Opcode opcode,
               Type type,
               BasicBlock* basicBlock,
               const std::vector<std::size_t>& destRegs = {},
               const std::vector<std::size_t>& srcRegs = {});
 
+  // TODO: remove this method
   Instruction(Opcode opcode,
               Type type,
               BasicBlock* basicBlock,
@@ -60,6 +68,7 @@ class Instruction {
   BasicBlock* _basic_block;
   Type _type;
 
+  // TODO: remove these
   // Register information
   std::vector<std::size_t> _destRegs;
   std::vector<std::size_t> _srcRegs;

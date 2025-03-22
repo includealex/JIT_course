@@ -2,6 +2,17 @@
 
 namespace custom {
 
+Instruction::Instruction(Opcode Opcode,
+                         Type type,
+                         BasicBlock* basicBlock,
+                         Instruction* next_instr,
+                         Instruction* prev_instr)
+    : _prev(prev_instr),
+      _next(next_instr),
+      _opcode(Opcode),
+      _basic_block(basicBlock),
+      _type(type) {}
+
 Instruction::Instruction(Opcode opcode,
                          Type type,
                          BasicBlock* basicBlock,
