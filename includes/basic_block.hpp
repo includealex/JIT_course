@@ -8,8 +8,7 @@
 #include <vector>
 
 #include "basic_block_marker.hpp"
-#include "graph.hpp"
-#include "instruction.hpp"
+#include "instruction_ext.hpp"
 #include "liveinterval.hpp"
 #include "liverange.hpp"
 

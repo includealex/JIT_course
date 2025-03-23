@@ -14,6 +14,9 @@ enum class Type {
   mybool = 7,
 };
 
+using ImmType =
+    std::variant<int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t>;
+
 }  // namespace custom
 
 #endif  // INCLUDES_TYPE_HPP_

@@ -9,7 +9,6 @@ std::map<std::size_t, std::variant<std::size_t, std::string>> FloatRegalloc::run
     Graph* graph) {
   Liveness lv;
   auto intervals = lv.run_analysis(graph).get_liveIn();
-
   std::map<std::size_t, std::variant<std::size_t, std::string>> allocation_result;
 
   for (const auto& interval_i : intervals) {

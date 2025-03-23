@@ -59,9 +59,9 @@ void Liveness::calc_live_ranges(Graph* graph) {
       auto cur_instr = tmp_succ->get_first_inst();
       while (cur_instr != nullptr) {
         if (cur_instr->getOpcode() == Opcode::PHI) {
-          for (auto& el : cur_instr->getSrcRegs()) {
-            if (cur_dest_regs.count(el)) {
-              live.add_empty(el, cur_instr->get_livenum());
+          for (auto& el : cur_instr->get_src_insts()) {
+            if (cur_dest_regs.count(el->get_lin())) {
+              live.add_empty(el->get_lin(), cur_instr->get_livenum());
             }
           }
         }
@@ -87,9 +87,16 @@ void Liveness::calc_live_ranges(Graph* graph) {
     while (cur_instr != nullptr) {
       _intervals.setFrom(cur_instr->get_lin(), cur_instr->get_livenum());
       live.remove(cur_instr->get_lin());
-      for (auto& el : cur_instr->getSrcRegs()) {
-        _intervals.add(el, LiveRange(cur_block->get_liverange_start(), cur_instr->get_livenum()));
-        live.add_empty(el, cur_instr->get_livenum());
+      if (cur_instr->get_src_insts().size() != 0) {
+        for (auto& el : cur_instr->get_src_insts()) {
+          if (el == nullptr) {
+            continue;
+          }
+          auto tmp_lin = el->get_lin();
+          _intervals.add(tmp_lin,
+                         LiveRange(cur_block->get_liverange_start(), cur_instr->get_livenum()));
+          live.add_empty(tmp_lin, cur_instr->get_livenum());
+        }
       }
       cur_instr = cur_instr->get_prev();
     }

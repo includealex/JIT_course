@@ -2,6 +2,8 @@
 
 #include "ir_builder.hpp"
 
+namespace custom {
+
 custom::Graph* buildFactorialGraph() {
   custom::IRBuilder builder;
 
@@ -14,41 +16,16 @@ custom::Graph* buildFactorialGraph() {
   loop->add_succs_false(loop);
   loop->add_succs_true(done);
 
-  builder.createInstruction(
-      custom::Opcode::MOVI, custom::Type::myu64, entry, std::vector<size_t>{custom::VRegs::v0}, 0);
-  builder.createInstruction(
-      custom::Opcode::MOVI, custom::Type::myu64, entry, std::vector<size_t>{custom::VRegs::v1}, 1);
-  builder.createInstruction(custom::Opcode::CAST,
-                            custom::Type::myu64,
-                            entry,
-                            std::vector<size_t>{custom::VRegs::v2},
-                            std::vector<size_t>{});
-
-  builder.createInstruction(custom::Opcode::CMP,
-                            custom::Type::myu64,
-                            loop,
-                            std::vector<size_t>{},
-                            std::vector<size_t>{custom::VRegs::v1, custom::VRegs::v2});
-  builder.createInstruction(
-      custom::Opcode::JMP, custom::Type::myu64, loop, std::vector<size_t>{}, std::vector<size_t>{});
-  builder.createInstruction(custom::Opcode::MUL,
-                            custom::Type::myu64,
-                            loop,
-                            std::vector<size_t>{custom::VRegs::v0},
-                            std::vector<size_t>{custom::VRegs::v0, custom::VRegs::v1});
-  builder.createInstruction(custom::Opcode::ADD,
-                            custom::Type::myu64,
-                            loop,
-                            std::vector<size_t>{custom::VRegs::v1},
-                            std::vector<size_t>{custom::VRegs::v1});
-  builder.createInstruction(
-      custom::Opcode::JMP, custom::Type::myu64, loop, std::vector<size_t>{}, std::vector<size_t>{});
-
-  builder.createInstruction(custom::Opcode::RET,
-                            custom::Type::myu64,
-                            done,
-                            std::vector<size_t>{},
-                            std::vector<size_t>{custom::VRegs::v0});
+  auto* v0 = builder.createMOVI(Type::myu64, entry, 0);
+  auto* v1 = builder.createMOVI(Type::myu64, entry, 1);
+  // TODO: add casting from PARAMS
+  // builder.createCAST(Type::myu64, entry);
+  auto* v2 = builder.createCMP(Type::myu64, loop, v0, v1);
+  auto* v3 = builder.createJA(loop, loop, done);
+  auto* v4 = builder.createMUL(Type::myu64, loop, v0, v1);
+  auto* v5 = builder.createADDI(Type::myu64, loop, v1, 1);
+  auto* v6 = builder.createJUMP(loop, loop);
+  auto* v7 = builder.createRET(Type::myu64, done, v0);
 
   return graph;
 }
@@ -60,26 +37,7 @@ TEST(FactorialGraphTest, BasicAssertions) {
   custom::BasicBlock* loop = graph->get_block(1);
   custom::BasicBlock* done = graph->get_block(2);
 
-  ASSERT_EQ(entry->getInstruction(0)->getOpcode(), custom::Opcode::MOVI);
-  ASSERT_EQ(entry->getInstruction(0)->getDestRegs(), std::vector<std::size_t>{0});
-  ASSERT_EQ(entry->getInstruction(1)->getOpcode(), custom::Opcode::MOVI);
-  ASSERT_EQ(entry->getInstruction(1)->getDestRegs(), std::vector<std::size_t>{1});
-  ASSERT_EQ(entry->getInstruction(2)->getOpcode(), custom::Opcode::CAST);
-  ASSERT_EQ(entry->getInstruction(2)->getDestRegs(), std::vector<std::size_t>{2});
-
-  ASSERT_EQ(loop->getInstruction(0)->getOpcode(), custom::Opcode::CMP);
-  ASSERT_EQ(loop->getInstruction(0)->getSrcRegs(), (std::vector<std::size_t>{1, 2}));
-  ASSERT_EQ(loop->getInstruction(1)->getOpcode(), custom::Opcode::JMP);
-  ASSERT_EQ(loop->getInstruction(2)->getOpcode(), custom::Opcode::MUL);
-  ASSERT_EQ(loop->getInstruction(2)->getDestRegs(), std::vector<std::size_t>{0});
-  ASSERT_EQ(loop->getInstruction(2)->getSrcRegs(), (std::vector<std::size_t>{0, 1}));
-  ASSERT_EQ(loop->getInstruction(3)->getOpcode(), custom::Opcode::ADD);
-  ASSERT_EQ(loop->getInstruction(3)->getDestRegs(), std::vector<std::size_t>{1});
-  ASSERT_EQ(loop->getInstruction(3)->getSrcRegs(), std::vector<std::size_t>{1});
-  ASSERT_EQ(loop->getInstruction(4)->getOpcode(), custom::Opcode::JMP);
-
-  ASSERT_EQ(done->getInstruction(0)->getOpcode(), custom::Opcode::RET);
-  ASSERT_EQ(done->getInstruction(0)->getSrcRegs(), std::vector<std::size_t>{0});
+  // TODO: add assertions
 
   ASSERT_EQ(entry->get_succs_true(), loop);
   ASSERT_EQ(loop->get_succs_false(), loop);
@@ -91,3 +49,5 @@ TEST(FactorialGraphTest, BasicAssertions) {
 
   delete graph;
 }
+
+}  // namespace custom

@@ -6,7 +6,7 @@
 
 #include "basic_block.hpp"
 #include "graph.hpp"
-#include "instruction.hpp"
+#include "instruction_ext.hpp"
 #include "ir_builder.hpp"
 #include "rpo.hpp"
 

@@ -13,32 +13,6 @@ Instruction::Instruction(Opcode Opcode,
       _basic_block(basicBlock),
       _type(type) {}
 
-Instruction::Instruction(Opcode opcode,
-                         Type type,
-                         BasicBlock* basicBlock,
-                         const std::vector<std::size_t>& destRegs,
-                         const std::vector<std::size_t>& srcRegs)
-    : _prev(nullptr),
-      _next(nullptr),
-      _opcode(opcode),
-      _basic_block(basicBlock),
-      _type(type),
-      _destRegs(destRegs),
-      _srcRegs(srcRegs) {}
-
-Instruction::Instruction(Opcode opcode,
-                         Type type,
-                         BasicBlock* basicBlock,
-                         const std::vector<std::size_t>& destRegs,
-                         const std::size_t value)
-    : _prev(nullptr),
-      _next(nullptr),
-      _opcode(opcode),
-      _basic_block(basicBlock),
-      _type(type),
-      _destRegs(destRegs),
-      _imm(value) {}
-
 Opcode Instruction::getOpcode() const {
   return _opcode;
 }
@@ -47,12 +21,12 @@ Type Instruction::getType() const {
   return _type;
 }
 
-const std::vector<std::size_t>& Instruction::getDestRegs() const {
-  return _destRegs;
+ImmType Instruction::get_imm() const {
+  return _imm;
 }
 
-const std::vector<std::size_t>& Instruction::getSrcRegs() const {
-  return _srcRegs;
+void Instruction::set_imm(ImmType value) {
+  _imm = value;
 }
 
 void Instruction::set_basic_block(BasicBlock* other) {
@@ -81,10 +55,6 @@ void Instruction::set_id(std::size_t id) {
 
 std::size_t Instruction::get_id() const {
   return _instr_id;
-}
-
-std::size_t Instruction::getImmediateValue() const {
-  return _imm;
 }
 
 std::size_t Instruction::get_lin() const {

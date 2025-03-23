@@ -2,11 +2,13 @@
 #define INCLUDES_INSTRUCTION_HPP_
 
 #include <cstddef>
+#include <iostream>
 #include <memory>
+#include <set>
 #include <string>
+#include <variant>
 #include <vector>
 
-#include "basic_block.hpp"
 #include "opcode.hpp"
 #include "type.hpp"
 
@@ -16,25 +18,12 @@ class BasicBlock;
 
 class Instruction {
  public:
+  Instruction() = default;
   Instruction(Opcode Opcode,
               Type type,
               BasicBlock* basicBlock,
-              Instruction* next_instr,
-              Instruction* prev_instr);
-
-  // TODO: remove this method
-  Instruction(Opcode opcode,
-              Type type,
-              BasicBlock* basicBlock,
-              const std::vector<std::size_t>& destRegs = {},
-              const std::vector<std::size_t>& srcRegs = {});
-
-  // TODO: remove this method
-  Instruction(Opcode opcode,
-              Type type,
-              BasicBlock* basicBlock,
-              const std::vector<std::size_t>& destRegs = {},
-              const std::size_t value = 0);
+              Instruction* next_instr = nullptr,
+              Instruction* prev_instr = nullptr);
 
   virtual ~Instruction() = default;
 
@@ -45,10 +34,9 @@ class Instruction {
   std::size_t get_lin() const;
   std::size_t get_livenum() const;
   std::size_t get_id() const;
-  std::size_t getImmediateValue() const;
-  const std::vector<std::size_t>& getDestRegs() const;
-  const std::vector<std::size_t>& getSrcRegs() const;
+  ImmType get_imm() const;
 
+  void set_imm(ImmType value);
   void set_id(std::size_t id);
   void set_next(Instruction* other);
   void set_prev(Instruction* other);
@@ -56,7 +44,14 @@ class Instruction {
   void set_lin(std::size_t num);
   void set_livenum(std::size_t num);
 
- private:
+  virtual std::set<Instruction*> get_src_insts() {
+    return _src_insts;
+  }
+  virtual void AddPhiUsage(Instruction* first, Instruction* second) {
+    std::cerr << "No Phi Usage for this instruction provided" << std::endl;
+  };
+
+ protected:
   std::size_t _instr_id;
 
   // Intrusive linked list
@@ -68,16 +63,12 @@ class Instruction {
   BasicBlock* _basic_block;
   Type _type;
 
-  // TODO: remove these
-  // Register information
-  std::vector<std::size_t> _destRegs;
-  std::vector<std::size_t> _srcRegs;
-
   // Liveness analysis values
   std::size_t _lin;
   std::size_t _live_num;
 
-  std::size_t _imm;
+  ImmType _imm;
+  std::set<Instruction*> _src_insts = std::set<Instruction*>{};
 };
 
 }  // namespace custom
