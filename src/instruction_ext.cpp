@@ -68,7 +68,8 @@ void JumpInstruction::set_false_BB(BasicBlock* new_BB) {
 }
 
 InstructionFrom2Instr::InstructionFrom2Instr(
-    Opcode opcode, Type type, BasicBlock* basicBlock, Instruction* first, Instruction* second) {
+    Opcode opcode, Type type, BasicBlock* basicBlock, Instruction* first, Instruction* second)
+    : Instruction(opcode, type, basicBlock) {
   assert((opcode == Opcode::MUL) or (opcode == Opcode::MULI) or (opcode == Opcode::SUB) or
          (opcode == Opcode::SUBI) or (opcode == Opcode::ADD) or (opcode == Opcode::ADDI) or
          (opcode == Opcode::ASHR) or (opcode == Opcode::ASHRI) or (opcode == Opcode::XOR) or
@@ -100,6 +101,11 @@ InstructionFromInstrAndImm::InstructionFromInstrAndImm(
          (opcode == Opcode::ASHR) or (opcode == Opcode::ASHRI) or (opcode == Opcode::XOR) or
          (opcode == Opcode::CMP) or (opcode == Opcode::NEQ));
   _src_insts.insert(instr);
+}
+
+Param::Param(Opcode opcode, Type type, BasicBlock* basicBlock)
+    : Instruction(opcode, type, nullptr) {
+  assert((opcode == Opcode::PARAM));
 }
 
 }  // namespace custom

@@ -82,12 +82,12 @@ TEST(LivenessTest, SecondExample) {
 
   LiveInterval expected;
 
-  expected.add(0, LiveRange(2, 10));
-  expected.add(1, LiveRange(4, 10));
-  expected.add(2, LiveRange(6, 8));
-  expected.add(3, LiveRange(8, 14));
-  expected.add(4, LiveRange(10, 14));
-  expected.add(5, LiveRange(14, 16));
+  expected.add(0, LiveRange(2, 12));
+  expected.add(1, LiveRange(4, 12));
+  expected.add(2, LiveRange(6, 10));
+  expected.add(3, LiveRange(10, 16));
+  expected.add(4, LiveRange(12, 16));
+  expected.add(5, LiveRange(16, 18));
 
   custom::Liveness liveness;
   auto res = liveness.run_analysis(graph);

@@ -24,7 +24,8 @@ enum class Opcode {
   ASHRI = 17,
   XORI = 18,
   RETI = 19,
-  JA = 20
+  JA = 20,
+  PARAM = 21
 };
 
 }  // namespace custom

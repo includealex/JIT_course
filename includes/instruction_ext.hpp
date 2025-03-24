@@ -67,6 +67,11 @@ class InstructionFromInstrAndImm : public Instruction {
       Opcode opcode, Type type, BasicBlock* basicBlock, Instruction* instr, ImmType imm);
 };
 
+class Param : public Instruction {
+ public:
+  Param(Opcode opcode, Type type, BasicBlock* basicBlock = nullptr);
+};
+
 }  // namespace custom
 
 #endif  // INCLUDES_INSTRUCTION_EXT_HPP_

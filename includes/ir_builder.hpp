@@ -4,6 +4,7 @@
 #include "basic_block.hpp"
 #include "dfs.hpp"
 #include "domin_tree.hpp"
+#include "function.hpp"
 #include "graph.hpp"
 #include "instruction_ext.hpp"
 #include "regs.hpp"
@@ -12,8 +13,11 @@ namespace custom {
 
 class IRBuilder final {
  public:
-  // TODO:
-  // add create Function() method
+  static Function* createFunction(std::string name,
+                                  Type rettype,
+                                  std::vector<Instruction*> params) {
+    return new Function(name, rettype, params);
+  }
 
   static Graph* createGraph() {
     return new Graph();
@@ -201,6 +205,21 @@ class IRBuilder final {
     basic_block->pushback_instr(instr);
     return instr;
   }
+
+  Instruction* createPARAM(Type type) {
+    Instruction* instr = new Param(Opcode::PARAM, type);
+    _params.push_back(instr);
+    return instr;
+  }
+
+  ~IRBuilder() {
+    for (auto& tmp_param : _params) {
+      delete tmp_param;
+    }
+  }
+
+ private:
+  std::vector<Instruction*> _params;
 };
 
 }  // namespace custom
