@@ -33,6 +33,7 @@ Instruction* IRBuilder::createMOVI(Type type, BasicBlock* basic_block, ImmType i
 Instruction* IRBuilder::createRET(Type type, BasicBlock* basic_block, Instruction* retinstr) {
   Instruction* instr = new RetInstruction(Opcode::RET, type, basic_block, retinstr);
   basic_block->pushback_instr(instr);
+  increase_n_users(retinstr);
   return instr;
 }
 
@@ -51,6 +52,7 @@ Instruction* IRBuilder::createRETI(Type type, BasicBlock* basic_block, ImmType i
 Instruction* IRBuilder::createCAST(Type type, BasicBlock* basic_block, Instruction* castinstr) {
   Instruction* instr = new CastInstruction(Opcode::CAST, type, basic_block, castinstr);
   basic_block->pushback_instr(instr);
+  increase_n_users(castinstr);
   return instr;
 }
 
@@ -75,6 +77,7 @@ Instruction* IRBuilder::createADD(Type type,
                                   Instruction* second) {
   Instruction* instr = new InstructionFrom2Instr(Opcode::ADD, type, basic_block, first, second);
   basic_block->pushback_instr(instr);
+  increase_n_users(first, second);
   return instr;
 }
 
@@ -83,6 +86,14 @@ Instruction* IRBuilder::createADDI(Type type,
                                    Instruction* first,
                                    ImmType imm) {
   Instruction* instr = new InstructionFromInstrAndImm(Opcode::ADDI, type, basic_block, first, imm);
+  basic_block->pushback_instr(instr);
+  increase_n_users(first);
+  return instr;
+}
+
+Instruction* createADDI(Type type, BasicBlock* basic_block, ImmType first_imm, ImmType second_imm) {
+  Instruction* instr =
+      new InstructionFrom2Imm(Opcode::ADDI, type, basic_block, first_imm, second_imm);
   basic_block->pushback_instr(instr);
   return instr;
 }
@@ -93,6 +104,7 @@ Instruction* IRBuilder::createSUB(Type type,
                                   Instruction* second) {
   Instruction* instr = new InstructionFrom2Instr(Opcode::SUB, type, basic_block, first, second);
   basic_block->pushback_instr(instr);
+  increase_n_users(first, second);
   return instr;
 }
 
@@ -101,6 +113,17 @@ Instruction* IRBuilder::createSUBI(Type type,
                                    Instruction* first,
                                    ImmType imm) {
   Instruction* instr = new InstructionFromInstrAndImm(Opcode::SUBI, type, basic_block, first, imm);
+  basic_block->pushback_instr(instr);
+  increase_n_users(first);
+  return instr;
+}
+
+Instruction* IRBuilder::createSUBI(Type type,
+                                   BasicBlock* basic_block,
+                                   ImmType first_imm,
+                                   ImmType second_imm) {
+  Instruction* instr =
+      new InstructionFrom2Imm(Opcode::SUBI, type, basic_block, first_imm, second_imm);
   basic_block->pushback_instr(instr);
   return instr;
 }
@@ -111,6 +134,7 @@ Instruction* IRBuilder::createMUL(Type type,
                                   Instruction* second) {
   Instruction* instr = new InstructionFrom2Instr(Opcode::MUL, type, basic_block, first, second);
   basic_block->pushback_instr(instr);
+  increase_n_users(first, second);
   return instr;
 }
 
@@ -119,6 +143,17 @@ Instruction* IRBuilder::createMULI(Type type,
                                    Instruction* first,
                                    ImmType imm) {
   Instruction* instr = new InstructionFromInstrAndImm(Opcode::MULI, type, basic_block, first, imm);
+  basic_block->pushback_instr(instr);
+  increase_n_users(first);
+  return instr;
+}
+
+Instruction* IRBuilder::createMULI(Type type,
+                                   BasicBlock* basic_block,
+                                   ImmType first_imm,
+                                   ImmType second_imm) {
+  Instruction* instr =
+      new InstructionFrom2Imm(Opcode::MULI, type, basic_block, first_imm, second_imm);
   basic_block->pushback_instr(instr);
   return instr;
 }
@@ -129,6 +164,7 @@ Instruction* IRBuilder::createASHR(Type type,
                                    Instruction* second) {
   Instruction* instr = new InstructionFrom2Instr(Opcode::ASHR, type, basic_block, first, second);
   basic_block->pushback_instr(instr);
+  increase_n_users(first, second);
   return instr;
 }
 
@@ -137,6 +173,17 @@ Instruction* IRBuilder::createASHRI(Type type,
                                     Instruction* first,
                                     ImmType imm) {
   Instruction* instr = new InstructionFromInstrAndImm(Opcode::ASHRI, type, basic_block, first, imm);
+  basic_block->pushback_instr(instr);
+  increase_n_users(first);
+  return instr;
+}
+
+Instruction* IRBuilder::createASHRI(Type type,
+                                    BasicBlock* basic_block,
+                                    ImmType first_imm,
+                                    ImmType second_imm) {
+  Instruction* instr =
+      new InstructionFrom2Imm(Opcode::ASHRI, type, basic_block, first_imm, second_imm);
   basic_block->pushback_instr(instr);
   return instr;
 }
@@ -147,6 +194,7 @@ Instruction* IRBuilder::createXOR(Type type,
                                   Instruction* second) {
   Instruction* instr = new InstructionFrom2Instr(Opcode::XOR, type, basic_block, first, second);
   basic_block->pushback_instr(instr);
+  increase_n_users(first, second);
   return instr;
 }
 
@@ -155,6 +203,17 @@ Instruction* IRBuilder::createXORI(Type type,
                                    Instruction* first,
                                    ImmType imm) {
   Instruction* instr = new InstructionFromInstrAndImm(Opcode::XORI, type, basic_block, first, imm);
+  basic_block->pushback_instr(instr);
+  increase_n_users(first);
+  return instr;
+}
+
+Instruction* IRBuilder::createXORI(Type type,
+                                   BasicBlock* basic_block,
+                                   ImmType first_imm,
+                                   ImmType second_imm) {
+  Instruction* instr =
+      new InstructionFrom2Imm(Opcode::XORI, type, basic_block, first_imm, second_imm);
   basic_block->pushback_instr(instr);
   return instr;
 }
@@ -165,6 +224,7 @@ Instruction* IRBuilder::createCMP(Type type,
                                   Instruction* second) {
   Instruction* instr = new InstructionFrom2Instr(Opcode::CMP, type, basic_block, first, second);
   basic_block->pushback_instr(instr);
+  increase_n_users(first, second);
   return instr;
 }
 
@@ -174,12 +234,14 @@ Instruction* IRBuilder::createNEQ(Type type,
                                   Instruction* second) {
   Instruction* instr = new InstructionFrom2Instr(Opcode::NEQ, type, basic_block, first, second);
   basic_block->pushback_instr(instr);
+  increase_n_users(first, second);
   return instr;
 }
 
 Instruction* IRBuilder::createNEQ(Type type, BasicBlock* basic_block, Instruction* first) {
   Instruction* instr = new NeqInstruction(Opcode::NEQ, type, basic_block, first);
   basic_block->pushback_instr(instr);
+  increase_n_users(first);
   return instr;
 }
 
@@ -199,6 +261,24 @@ IRBuilder::~IRBuilder() {
   for (auto& tmp_param : _params) {
     delete tmp_param;
   }
+}
+
+void IRBuilder::increase_n_users(Instruction* instr) {
+  if (instr == nullptr) {
+    return;
+  }
+
+  instr->add_user();
+}
+
+void IRBuilder::increase_n_users(Instruction* first, Instruction* second) {
+  increase_n_users(first);
+
+  if (first == second) {
+    return;
+  }
+
+  increase_n_users(second);
 }
 
 }  // namespace custom

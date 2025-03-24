@@ -1,6 +1,7 @@
 #ifndef INCLUDES_INSTRUCTION_HPP_
 #define INCLUDES_INSTRUCTION_HPP_
 
+#include <algorithm>
 #include <cstddef>
 #include <iostream>
 #include <memory>
@@ -35,8 +36,11 @@ class Instruction {
   std::size_t get_livenum() const;
   std::size_t get_id() const;
   ImmType get_imm() const;
+  ImmType get_second_imm() const;
 
+  void setOpcode(Opcode opc);
   void set_imm(ImmType value);
+  void set_second_imm(ImmType value);
   void set_id(std::size_t id);
   void set_next(Instruction* other);
   void set_prev(Instruction* other);
@@ -44,12 +48,18 @@ class Instruction {
   void set_lin(std::size_t num);
   void set_livenum(std::size_t num);
 
-  virtual std::set<Instruction*> get_src_insts() {
-    return _src_insts;
-  }
+  void remove_src_instr(Instruction* instr);
+
+  virtual std::vector<Instruction*> get_src_insts();
+  void add_src_inst(Instruction* instr);
+
   virtual void AddPhiUsage(Instruction* first, Instruction* second) {
     std::cerr << "No Phi Usage for this instruction provided" << std::endl;
   };
+
+  void add_user();
+  void sub_user();
+  std::size_t get_users();
 
  protected:
   std::size_t _instr_id;
@@ -67,8 +77,10 @@ class Instruction {
   std::size_t _lin;
   std::size_t _live_num;
 
-  ImmType _imm;
-  std::set<Instruction*> _src_insts = std::set<Instruction*>{};
+  ImmType _imm = IMMPOISON;
+  ImmType _second_imm = IMMPOISON;
+  std::vector<Instruction*> _src_insts = std::vector<Instruction*>{};
+  std::size_t _n_users = 0;
 };
 
 }  // namespace custom

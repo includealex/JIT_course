@@ -16,6 +16,11 @@ class Optimizer {
  public:
   void constant_fold(Graph* graph, IRBuilder* builder);
   void peephole(Graph* graph, IRBuilder* builder);
+
+ private:
+  void replace_movi_with_constants(BasicBlock* block);
+  void remove_unused_movi(BasicBlock* block);
+  void replace_arith(BasicBlock* block);
 };
 
 }  // namespace custom

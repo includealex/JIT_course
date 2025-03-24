@@ -19,9 +19,6 @@ class Graph final {
   BasicBlock* get_block(size_t index) const;
   BasicBlock* get_root() const;
 
-  // FIXME: fix it
-  // void remove_block(BasicBlock* block);
-
   std::size_t basic_blocks_num() const;
 
  private:

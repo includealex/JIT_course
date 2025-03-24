@@ -72,6 +72,12 @@ class Param : public Instruction {
   Param(Opcode opcode, Type type, BasicBlock* basicBlock = nullptr);
 };
 
+class InstructionFrom2Imm : public Instruction {
+ public:
+  InstructionFrom2Imm(
+      Opcode opcode, Type type, BasicBlock* basicBlock, ImmType first_imm, ImmType second_imm);
+};
+
 }  // namespace custom
 
 #endif  // INCLUDES_INSTRUCTION_EXT_HPP_

@@ -36,26 +36,46 @@ class IRBuilder final {
                          Instruction* first,
                          Instruction* second);
   Instruction* createADDI(Type type, BasicBlock* basic_block, Instruction* first, ImmType imm);
+  Instruction* createADDI(Type type,
+                          BasicBlock* basic_block,
+                          ImmType first_imm,
+                          ImmType second_imm);
   Instruction* createSUB(Type type,
                          BasicBlock* basic_block,
                          Instruction* first,
                          Instruction* second);
   Instruction* createSUBI(Type type, BasicBlock* basic_block, Instruction* first, ImmType imm);
+  Instruction* createSUBI(Type type,
+                          BasicBlock* basic_block,
+                          ImmType first_imm,
+                          ImmType second_imm);
   Instruction* createMUL(Type type,
                          BasicBlock* basic_block,
                          Instruction* first,
                          Instruction* second);
   Instruction* createMULI(Type type, BasicBlock* basic_block, Instruction* first, ImmType imm);
+  Instruction* createMULI(Type type,
+                          BasicBlock* basic_block,
+                          ImmType first_imm,
+                          ImmType second_imm);
   Instruction* createASHR(Type type,
                           BasicBlock* basic_block,
                           Instruction* first,
                           Instruction* second);
   Instruction* createASHRI(Type type, BasicBlock* basic_block, Instruction* first, ImmType imm);
+  Instruction* createASHRI(Type type,
+                           BasicBlock* basic_block,
+                           ImmType first_imm,
+                           ImmType second_imm);
   Instruction* createXOR(Type type,
                          BasicBlock* basic_block,
                          Instruction* first,
                          Instruction* second);
   Instruction* createXORI(Type type, BasicBlock* basic_block, Instruction* first, ImmType imm);
+  Instruction* createXORI(Type type,
+                          BasicBlock* basic_block,
+                          ImmType first_imm,
+                          ImmType second_imm);
   Instruction* createCMP(Type type,
                          BasicBlock* basic_block,
                          Instruction* first,
@@ -69,6 +89,8 @@ class IRBuilder final {
   Instruction* createPARAM(Type type);
 
  private:
+  void increase_n_users(Instruction* instr);
+  void increase_n_users(Instruction* first, Instruction* second);
   std::vector<Instruction*> _params;
 };
 

@@ -16,7 +16,7 @@ RetInstruction::RetInstruction(Opcode opcode, Type type, BasicBlock* basicBlock)
 RetInstruction::RetInstruction(Opcode opcode, Type type, BasicBlock* basicBlock, Instruction* instr)
     : Instruction(opcode, type, basicBlock) {
   assert(opcode == Opcode::RET);
-  _src_insts.insert(instr);
+  add_src_inst(instr);
 }
 
 RetInstruction::RetInstruction(Opcode opcode, Type type, BasicBlock* basicBlock, ImmType value)
@@ -31,7 +31,7 @@ CastInstruction::CastInstruction(Opcode opcode,
                                  Instruction* instr)
     : Instruction(opcode, type, basicBlock) {
   assert(opcode == Opcode::CAST);
-  _src_insts.insert(instr);
+  add_src_inst(instr);
 }
 
 JumpInstruction::JumpInstruction(Opcode opcode,
@@ -74,8 +74,8 @@ InstructionFrom2Instr::InstructionFrom2Instr(
          (opcode == Opcode::SUBI) or (opcode == Opcode::ADD) or (opcode == Opcode::ADDI) or
          (opcode == Opcode::ASHR) or (opcode == Opcode::ASHRI) or (opcode == Opcode::XOR) or
          (opcode == Opcode::XORI) or (opcode == Opcode::CMP) or (opcode == Opcode::NEQ));
-  _src_insts.insert(first);
-  _src_insts.insert(second);
+  add_src_inst(first);
+  add_src_inst(second);
 }
 
 PhiInstruction::PhiInstruction(Opcode opcode, Type type, BasicBlock* basicBlock)
@@ -84,13 +84,13 @@ PhiInstruction::PhiInstruction(Opcode opcode, Type type, BasicBlock* basicBlock)
 }
 
 void PhiInstruction::AddPhiUsage(Instruction* first, Instruction* second) {
-  _src_insts.insert(first);
-  _src_insts.insert(second);
+  add_src_inst(first);
+  add_src_inst(second);
 }
 
 NeqInstruction::NeqInstruction(Opcode opcode, Type type, BasicBlock* basicBlock, Instruction* instr)
     : Instruction(opcode, type, basicBlock) {
-  _src_insts.insert(instr);
+  add_src_inst(instr);
 }
 
 InstructionFromInstrAndImm::InstructionFromInstrAndImm(
@@ -100,7 +100,8 @@ InstructionFromInstrAndImm::InstructionFromInstrAndImm(
          (opcode == Opcode::SUBI) or (opcode == Opcode::ADD) or (opcode == Opcode::ADDI) or
          (opcode == Opcode::ASHR) or (opcode == Opcode::ASHRI) or (opcode == Opcode::XOR) or
          (opcode == Opcode::CMP) or (opcode == Opcode::NEQ));
-  _src_insts.insert(instr);
+  _imm = imm;
+  add_src_inst(instr);
 }
 
 Param::Param(Opcode opcode, Type type, BasicBlock* basicBlock)
@@ -108,4 +109,10 @@ Param::Param(Opcode opcode, Type type, BasicBlock* basicBlock)
   assert((opcode == Opcode::PARAM));
 }
 
+InstructionFrom2Imm::InstructionFrom2Imm(
+    Opcode opcode, Type type, BasicBlock* basicBlock, ImmType first_imm, ImmType second_imm)
+    : Instruction(opcode, type, basicBlock) {
+  _imm = first_imm;
+  _second_imm = second_imm;
+}
 }  // namespace custom
