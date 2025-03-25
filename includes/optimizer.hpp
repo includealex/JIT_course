@@ -21,6 +21,13 @@ class Optimizer {
   void replace_movi_with_constants(BasicBlock* block);
   void remove_unused_movi(BasicBlock* block);
   void replace_arith(BasicBlock* block);
+
+  void peephole_xor_with_zero(Instruction* instr);
+  void peephole_xor_with_same(Instruction* instr);
+  void peephole_sub_with_zero(Instruction* instr);
+  void peephole_sub_with_same(Instruction* instr);
+  void peephole_ashr_with_zero(Instruction* instr);
+  void peephole_ashr_with_big(Instruction* instr);
 };
 
 }  // namespace custom

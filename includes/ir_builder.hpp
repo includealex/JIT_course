@@ -21,7 +21,7 @@ class IRBuilder final {
 
   BasicBlock* createBasicBlock(Graph* graph);
 
-  Instruction* createMOV(Type type, BasicBlock* basic_block, ImmType imm);
+  Instruction* createMOV(Type type, BasicBlock* basic_block, Instruction* movinstr);
   Instruction* createMOVI(Type type, BasicBlock* basic_block, ImmType imm);
   Instruction* createRET(Type type, BasicBlock* basic_block, Instruction* retinstr);
   Instruction* createRET(Type type, BasicBlock* basic_block);

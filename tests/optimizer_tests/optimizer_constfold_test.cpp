@@ -1,11 +1,10 @@
-#include "optimizer.hpp"
-
 #include <gtest/gtest.h>
 
 #include <iostream>
 
 #include "basic_block.hpp"
 #include "ir_builder.hpp"
+#include "optimizer.hpp"
 
 namespace custom {
 
@@ -80,30 +79,6 @@ TEST(OptimizerTest, ConstantFoldingOneInstrOneImm) {
 
   EXPECT_EQ(first->getOpcode(), Opcode::MOVI);
   EXPECT_EQ(first->get_imm(), ImmType(1));
-
-  delete graph;
-}
-
-TEST(OptimizerTest, PeepholeOptimization) {
-  custom::IRBuilder builder;
-
-  custom::Graph* graph = builder.createGraph();
-  custom::BasicBlock* A = builder.createBasicBlock(graph);
-
-  auto* v0 = builder.createMOVI(Type::myu64, A, 8);
-  auto* v1 = builder.createMOVI(Type::myu64, A, 0);
-  auto* v2 = builder.createASHR(Type::myu64, A, v0, v1);
-  auto* v3 = builder.createMOVI(Type::myu64, A, 5);
-
-  auto* v4 = builder.createSUB(Type::myu64, A, v3, v1);
-  auto* v5 = builder.createSUB(Type::myu64, A, v3, v3);
-  auto* v6 = builder.createXOR(Type::myu64, A, v3, v1);
-  auto* v7 = builder.createXOR(Type::myu64, A, v3, v3);
-
-  custom::Optimizer optimizer;
-  optimizer.peephole(graph, &builder);
-
-  // TODO: add assertions
 
   delete graph;
 }

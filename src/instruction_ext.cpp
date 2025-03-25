@@ -5,7 +5,15 @@ namespace custom {
 MovInstruction::MovInstruction(Opcode opcode, Type type, BasicBlock* basicBlock, ImmType value)
     : Instruction(opcode, type, basicBlock) {
   _imm = value;
-  assert((opcode == Opcode::MOVI) or (opcode == Opcode::MOV));
+  assert(opcode == Opcode::MOVI);
+}
+
+MovInstruction::MovInstruction(Opcode opcode,
+                               Type type,
+                               BasicBlock* basicBlock,
+                               Instruction* instr) {
+  assert(opcode == Opcode::MOV);
+  add_src_inst(instr);
 }
 
 RetInstruction::RetInstruction(Opcode opcode, Type type, BasicBlock* basicBlock)

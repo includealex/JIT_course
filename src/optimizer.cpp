@@ -150,8 +150,156 @@ void Optimizer::constant_fold(Graph* graph, IRBuilder* builder) {
   }
 }
 
-void Optimizer::peephole(Graph* graph, IRBuilder* builder) {
+void Optimizer::peephole_xor_with_zero(Instruction* instr) {
+  if (instr->getOpcode() != Opcode::XORI) {
+    return;
+  }
+
+  if (instr->get_second_imm() != 0) {
+    return;
+  }
+
+  if (instr->get_imm() != IMMPOISON) {
+    instr->setOpcode(Opcode::MOVI);
+  } else {
+    instr->setOpcode(Opcode::MOV);
+  }
+
+  instr->set_second_imm(IMMPOISON);
+
   return;
+}
+
+void Optimizer::peephole_xor_with_same(Instruction* instr) {
+  if (instr->getOpcode() == Opcode::XORI) {
+    auto fimm = instr->get_imm();
+    auto simm = instr->get_second_imm();
+    if ((fimm == IMMPOISON) || (simm == IMMPOISON)) {
+      return;
+    }
+
+    if (fimm == simm) {
+      instr->setOpcode(Opcode::MOVI);
+      instr->set_imm(0);
+      instr->set_second_imm(IMMPOISON);
+    }
+  }
+
+  if (instr->getOpcode() == Opcode::XOR) {
+    auto src_insts = instr->get_src_insts();
+    auto finst = src_insts[0];
+    auto sinst = src_insts[1];
+
+    if (finst == sinst) {
+      instr->setOpcode(Opcode::MOVI);
+      instr->set_imm(0);
+      instr->remove_src_instr(finst);
+    }
+  }
+}
+
+void Optimizer::peephole_sub_with_same(Instruction* instr) {
+  if (instr->getOpcode() == Opcode::SUBI) {
+    auto fimm = instr->get_imm();
+    auto simm = instr->get_second_imm();
+    if ((fimm == IMMPOISON) || (simm == IMMPOISON)) {
+      return;
+    }
+
+    if (fimm == simm) {
+      instr->setOpcode(Opcode::MOVI);
+      instr->set_imm(0);
+      instr->set_second_imm(IMMPOISON);
+    }
+  }
+
+  if (instr->getOpcode() == Opcode::SUB) {
+    auto src_insts = instr->get_src_insts();
+    auto finst = src_insts[0];
+    auto sinst = src_insts[1];
+
+    if (finst == sinst) {
+      instr->setOpcode(Opcode::MOVI);
+      instr->set_imm(0);
+      instr->remove_src_instr(finst);
+    }
+  }
+}
+
+void Optimizer::peephole_sub_with_zero(Instruction* instr) {
+  if (instr->getOpcode() != Opcode::SUBI) {
+    return;
+  }
+
+  if (instr->get_second_imm() != 0) {
+    return;
+  }
+
+  if (instr->get_imm() != IMMPOISON) {
+    instr->setOpcode(Opcode::MOVI);
+  } else {
+    instr->setOpcode(Opcode::MOV);
+  }
+
+  instr->set_second_imm(IMMPOISON);
+
+  return;
+}
+
+void Optimizer::peephole_ashr_with_zero(Instruction* instr) {
+  if (instr->getOpcode() != Opcode::ASHRI) {
+    return;
+  }
+
+  if (instr->get_second_imm() != 0) {
+    return;
+  }
+
+  if (instr->get_imm() != IMMPOISON) {
+    instr->setOpcode(Opcode::MOVI);
+  } else {
+    instr->setOpcode(Opcode::MOV);
+  }
+
+  instr->set_second_imm(IMMPOISON);
+
+  return;
+}
+
+void Optimizer::peephole_ashr_with_big(Instruction* instr) {
+  if (instr->getOpcode() != Opcode::ASHRI) {
+    return;
+  }
+
+  if (instr->get_second_imm() > 64) {
+    instr->set_second_imm(0);
+    peephole_ashr_with_zero(instr);
+  }
+}
+
+void Optimizer::peephole(Graph* graph, IRBuilder* builder) {
+  auto n = graph->basic_blocks_num();
+  for (std::size_t i = 0; i < n; ++i) {
+    auto* cur_block = graph->get_block(i);
+
+    if (cur_block == nullptr) {
+      continue;
+    }
+
+    for (Instruction* cur_instr = cur_block->get_first_inst(); cur_instr;
+         cur_instr = cur_instr->get_next()) {
+      if (cur_instr == nullptr) {
+        continue;
+      }
+
+      peephole_xor_with_zero(cur_instr);
+      peephole_xor_with_same(cur_instr);
+      peephole_sub_with_zero(cur_instr);
+      peephole_sub_with_same(cur_instr);
+      peephole_ashr_with_zero(cur_instr);
+      peephole_ashr_with_big(cur_instr);
+    }
+  }
 }
 
 }  // namespace custom

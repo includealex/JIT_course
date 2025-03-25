@@ -18,8 +18,8 @@ BasicBlock* IRBuilder::createBasicBlock(Graph* graph) {
   return basic_block;
 }
 
-Instruction* IRBuilder::createMOV(Type type, BasicBlock* basic_block, ImmType imm) {
-  Instruction* instr = new MovInstruction(Opcode::MOV, type, basic_block, imm);
+Instruction* IRBuilder::createMOV(Type type, BasicBlock* basic_block, Instruction* movinstr) {
+  Instruction* instr = new MovInstruction(Opcode::MOV, type, basic_block, movinstr);
   basic_block->pushback_instr(instr);
   return instr;
 }

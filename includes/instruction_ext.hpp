@@ -10,6 +10,7 @@ namespace custom {
 class MovInstruction : public custom::Instruction {
  public:
   MovInstruction(Opcode opcode, Type type, BasicBlock* basicBlock, ImmType value);
+  MovInstruction(Opcode opcode, Type type, BasicBlock* basicBlock, Instruction* instr);
 };
 
 class RetInstruction : public Instruction {
