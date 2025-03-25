@@ -302,4 +302,15 @@ void Optimizer::peephole(Graph* graph, IRBuilder* builder) {
   }
 }
 
+void Optimizer::apply_inline(Graph* graph, IRBuilder* builder) {
+  auto* single_block = graph->get_root();
+
+  // FIXME: recursive calls?
+  auto* instr = single_block->find_calls()[0];
+  if (instr != nullptr) {
+    auto* splitted = graph->split_BasicBlock(instr, single_block);
+    graph->addBasicBlock(splitted);
+  }
+}
+
 }  // namespace custom

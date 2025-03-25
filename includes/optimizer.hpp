@@ -16,6 +16,7 @@ class Optimizer {
  public:
   void constant_fold(Graph* graph, IRBuilder* builder);
   void peephole(Graph* graph, IRBuilder* builder);
+  void apply_inline(Graph* graph, IRBuilder* builder);
 
  private:
   void replace_movi_with_constants(BasicBlock* block);

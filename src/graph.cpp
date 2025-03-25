@@ -36,4 +36,34 @@ std::size_t Graph::basic_blocks_num() const {
   return _blocks_size;
 }
 
+BasicBlock* Graph::split_BasicBlock(Instruction* instr, BasicBlock* cur_block) {
+  auto cur_instr = cur_block->get_first_inst();
+
+  if (cur_instr->get_next() == nullptr) {
+    std::cerr << "Basic Block can not be split" << std::endl;
+    return nullptr;
+  }
+
+  BasicBlock* new_block = new BasicBlock(this);
+
+  while (cur_instr != instr) {
+    cur_instr = cur_instr->get_next();
+
+    if (cur_instr == nullptr) {
+      std::cerr << "Invalid instruction provided" << std::endl;
+      return nullptr;
+    }
+  }
+
+  auto tmp_instr = cur_instr->get_next();
+  while (tmp_instr != nullptr) {
+    new_block->pushback_instr(tmp_instr);
+    tmp_instr = tmp_instr->get_next();
+  }
+
+  cur_block->set_last_instr(cur_instr);
+  cur_instr->set_next(nullptr);
+  return new_block;
+}
+
 }  // namespace custom

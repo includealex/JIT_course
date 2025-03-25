@@ -191,6 +191,10 @@ void BasicBlock::set_liveIn(LiveInterval liveIn) {
   _liveIn = liveIn;
 }
 
+void BasicBlock::set_last_instr(Instruction* instr) {
+  _last_inst = instr;
+}
+
 void BasicBlock::remove_instruction(Instruction* instr) {
   if (!instr) {
     return;
@@ -212,6 +216,22 @@ void BasicBlock::remove_instruction(Instruction* instr) {
   }
 
   delete instr;
+}
+
+std::vector<Instruction*> BasicBlock::find_calls() const {
+  std::vector<Instruction*> res;
+
+  auto start_instr = get_first_inst();
+
+  while (start_instr != nullptr) {
+    if (start_instr->getOpcode() == Opcode::CALL) {
+      res.push_back(start_instr);
+    }
+
+    start_instr = start_instr->get_next();
+  }
+
+  return res;
 }
 
 }  // namespace custom

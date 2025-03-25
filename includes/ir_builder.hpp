@@ -87,10 +87,7 @@ class IRBuilder final {
   Instruction* createNEQ(Type type, BasicBlock* basic_block, Instruction* first);
   Instruction* createPHI(Type type, BasicBlock* basic_block);
   Instruction* createPARAM(Type type);
-  Instruction* createCALL(Opcode opcode,
-                          Type type,
-                          BasicBlock* basicBlock,
-                          std::string function_name);
+  Instruction* createCALL(Type type, BasicBlock* basicBlock, std::string function_name);
 
  private:
   bool check_foo_exists(std::string function_name);

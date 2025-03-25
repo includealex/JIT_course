@@ -259,15 +259,12 @@ Instruction* IRBuilder::createPARAM(Type type) {
   return instr;
 }
 
-Instruction* IRBuilder::createCALL(Opcode opcode,
-                                   Type type,
-                                   BasicBlock* basicBlock,
-                                   std::string function_name) {
+Instruction* IRBuilder::createCALL(Type type, BasicBlock* basicBlock, std::string function_name) {
   if (!check_foo_exists(function_name)) {
-    std::cerr << "CALL can not be created. No function with name: " << function_name;
+    std::cerr << "CALL can not be created. No function with name: " << function_name << std::endl;
   }
 
-  Instruction* instr = new CallInstruction(opcode, type, basicBlock, function_name);
+  Instruction* instr = new CallInstruction(Opcode::CALL, type, basicBlock, function_name);
   basicBlock->pushback_instr(instr);
   return instr;
 }
@@ -300,7 +297,6 @@ bool IRBuilder::check_foo_exists(std::string function_name) {
   if (_func_table.find(function_name) == _func_table.end()) {
     return false;
   }
-
   return true;
 }
 

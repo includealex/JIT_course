@@ -19,6 +19,7 @@ class Graph final {
   BasicBlock* get_block(size_t index) const;
   BasicBlock* get_root() const;
 
+  BasicBlock* split_BasicBlock(Instruction* instr, BasicBlock* cur_block);
   std::size_t basic_blocks_num() const;
 
  private:
