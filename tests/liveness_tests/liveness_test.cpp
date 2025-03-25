@@ -20,60 +20,23 @@ TEST(LivenessTest, FirstExample) {
   C->add_succs_true(B);
   D->add_succs_false(E);
 
-  builder.createInstruction(
-      custom::Opcode::MOVI, custom::Type::myu64, A, std::vector<size_t>{custom::VRegs::v0}, 1);
-  builder.createInstruction(
-      custom::Opcode::MOVI, custom::Type::myu64, A, std::vector<size_t>{custom::VRegs::v1}, 10);
-  builder.createInstruction(
-      custom::Opcode::MOVI, custom::Type::myu64, A, std::vector<size_t>{custom::VRegs::v2}, 20);
+  auto* v0 = builder.createMOVI(Type::myu64, A, 1);
+  auto* v1 = builder.createMOVI(Type::myu64, A, 10);
+  auto* v2 = builder.createMOVI(Type::myu64, A, 20);
 
-  builder.createInstruction(custom::Opcode::PHI,
-                            custom::Type::myu64,
-                            B,
-                            std::vector<size_t>{custom::VRegs::v3},
-                            std::vector<size_t>{custom::VRegs::v7, custom::VRegs::v0});
+  auto* v3 = builder.createPHI(Type::myu64, B);
+  auto* v4 = builder.createPHI(Type::myu64, B);
+  auto* v5 = builder.createCMP(Type::myu64, B, v4, v0);
+  auto* v6 = builder.createNEQ(Type::myu64, B, v5);
 
-  builder.createInstruction(custom::Opcode::PHI,
-                            custom::Type::myu64,
-                            B,
-                            std::vector<size_t>{custom::VRegs::v4},
-                            std::vector<size_t>{custom::VRegs::v8, custom::VRegs::v1});
+  auto* v7 = builder.createMUL(Type::myu64, C, v3, v4);
+  auto* v8 = builder.createSUB(Type::myu64, C, v4, v0);
 
-  builder.createInstruction(custom::Opcode::CMP,
-                            custom::Type::myu64,
-                            B,
-                            std::vector<size_t>{custom::VRegs::v5},
-                            std::vector<size_t>{custom::VRegs::v4, custom::VRegs::v0});
+  auto* v9 = builder.createADD(Type::myu64, D, v2, v3);
+  auto* v10 = builder.createRET(Type::myu64, D);
 
-  builder.createInstruction(custom::Opcode::NEQ,
-                            custom::Type::myu64,
-                            B,
-                            std::vector<size_t>{custom::VRegs::v6},
-                            std::vector<size_t>{custom::VRegs::v5});
-
-  builder.createInstruction(custom::Opcode::MUL,
-                            custom::Type::myu64,
-                            C,
-                            std::vector<size_t>{custom::VRegs::v7},
-                            std::vector<size_t>{custom::VRegs::v3, custom::VRegs::v4});
-
-  builder.createInstruction(custom::Opcode::SUB,
-                            custom::Type::myu64,
-                            C,
-                            std::vector<size_t>{custom::VRegs::v8},
-                            std::vector<size_t>{custom::VRegs::v4, custom::VRegs::v0});
-
-  builder.createInstruction(custom::Opcode::ADD,
-                            custom::Type::myu64,
-                            D,
-                            std::vector<size_t>{custom::VRegs::v9},
-                            std::vector<size_t>{custom::VRegs::v2, custom::VRegs::v3});
-
-  builder.createInstruction(custom::Opcode::RET,
-                            custom::Type::myu64,
-                            D,
-                            std::vector<size_t>{custom::VRegs::v10},
-                            std::vector<size_t>{});
+  v3->AddPhiUsage(v7, v0);
+  v4->AddPhiUsage(v8, v1);
 
   LiveInterval expected;
 
@@ -108,30 +71,14 @@ TEST(LivenessTest, SecondExample) {
   A->add_succs_true(B);
   B->add_succs_true(C);
 
-  builder.createInstruction(
-      custom::Opcode::MOVI, custom::Type::myu64, A, std::vector<size_t>{custom::VRegs::v0}, 1);
-  builder.createInstruction(
-      custom::Opcode::MOVI, custom::Type::myu64, A, std::vector<size_t>{custom::VRegs::v1}, 10);
-  builder.createInstruction(
-      custom::Opcode::MOVI, custom::Type::myu64, A, std::vector<size_t>{custom::VRegs::v2}, 20);
+  auto* v0 = builder.createMOVI(Type::myu64, A, 1);
+  auto* v1 = builder.createMOVI(Type::myu64, A, 10);
+  auto* v2 = builder.createMOVI(Type::myu64, A, 20);
 
-  builder.createInstruction(custom::Opcode::ADD,
-                            custom::Type::myu64,
-                            B,
-                            std::vector<size_t>{custom::VRegs::v3},
-                            std::vector<size_t>{custom::VRegs::v2, custom::VRegs::v1});
+  auto* v3 = builder.createADD(Type::myu64, B, v2, v1);
+  auto* v4 = builder.createADD(Type::myu64, B, v1, v0);
 
-  builder.createInstruction(custom::Opcode::ADD,
-                            custom::Type::myu64,
-                            B,
-                            std::vector<size_t>{custom::VRegs::v4},
-                            std::vector<size_t>{custom::VRegs::v1, custom::VRegs::v0});
-
-  builder.createInstruction(custom::Opcode::MUL,
-                            custom::Type::myu64,
-                            C,
-                            std::vector<size_t>{custom::VRegs::v5},
-                            std::vector<size_t>{custom::VRegs::v4, custom::VRegs::v3});
+  auto* v5 = builder.createMUL(Type::myu64, C, v4, v3);
 
   LiveInterval expected;
 

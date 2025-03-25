@@ -24,16 +24,16 @@ struct BasicBlockMarker final {
     _loop_black_marker = val;
   }
 
-  bool is_dfs_m() {
+  bool is_dfs_m() const {
     return _dfs_marker;
   }
-  bool is_rpo_m() {
+  bool is_rpo_m() const {
     return _rpo_marker;
   }
-  bool is_loop_gray_m() {
+  bool is_loop_gray_m() const {
     return _loop_gray_marker;
   }
-  bool is_loop_black_m() {
+  bool is_loop_black_m() const {
     return _loop_black_marker;
   }
 };

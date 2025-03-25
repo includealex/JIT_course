@@ -2,169 +2,302 @@
 
 #include <set>
 
+#include "instruction_ext.hpp"
+
 namespace custom {
 
-void Optimizer::constant_fold(Graph* graph, IRBuilder* builder) {
-  RPO rpo;
-  rpo.run_rpo(graph->get_root());
-  auto rpo_ids = rpo.get_rpo_ids_arr();
+void Optimizer::replace_movi_with_constants(BasicBlock* block) {
+  for (Instruction* instr = block->get_first_inst(); instr; instr = instr->get_next()) {
+    auto src_ins_vec = instr->get_src_insts();
 
-  //   std::vector<BasicBlock*> bb_to_remove;
-  for (auto& id : rpo_ids) {
-    auto cur_block = graph->get_block(id);
-    std::unordered_map<size_t, uint64_t> constant_values;
-    std::vector<std::pair<size_t, uint64_t>> new_instructions;
-    std::vector<Instruction*> to_remove;
+    if (src_ins_vec.size() == 0) {
+      continue;
+    }
 
-    for (auto* instr = cur_block->get_first_inst(); instr != nullptr; instr = instr->get_next()) {
-      if (instr->getOpcode() == Opcode::MOVI || instr->getOpcode() == Opcode::CONST) {
-        if (!instr->getDestRegs().empty()) {
-          size_t dst = instr->getDestRegs()[0];
-          constant_values[dst] = instr->getImmediateValue();
-          to_remove.push_back(instr);
-        }
-      } else if (instr->getOpcode() == Opcode::SUB || instr->getOpcode() == Opcode::ASHR ||
-                 instr->getOpcode() == Opcode::XOR) {
-        const auto& destRegs = instr->getDestRegs();
-        const auto& srcRegs = instr->getSrcRegs();
+    if (src_ins_vec.size() == 1) {
+      auto first_src_instr = src_ins_vec[0];
 
-        if (destRegs.size() == 1 && srcRegs.size() == 2) {
-          size_t dst = destRegs[0];
-          size_t src1 = srcRegs[0];
-          size_t src2 = srcRegs[1];
-
-          if (constant_values.count(src1) && constant_values.count(src2)) {
-            uint64_t folded_value = 0;
-
-            if (instr->getOpcode() == Opcode::SUB) {
-              folded_value = constant_values[src1] - constant_values[src2];
-            } else if (instr->getOpcode() == Opcode::ASHR) {
-              folded_value = constant_values[src1] >> constant_values[src2];
-            } else if (instr->getOpcode() == Opcode::XOR) {
-              folded_value = constant_values[src1] ^ constant_values[src2];
-            }
-
-            constant_values[dst] = folded_value;
-            to_remove.push_back(instr);
-            new_instructions.emplace_back(dst, folded_value);
-          }
-        }
+      if (first_src_instr->getOpcode() != Opcode::MOVI) {
+        continue;
       }
+
+      instr->remove_src_instr(first_src_instr);
+      auto tmp = instr->get_imm();
+      instr->set_imm(first_src_instr->get_imm());
+      instr->set_second_imm(tmp);
+
+      first_src_instr->sub_user();
+      continue;
     }
 
-    for (const auto& [dst, value] : new_instructions) {
-      builder->createInstruction(Opcode::MOVI, Type::myu64, cur_block, {dst}, value);
+    if (src_ins_vec.size() != 2) {
+      std::cerr << "Unexpected number of src instructions" << std::endl;
     }
 
-    for (auto& tmp_instr : to_remove) {
-      cur_block->remove_instruction(tmp_instr);
+    auto first_src_instr = src_ins_vec[0];
+    auto second_src_instr = src_ins_vec[1];
+
+    if (first_src_instr == second_src_instr) {
+      if (first_src_instr->getOpcode() != Opcode::MOVI) {
+        continue;
+      }
+
+      instr->remove_src_instr(first_src_instr);
+      instr->set_imm(first_src_instr->get_imm());
+      instr->set_second_imm(first_src_instr->get_imm());
+      first_src_instr->sub_user();
+      continue;
     }
 
-    // FIXME: fix logic dedicated to bb_removal.
-    //     if (cur_block->instructions_amount() == 1) {
-    //       BasicBlock* successor = cur_block->get_succs_true();
+    if (first_src_instr->getOpcode() == Opcode::MOVI) {
+      instr->set_imm(first_src_instr->get_imm());
+      first_src_instr->sub_user();
+      instr->remove_src_instr(first_src_instr);
+    }
 
-    //       if (successor && !cur_block->get_succs_false() && successor->get_preds().size() == 1) {
-    //         Instruction* instr_to_move = cur_block->get_first_inst();
-    //         bb_to_remove.push_back(cur_block);
-    //         if (instr_to_move) {
-    //             successor->pushback_instr(instr_to_move);
-    //         }
-    //         else if (!instr_to_move) {
-    //             std::cout << "WARNING! Something happened to first instruction of basic block."
-    //             << std::endl;
-    //         }
-    //         break;
-    //       }
-    //     }
-    //   }
+    if (second_src_instr->getOpcode() == Opcode::MOVI) {
+      instr->set_second_imm(second_src_instr->get_imm());
+      second_src_instr->sub_user();
+      instr->remove_src_instr(second_src_instr);
+    }
+  }
+}
 
-    //   for (auto& tmp_bb: bb_to_remove) {
-    //     auto tmp_id = tmp_bb->get_id();
+void Optimizer::remove_unused_movi(BasicBlock* block) {
+  std::vector<Instruction*> to_remove;
+  for (Instruction* instr = block->get_first_inst(); instr; instr = instr->get_next()) {
+    if (instr->getOpcode() != Opcode::MOVI) {
+      continue;
+    }
 
-    //     auto block_to_remove = graph->get_block(tmp_id);
-    //     if (block_to_remove) {
-    //         graph->remove_block(block_to_remove);
-    //     }
+    if (instr->get_users() == 0) {
+      to_remove.push_back(instr);
+    }
+  }
+
+  for (auto& el : to_remove) {
+    if (el == nullptr) {
+      continue;
+    }
+
+    block->remove_instruction(el);
+  }
+}
+
+void Optimizer::replace_arith(BasicBlock* block) {
+  for (Instruction* instr = block->get_first_inst(); instr; instr = instr->get_next()) {
+    if (instr == nullptr) {
+      continue;
+    }
+
+    auto cur_opc = instr->getOpcode();
+    if ((cur_opc != Opcode::SUB) && (cur_opc != Opcode::SUBI) && (cur_opc != Opcode::ASHR) &&
+        (cur_opc != Opcode::ASHRI) && (cur_opc != Opcode::XOR) && (cur_opc != Opcode::XORI)) {
+      continue;
+    }
+
+    auto imm1 = instr->get_imm();
+    auto imm2 = instr->get_second_imm();
+
+    if (imm1 == IMMPOISON || imm2 == IMMPOISON) {
+      continue;
+    }
+
+    ImmType res = IMMPOISON;
+    switch (cur_opc) {
+      case Opcode::SUB:
+        res = imm1 - imm2;
+        break;
+      case Opcode::SUBI:
+        res = imm1 - imm2;
+        break;
+      case Opcode::XOR:
+        res = imm1 ^ imm2;
+        break;
+      case Opcode::XORI:
+        res = imm1 ^ imm2;
+        break;
+      case Opcode::ASHR:
+        res = (imm1 >> imm2) | -((imm1 & 0x80000000) >> imm2);
+        ;
+        break;
+      case Opcode::ASHRI:
+        res = (imm1 >> imm2) | -((imm1 & 0x80000000) >> imm2);
+        ;
+        break;
+      default:
+        break;
+    }
+
+    instr->set_imm(res);
+    instr->set_second_imm(IMMPOISON);
+    instr->setOpcode(Opcode::MOVI);
+  }
+}
+
+void Optimizer::constant_fold(Graph* graph, IRBuilder* builder) {
+  auto n = graph->basic_blocks_num();
+  for (std::size_t i = 0; i < n; ++i) {
+    auto* cur_block = graph->get_block(i);
+
+    if (cur_block == nullptr) {
+      continue;
+    }
+
+    replace_movi_with_constants(cur_block);
+    remove_unused_movi(cur_block);
+    replace_arith(cur_block);
+  }
+}
+
+void Optimizer::peephole_xor_with_zero(Instruction* instr) {
+  if (instr->getOpcode() != Opcode::XORI) {
+    return;
+  }
+
+  if (instr->get_second_imm() != 0) {
+    return;
+  }
+
+  if (instr->get_imm() != IMMPOISON) {
+    instr->setOpcode(Opcode::MOVI);
+  } else {
+    instr->setOpcode(Opcode::MOV);
+  }
+
+  instr->set_second_imm(IMMPOISON);
+
+  return;
+}
+
+void Optimizer::peephole_xor_with_same(Instruction* instr) {
+  if (instr->getOpcode() == Opcode::XORI) {
+    auto fimm = instr->get_imm();
+    auto simm = instr->get_second_imm();
+    if ((fimm == IMMPOISON) || (simm == IMMPOISON)) {
+      return;
+    }
+
+    if (fimm == simm) {
+      instr->setOpcode(Opcode::MOVI);
+      instr->set_imm(0);
+      instr->set_second_imm(IMMPOISON);
+    }
+  }
+
+  if (instr->getOpcode() == Opcode::XOR) {
+    auto src_insts = instr->get_src_insts();
+    auto finst = src_insts[0];
+    auto sinst = src_insts[1];
+
+    if (finst == sinst) {
+      instr->setOpcode(Opcode::MOVI);
+      instr->set_imm(0);
+      instr->remove_src_instr(finst);
+    }
+  }
+}
+
+void Optimizer::peephole_sub_with_same(Instruction* instr) {
+  if (instr->getOpcode() == Opcode::SUBI) {
+    auto fimm = instr->get_imm();
+    auto simm = instr->get_second_imm();
+    if ((fimm == IMMPOISON) || (simm == IMMPOISON)) {
+      return;
+    }
+
+    if (fimm == simm) {
+      instr->setOpcode(Opcode::MOVI);
+      instr->set_imm(0);
+      instr->set_second_imm(IMMPOISON);
+    }
+  }
+
+  if (instr->getOpcode() == Opcode::SUB) {
+    auto src_insts = instr->get_src_insts();
+    auto finst = src_insts[0];
+    auto sinst = src_insts[1];
+
+    if (finst == sinst) {
+      instr->setOpcode(Opcode::MOVI);
+      instr->set_imm(0);
+      instr->remove_src_instr(finst);
+    }
+  }
+}
+
+void Optimizer::peephole_sub_with_zero(Instruction* instr) {
+  if (instr->getOpcode() != Opcode::SUBI) {
+    return;
+  }
+
+  if (instr->get_second_imm() != 0) {
+    return;
+  }
+
+  if (instr->get_imm() != IMMPOISON) {
+    instr->setOpcode(Opcode::MOVI);
+  } else {
+    instr->setOpcode(Opcode::MOV);
+  }
+
+  instr->set_second_imm(IMMPOISON);
+
+  return;
+}
+
+void Optimizer::peephole_ashr_with_zero(Instruction* instr) {
+  if (instr->getOpcode() != Opcode::ASHRI) {
+    return;
+  }
+
+  if (instr->get_second_imm() != 0) {
+    return;
+  }
+
+  if (instr->get_imm() != IMMPOISON) {
+    instr->setOpcode(Opcode::MOVI);
+  } else {
+    instr->setOpcode(Opcode::MOV);
+  }
+
+  instr->set_second_imm(IMMPOISON);
+
+  return;
+}
+
+void Optimizer::peephole_ashr_with_big(Instruction* instr) {
+  if (instr->getOpcode() != Opcode::ASHRI) {
+    return;
+  }
+
+  if (instr->get_second_imm() > 64) {
+    instr->set_second_imm(0);
+    peephole_ashr_with_zero(instr);
   }
 }
 
 void Optimizer::peephole(Graph* graph, IRBuilder* builder) {
-  RPO rpo;
-  rpo.run_rpo(graph->get_root());
-  auto rpo_ids = rpo.get_rpo_ids_arr();
+  auto n = graph->basic_blocks_num();
+  for (std::size_t i = 0; i < n; ++i) {
+    auto* cur_block = graph->get_block(i);
 
-  for (auto& id : rpo_ids) {
-    auto cur_block = graph->get_block(id);
-    std::unordered_map<size_t, uint64_t> constant_values;
-    std::unordered_map<size_t, uint64_t> ashr_chain;
-    std::vector<Instruction*> to_remove;
-    std::vector<std::pair<size_t, uint64_t>> new_instructions;
+    if (cur_block == nullptr) {
+      continue;
+    }
 
-    for (auto* instr = cur_block->get_first_inst(); instr != nullptr; instr = instr->get_next()) {
-      auto opcode = instr->getOpcode();
-      const auto& destRegs = instr->getDestRegs();
-      const auto& srcRegs = instr->getSrcRegs();
-
-      if (opcode == Opcode::MOVI && destRegs.size() == 1) {
-        constant_values[destRegs[0]] = instr->getImmediateValue();
-      } else if (opcode == Opcode::ASHR && destRegs.size() == 1 && srcRegs.size() == 2) {
-        size_t dst = destRegs[0];
-        size_t src1 = srcRegs[0];
-        size_t src2 = srcRegs[1];
-
-        if (constant_values.count(src2) && constant_values[src2] == 0) {
-          // ASHR with 0
-          to_remove.push_back(instr);
-          constant_values[dst] = constant_values[src1];
-        } else if (ashr_chain.count(src1) && constant_values.count(src2)) {
-          // Merge ASHR shifts
-          uint64_t new_shift = ashr_chain[src1] + constant_values[src2];
-          ashr_chain[dst] = new_shift;
-          to_remove.push_back(instr);
-          new_instructions.emplace_back(dst, new_shift);
-        } else if (constant_values.count(src2)) {
-          ashr_chain[dst] = constant_values[src2];
-        }
-      } else if (opcode == Opcode::SUB && destRegs.size() == 1 && srcRegs.size() == 2) {
-        size_t dst = destRegs[0];
-        size_t src1 = srcRegs[0];
-        size_t src2 = srcRegs[1];
-
-        if (constant_values.count(src2) && constant_values[src2] == 0) {
-          // SUB with 0
-          to_remove.push_back(instr);
-          constant_values[dst] = constant_values[src1];
-        } else if (src1 == src2) {
-          // SUB x, x → MOVI 0
-          to_remove.push_back(instr);
-          new_instructions.emplace_back(dst, 0);
-          constant_values[dst] = 0;
-        }
-      } else if (opcode == Opcode::XOR && destRegs.size() == 1 && srcRegs.size() == 2) {
-        size_t dst = destRegs[0];
-        size_t src1 = srcRegs[0];
-        size_t src2 = srcRegs[1];
-
-        if (constant_values.count(src2) && constant_values[src2] == 0) {
-          // XOR with 0
-          to_remove.push_back(instr);
-          constant_values[dst] = constant_values[src1];
-        } else if (src1 == src2) {
-          // XOR x, x → MOVI 0
-          to_remove.push_back(instr);
-          new_instructions.emplace_back(dst, 0);
-          constant_values[dst] = 0;
-        }
+    for (Instruction* cur_instr = cur_block->get_first_inst(); cur_instr;
+         cur_instr = cur_instr->get_next()) {
+      if (cur_instr == nullptr) {
+        continue;
       }
-    }
 
-    for (const auto& [dst, value] : new_instructions) {
-      builder->createInstruction(Opcode::MOVI, Type::myu64, cur_block, {dst}, value);
-    }
-
-    for (auto& tmp_instr : to_remove) {
-      cur_block->remove_instruction(tmp_instr);
+      peephole_xor_with_zero(cur_instr);
+      peephole_xor_with_same(cur_instr);
+      peephole_sub_with_zero(cur_instr);
+      peephole_sub_with_same(cur_instr);
+      peephole_ashr_with_zero(cur_instr);
+      peephole_ashr_with_big(cur_instr);
     }
   }
 }

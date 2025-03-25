@@ -1,12 +1,15 @@
 #ifndef INCLUDES_INSTRUCTION_HPP_
 #define INCLUDES_INSTRUCTION_HPP_
 
+#include <algorithm>
 #include <cstddef>
+#include <iostream>
 #include <memory>
+#include <set>
 #include <string>
+#include <variant>
 #include <vector>
 
-#include "basic_block.hpp"
 #include "opcode.hpp"
 #include "type.hpp"
 
@@ -14,88 +17,53 @@ namespace custom {
 
 class BasicBlock;
 
-class Instruction final {
+class Instruction {
  public:
-  Instruction(Opcode opcode,
+  Instruction() = default;
+  Instruction(Opcode Opcode,
               Type type,
               BasicBlock* basicBlock,
-              const std::vector<std::size_t>& destRegs = {},
-              const std::vector<std::size_t>& srcRegs = {})
-      : _prev(nullptr),
-        _next(nullptr),
-        _opcode(opcode),
-        _basic_block(basicBlock),
-        _type(type),
-        _destRegs(destRegs),
-        _srcRegs(srcRegs) {}
+              Instruction* next_instr = nullptr,
+              Instruction* prev_instr = nullptr);
 
-  Instruction(Opcode opcode,
-              Type type,
-              BasicBlock* basicBlock,
-              const std::vector<std::size_t>& destRegs = {},
-              const std::size_t value = 0) {
-    _prev = nullptr;
-    _next = nullptr;
-    _opcode = opcode;
-    _basic_block = basicBlock;
-    _type = type;
-    _destRegs = destRegs;
-    _val_to_set = value;
-  }
+  virtual ~Instruction() = default;
 
-  Opcode getOpcode() const {
-    return _opcode;
-  }
+  Opcode getOpcode() const;
+  Type getType() const;
+  Instruction* get_next() const;
+  Instruction* get_prev() const;
+  std::size_t get_lin() const;
+  std::size_t get_livenum() const;
+  std::size_t get_id() const;
+  ImmType get_imm() const;
+  ImmType get_second_imm() const;
 
-  Type getType() const {
-    return _type;
-  }
+  void setOpcode(Opcode opc);
+  void set_imm(ImmType value);
+  void set_second_imm(ImmType value);
+  void set_id(std::size_t id);
+  void set_next(Instruction* other);
+  void set_prev(Instruction* other);
+  void set_basic_block(BasicBlock* other);
+  void set_lin(std::size_t num);
+  void set_livenum(std::size_t num);
 
-  const std::vector<std::size_t>& getDestRegs() const {
-    return _destRegs;
-  }
+  void remove_src_instr(Instruction* instr);
 
-  const std::vector<std::size_t>& getSrcRegs() const {
-    return _srcRegs;
-  }
+  virtual std::vector<Instruction*> get_src_insts();
+  void add_src_inst(Instruction* instr);
 
-  void set_basic_block(BasicBlock* other) {
-    _basic_block = other;
-  }
+  virtual void AddPhiUsage(Instruction* first, Instruction* second) {
+    std::cerr << "No Phi Usage for this instruction provided" << std::endl;
+  };
 
-  void set_next(Instruction* other) {
-    _next = other;
-  }
+  void add_user();
+  void sub_user();
+  std::size_t get_users();
 
-  void set_prev(Instruction* other) {
-    _prev = other;
-  }
+ protected:
+  std::size_t _instr_id;
 
-  Instruction* get_next() const {
-    return _next;
-  }
-
-  Instruction* get_prev() const {
-    return _prev;
-  }
-
-  void set_id(std::size_t id) {
-    _instr_id = id;
-  }
-
-  std::size_t get_id() const {
-    return _instr_id;
-  }
-
-  std::size_t getImmediateValue() const {
-    return _val_to_set;
-  }
-
-  // Liveness analysis values
-  std::size_t lin;
-  std::size_t live_num;
-
- private:
   // Intrusive linked list
   Instruction* _prev;
   Instruction* _next;
@@ -105,12 +73,14 @@ class Instruction final {
   BasicBlock* _basic_block;
   Type _type;
 
-  // Register information
-  std::vector<std::size_t> _destRegs;
-  std::vector<std::size_t> _srcRegs;
+  // Liveness analysis values
+  std::size_t _lin;
+  std::size_t _live_num;
 
-  std::size_t _instr_id;
-  std::size_t _val_to_set;
+  ImmType _imm = IMMPOISON;
+  ImmType _second_imm = IMMPOISON;
+  std::vector<Instruction*> _src_insts = std::vector<Instruction*>{};
+  std::size_t _n_users = 0;
 };
 
 }  // namespace custom

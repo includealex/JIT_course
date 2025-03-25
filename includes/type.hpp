@@ -1,6 +1,8 @@
 #ifndef INCLUDES_TYPE_HPP_
 #define INCLUDES_TYPE_HPP_
 
+#include <limits>
+
 namespace custom {
 
 enum class Type {
@@ -13,6 +15,9 @@ enum class Type {
   myint64 = 6,
   mybool = 7,
 };
+
+using ImmType = uint32_t;
+const ImmType IMMPOISON = std::numeric_limits<ImmType>::max();
 
 }  // namespace custom
 

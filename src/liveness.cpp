@@ -13,7 +13,7 @@ void Liveness::calc_live_ranges(Graph* graph) {
   LoopTree lt;
   lt.build_tree(graph);
 
-  auto preloop_vec = lt.loop_vector;
+  auto preloop_vec = lt.get_loop_vector();
   std::vector<custom::LTNode*> loop_vec;
   for (auto& el : preloop_vec) {
     if (el->idx == -1)
@@ -48,10 +48,7 @@ void Liveness::calc_live_ranges(Graph* graph) {
     std::set<std::size_t> cur_dest_regs;
     auto cur_instr = cur_block->get_first_inst();
     while (cur_instr != nullptr) {
-      for (auto& el : cur_instr->getDestRegs()) {
-        cur_dest_regs.insert(el);
-      }
-
+      cur_dest_regs.insert(cur_instr->get_lin());
       cur_instr = cur_instr->get_next();
     }
 
@@ -62,9 +59,9 @@ void Liveness::calc_live_ranges(Graph* graph) {
       auto cur_instr = tmp_succ->get_first_inst();
       while (cur_instr != nullptr) {
         if (cur_instr->getOpcode() == Opcode::PHI) {
-          for (auto& el : cur_instr->getSrcRegs()) {
-            if (cur_dest_regs.count(el)) {
-              live.add_empty(el, cur_instr->live_num);
+          for (auto& el : cur_instr->get_src_insts()) {
+            if (cur_dest_regs.count(el->get_lin())) {
+              live.add_empty(el->get_lin(), cur_instr->get_livenum());
             }
           }
         }
@@ -88,13 +85,18 @@ void Liveness::calc_live_ranges(Graph* graph) {
     //         live.add(opd)
     cur_instr = cur_block->get_last_inst();
     while (cur_instr != nullptr) {
-      for (auto& el : cur_instr->getDestRegs()) {
-        _intervals.setFrom(el, cur_instr->live_num);
-        live.remove(el);
-      }
-      for (auto& el : cur_instr->getSrcRegs()) {
-        _intervals.add(el, LiveRange(cur_block->get_liverange_start(), cur_instr->live_num));
-        live.add_empty(el, cur_instr->live_num);
+      _intervals.setFrom(cur_instr->get_lin(), cur_instr->get_livenum());
+      live.remove(cur_instr->get_lin());
+      if (cur_instr->get_src_insts().size() != 0) {
+        for (auto& el : cur_instr->get_src_insts()) {
+          if (el == nullptr) {
+            continue;
+          }
+          auto tmp_lin = el->get_lin();
+          _intervals.add(tmp_lin,
+                         LiveRange(cur_block->get_liverange_start(), cur_instr->get_livenum()));
+          live.add_empty(tmp_lin, cur_instr->get_livenum());
+        }
       }
       cur_instr = cur_instr->get_prev();
     }
@@ -108,9 +110,7 @@ void Liveness::calc_live_ranges(Graph* graph) {
         continue;
       }
 
-      for (auto& el : cur_instr->getDestRegs()) {
-        live.remove(el);
-      }
+      live.remove(cur_instr->get_lin());
       cur_instr = cur_instr->get_next();
     }
 
@@ -172,8 +172,8 @@ void Liveness::set_bb_liveranges(Graph* graph) {
     if (cur_instr->getOpcode() != Opcode::PHI) {
       cur_live += 2;
     }
-    cur_instr->lin = cur_lin;
-    cur_instr->live_num = cur_live;
+    cur_instr->set_lin(cur_lin);
+    cur_instr->set_livenum(cur_live);
     _helper_intervals[cur_lin] = cur_live;
     cur_lin++;
 
@@ -182,8 +182,8 @@ void Liveness::set_bb_liveranges(Graph* graph) {
       if (cur_instr->getOpcode() != Opcode::PHI) {
         cur_live += 2;
       }
-      cur_instr->lin = cur_lin;
-      cur_instr->live_num = cur_live;
+      cur_instr->set_lin(cur_lin);
+      cur_instr->set_livenum(cur_live);
       _helper_intervals[cur_lin] = cur_live;
       cur_lin++;
     }
