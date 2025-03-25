@@ -66,4 +66,8 @@ BasicBlock* Graph::split_BasicBlock(Instruction* instr, BasicBlock* cur_block) {
   return new_block;
 }
 
+void Graph::add_return_block(BasicBlock* basicBlock) {
+  _return_blocks.push_back(basicBlock);
+}
+
 }  // namespace custom

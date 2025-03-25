@@ -35,18 +35,21 @@ Instruction* IRBuilder::createMOVI(Type type, BasicBlock* basic_block, ImmType i
 Instruction* IRBuilder::createRET(Type type, BasicBlock* basic_block, Instruction* retinstr) {
   Instruction* instr = new RetInstruction(Opcode::RET, type, basic_block, retinstr);
   basic_block->pushback_instr(instr);
+  basic_block->get_graph()->add_return_block(basic_block);
   increase_n_users(retinstr);
   return instr;
 }
 
 Instruction* IRBuilder::createRET(Type type, BasicBlock* basic_block) {
   Instruction* instr = new RetInstruction(Opcode::RET, type, basic_block);
+  basic_block->get_graph()->add_return_block(basic_block);
   basic_block->pushback_instr(instr);
   return instr;
 }
 
 Instruction* IRBuilder::createRETI(Type type, BasicBlock* basic_block, ImmType imm) {
   Instruction* instr = new RetInstruction(Opcode::RETI, type, basic_block, imm);
+  basic_block->get_graph()->add_return_block(basic_block);
   basic_block->pushback_instr(instr);
   return instr;
 }

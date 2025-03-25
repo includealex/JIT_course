@@ -21,11 +21,13 @@ class Graph final {
 
   BasicBlock* split_BasicBlock(Instruction* instr, BasicBlock* cur_block);
   std::size_t basic_blocks_num() const;
+  void add_return_block(BasicBlock* basicBlock);
 
  private:
   BasicBlock* _root;
   std::size_t _blocks_size = 0;
   std::vector<BasicBlock*> _blocks;
+  std::vector<BasicBlock*> _return_blocks;
 };
 
 }  // namespace custom
