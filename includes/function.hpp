@@ -13,6 +13,8 @@ class Function final {
   ~Function();
 
   void set_params(std::vector<Instruction*>);
+  bool is_inlinable() const;
+  void set_noinline();
 
   std::string get_name() const;
   Graph* get_graph() const;
@@ -24,6 +26,7 @@ class Function final {
   Type _rettype;
   std::vector<Instruction*> _params;
 
+  bool _inlinable = false;
   Graph* _graph;
 };
 

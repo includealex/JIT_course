@@ -31,4 +31,11 @@ std::vector<Instruction*> Function::get_params() const {
   return _params;
 }
 
+bool Function::is_inlinable() const {
+  return _inlinable;
+}
+void Function::set_noinline() {
+  _inlinable = false;
+}
+
 }  // namespace custom
