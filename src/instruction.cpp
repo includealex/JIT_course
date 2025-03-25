@@ -117,4 +117,12 @@ void Instruction::setOpcode(Opcode opc) {
   _opcode = opc;
 }
 
+std::string Instruction::get_called_name() const {
+  return _called_name;
+}
+
+void Instruction::set_called_name(std::string name) {
+  _called_name = name;
+}
+
 }  // namespace custom

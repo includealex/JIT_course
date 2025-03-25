@@ -79,6 +79,11 @@ class InstructionFrom2Imm : public Instruction {
       Opcode opcode, Type type, BasicBlock* basicBlock, ImmType first_imm, ImmType second_imm);
 };
 
+class CallInstruction : public Instruction {
+ public:
+  CallInstruction(Opcode opcode, Type type, BasicBlock* basicBlock, std::string function_name);
+};
+
 }  // namespace custom
 
 #endif  // INCLUDES_INSTRUCTION_EXT_HPP_

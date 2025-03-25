@@ -5,7 +5,9 @@ namespace custom {
 Function* IRBuilder::createFunction(std::string name,
                                     Type rettype,
                                     std::vector<Instruction*> params) {
-  return new Function(name, rettype, params);
+  auto* foo = new Function(name, rettype, params);
+  _func_table.insert({name, foo});
+  return foo;
 }
 
 Graph* IRBuilder::createGraph() {
@@ -257,6 +259,19 @@ Instruction* IRBuilder::createPARAM(Type type) {
   return instr;
 }
 
+Instruction* IRBuilder::createCALL(Opcode opcode,
+                                   Type type,
+                                   BasicBlock* basicBlock,
+                                   std::string function_name) {
+  if (!check_foo_exists(function_name)) {
+    std::cerr << "CALL can not be created. No function with name: " << function_name;
+  }
+
+  Instruction* instr = new CallInstruction(opcode, type, basicBlock, function_name);
+  basicBlock->pushback_instr(instr);
+  return instr;
+}
+
 IRBuilder::~IRBuilder() {
   for (auto& tmp_param : _params) {
     delete tmp_param;
@@ -279,6 +294,14 @@ void IRBuilder::increase_n_users(Instruction* first, Instruction* second) {
   }
 
   increase_n_users(second);
+}
+
+bool IRBuilder::check_foo_exists(std::string function_name) {
+  if (_func_table.find(function_name) == _func_table.end()) {
+    return false;
+  }
+
+  return true;
 }
 
 }  // namespace custom
