@@ -28,6 +28,7 @@ class Instruction {
 
   virtual ~Instruction() = default;
 
+  BasicBlock* getBB() const;
   Opcode getOpcode() const;
   Type getType() const;
   Instruction* get_next() const;
@@ -61,6 +62,9 @@ class Instruction {
   void sub_user();
   std::size_t get_users();
 
+  std::string get_called_name() const;
+  void set_called_name(std::string name);
+
  protected:
   std::size_t _instr_id;
 
@@ -81,6 +85,7 @@ class Instruction {
   ImmType _second_imm = IMMPOISON;
   std::vector<Instruction*> _src_insts = std::vector<Instruction*>{};
   std::size_t _n_users = 0;
+  std::string _called_name = "";
 };
 
 }  // namespace custom

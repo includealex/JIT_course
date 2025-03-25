@@ -25,6 +25,7 @@ class BasicBlock final {
   ~BasicBlock();
   void pushback_instr(Instruction* inst);
   void remove_instruction(Instruction* instr);
+  void set_last_instr(Instruction* instr);
   Instruction* getInstruction(size_t index) const;
   bool isPhiInstruction(Instruction* inst) const;
 
@@ -67,6 +68,7 @@ class BasicBlock final {
   LiveRange get_liverange() const;
   LiveInterval get_liveIn() const;
   void set_liveIn(LiveInterval liveIn);
+  std::vector<Instruction*> find_calls() const;
 
  private:
   std::vector<BasicBlock*> _preds;  // many!

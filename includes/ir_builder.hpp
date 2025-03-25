@@ -16,6 +16,7 @@ class IRBuilder final {
   ~IRBuilder();
 
   Function* createFunction(std::string name, Type rettype, std::vector<Instruction*> params);
+  Function* getFunction(std::string name);
 
   Graph* createGraph();
 
@@ -87,11 +88,19 @@ class IRBuilder final {
   Instruction* createNEQ(Type type, BasicBlock* basic_block, Instruction* first);
   Instruction* createPHI(Type type, BasicBlock* basic_block);
   Instruction* createPARAM(Type type);
+  Instruction* createCALL(Type type, BasicBlock* basicBlock, std::string function_name);
+  Instruction* createCALL(Type type,
+                          BasicBlock* basicBlock,
+                          std::string function_name,
+                          Instruction* first,
+                          Instruction* second);
 
  private:
+  bool check_foo_exists(std::string function_name);
   void increase_n_users(Instruction* instr);
   void increase_n_users(Instruction* first, Instruction* second);
   std::vector<Instruction*> _params;
+  std::unordered_map<std::string, Function*> _func_table;
 };
 
 }  // namespace custom

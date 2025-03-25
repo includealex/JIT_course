@@ -12,11 +12,13 @@ class Function final {
   Function(std::string name, Type rettype, std::vector<Instruction*> params);
   ~Function();
 
-  void set_params(std::vector<Instruction*>);
+  bool is_inlinable() const;
+  void set_noinline();
 
   std::string get_name() const;
   Graph* get_graph() const;
   Type get_rettype() const;
+  void set_params(std::vector<Instruction*> new_params);
   std::vector<Instruction*> get_params() const;
 
  private:
@@ -24,6 +26,7 @@ class Function final {
   Type _rettype;
   std::vector<Instruction*> _params;
 
+  bool _inlinable = true;
   Graph* _graph;
 };
 

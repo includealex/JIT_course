@@ -123,4 +123,14 @@ InstructionFrom2Imm::InstructionFrom2Imm(
   _imm = first_imm;
   _second_imm = second_imm;
 }
+
+CallInstruction::CallInstruction(Opcode opcode,
+                                 Type type,
+                                 BasicBlock* basicBlock,
+                                 std::string function_name)
+    : Instruction(opcode, type, basicBlock) {
+  assert(opcode == Opcode::CALL);
+  set_called_name(function_name);
+}
+
 }  // namespace custom

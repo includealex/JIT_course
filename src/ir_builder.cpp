@@ -5,7 +5,9 @@ namespace custom {
 Function* IRBuilder::createFunction(std::string name,
                                     Type rettype,
                                     std::vector<Instruction*> params) {
-  return new Function(name, rettype, params);
+  auto* foo = new Function(name, rettype, params);
+  _func_table.insert({name, foo});
+  return foo;
 }
 
 Graph* IRBuilder::createGraph() {
@@ -33,18 +35,21 @@ Instruction* IRBuilder::createMOVI(Type type, BasicBlock* basic_block, ImmType i
 Instruction* IRBuilder::createRET(Type type, BasicBlock* basic_block, Instruction* retinstr) {
   Instruction* instr = new RetInstruction(Opcode::RET, type, basic_block, retinstr);
   basic_block->pushback_instr(instr);
+  basic_block->get_graph()->add_return_block(basic_block);
   increase_n_users(retinstr);
   return instr;
 }
 
 Instruction* IRBuilder::createRET(Type type, BasicBlock* basic_block) {
   Instruction* instr = new RetInstruction(Opcode::RET, type, basic_block);
+  basic_block->get_graph()->add_return_block(basic_block);
   basic_block->pushback_instr(instr);
   return instr;
 }
 
 Instruction* IRBuilder::createRETI(Type type, BasicBlock* basic_block, ImmType imm) {
   Instruction* instr = new RetInstruction(Opcode::RETI, type, basic_block, imm);
+  basic_block->get_graph()->add_return_block(basic_block);
   basic_block->pushback_instr(instr);
   return instr;
 }
@@ -257,6 +262,31 @@ Instruction* IRBuilder::createPARAM(Type type) {
   return instr;
 }
 
+Instruction* IRBuilder::createCALL(Type type, BasicBlock* basicBlock, std::string function_name) {
+  if (!check_foo_exists(function_name)) {
+    std::cerr << "CALL can not be created. No function with name: " << function_name << std::endl;
+  }
+
+  Instruction* instr = new CallInstruction(Opcode::CALL, type, basicBlock, function_name);
+  basicBlock->pushback_instr(instr);
+  return instr;
+}
+
+Instruction* IRBuilder::createCALL(Type type,
+                                   BasicBlock* basicBlock,
+                                   std::string function_name,
+                                   Instruction* first,
+                                   Instruction* second) {
+  if (!check_foo_exists(function_name)) {
+    std::cerr << "CALL can not be created. No function with name: " << function_name << std::endl;
+  }
+
+  Instruction* instr = new CallInstruction(Opcode::CALL, type, basicBlock, function_name);
+  basicBlock->pushback_instr(instr);
+  increase_n_users(first, second);
+  return instr;
+}
+
 IRBuilder::~IRBuilder() {
   for (auto& tmp_param : _params) {
     delete tmp_param;
@@ -279,6 +309,17 @@ void IRBuilder::increase_n_users(Instruction* first, Instruction* second) {
   }
 
   increase_n_users(second);
+}
+
+bool IRBuilder::check_foo_exists(std::string function_name) {
+  if (_func_table.find(function_name) == _func_table.end()) {
+    return false;
+  }
+  return true;
+}
+
+Function* IRBuilder::getFunction(std::string name) {
+  return _func_table[name];
 }
 
 }  // namespace custom

@@ -11,10 +11,6 @@ Function::~Function() {
   delete _graph;
 }
 
-void Function::set_params(std::vector<Instruction*> params) {
-  _params = params;
-}
-
 std::string Function::get_name() const {
   return _name;
 }
@@ -29,6 +25,17 @@ Type Function::get_rettype() const {
 
 std::vector<Instruction*> Function::get_params() const {
   return _params;
+}
+
+void Function::set_params(std::vector<Instruction*> new_params) {
+  _params = new_params;
+}
+
+bool Function::is_inlinable() const {
+  return _inlinable;
+}
+void Function::set_noinline() {
+  _inlinable = false;
 }
 
 }  // namespace custom
