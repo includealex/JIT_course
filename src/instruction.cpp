@@ -125,4 +125,8 @@ void Instruction::set_called_name(std::string name) {
   _called_name = name;
 }
 
+BasicBlock* Instruction::getBB() const {
+  return _basic_block;
+}
+
 }  // namespace custom

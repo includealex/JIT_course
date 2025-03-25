@@ -28,6 +28,7 @@ class Instruction {
 
   virtual ~Instruction() = default;
 
+  BasicBlock* getBB() const;
   Opcode getOpcode() const;
   Type getType() const;
   Instruction* get_next() const;

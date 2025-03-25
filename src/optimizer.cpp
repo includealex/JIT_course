@@ -303,13 +303,38 @@ void Optimizer::peephole(Graph* graph, IRBuilder* builder) {
 }
 
 void Optimizer::apply_inline(Graph* graph, IRBuilder* builder) {
-  auto* single_block = graph->get_root();
+  for (auto& single_block : graph->get_blocks()) {
+    // FIXME: recursive calls?
+    // Now no recursion is possible
+    for (auto& call_instr : single_block->find_calls()) {
+      if (call_instr != nullptr) {
+        auto* cur_graph = call_instr->getBB()->get_graph();
+        auto foo_name = call_instr->get_called_name();
+        auto* callee_func = builder->getFunction(foo_name);
+        if (!callee_func->is_inlinable()) {
+          continue;
+        }
 
-  // FIXME: recursive calls?
-  auto* instr = single_block->find_calls()[0];
-  if (instr != nullptr) {
-    auto* splitted = graph->split_BasicBlock(instr, single_block);
-    graph->addBasicBlock(splitted);
+        auto callee_graph = callee_func->get_graph();
+
+        auto* splitted = graph->split_BasicBlock(call_instr, single_block);
+        single_block->add_succs_true(callee_graph->get_root());
+
+        for (auto& tmp : graph->get_blocks()) {
+          graph->addBasicBlock(tmp);
+        }
+
+        if (callee_func->get_params().size() != 0) {
+          continue;
+        }
+
+        for (auto& tmp_block : callee_graph->get_ret_blocks()) {
+          tmp_block->add_succs_true(splitted);
+        }
+
+        graph->addBasicBlock(splitted);
+      }
+    }
   }
 }
 

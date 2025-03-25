@@ -26,7 +26,7 @@ class Function final {
   Type _rettype;
   std::vector<Instruction*> _params;
 
-  bool _inlinable = false;
+  bool _inlinable = true;
   Graph* _graph;
 };
 

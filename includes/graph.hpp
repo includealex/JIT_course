@@ -15,9 +15,12 @@ class Graph final {
   Graph() = default;
   ~Graph();
 
+  void copy_graph() const;
   void addBasicBlock(BasicBlock* block);
   BasicBlock* get_block(size_t index) const;
+  std::vector<BasicBlock*> get_blocks() const;
   BasicBlock* get_root() const;
+  std::vector<BasicBlock*> get_ret_blocks() const;
 
   BasicBlock* split_BasicBlock(Instruction* instr, BasicBlock* cur_block);
   std::size_t basic_blocks_num() const;

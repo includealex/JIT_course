@@ -16,6 +16,7 @@ class IRBuilder final {
   ~IRBuilder();
 
   Function* createFunction(std::string name, Type rettype, std::vector<Instruction*> params);
+  Function* getFunction(std::string name);
 
   Graph* createGraph();
 

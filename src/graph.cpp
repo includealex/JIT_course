@@ -4,6 +4,10 @@ namespace custom {
 
 Graph::~Graph() {
   for (BasicBlock* block : _blocks) {
+    if (block == nullptr) {
+      continue;
+    }
+
     delete block;
   }
   _blocks.clear();
@@ -63,11 +67,27 @@ BasicBlock* Graph::split_BasicBlock(Instruction* instr, BasicBlock* cur_block) {
 
   cur_block->set_last_instr(cur_instr);
   cur_instr->set_next(nullptr);
+
+  // FIXME:
+  // What about successors?
   return new_block;
 }
 
 void Graph::add_return_block(BasicBlock* basicBlock) {
   _return_blocks.push_back(basicBlock);
+}
+
+void Graph::copy_graph() const {
+  // TODO: implement for cases of inline and noinline
+  return;
+}
+
+std::vector<BasicBlock*> Graph::get_ret_blocks() const {
+  return _return_blocks;
+}
+
+std::vector<BasicBlock*> Graph::get_blocks() const {
+  return _blocks;
 }
 
 }  // namespace custom

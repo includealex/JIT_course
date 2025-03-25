@@ -303,4 +303,8 @@ bool IRBuilder::check_foo_exists(std::string function_name) {
   return true;
 }
 
+Function* IRBuilder::getFunction(std::string name) {
+  return _func_table[name];
+}
+
 }  // namespace custom
