@@ -272,6 +272,21 @@ Instruction* IRBuilder::createCALL(Type type, BasicBlock* basicBlock, std::strin
   return instr;
 }
 
+Instruction* IRBuilder::createCALL(Type type,
+                                   BasicBlock* basicBlock,
+                                   std::string function_name,
+                                   Instruction* first,
+                                   Instruction* second) {
+  if (!check_foo_exists(function_name)) {
+    std::cerr << "CALL can not be created. No function with name: " << function_name << std::endl;
+  }
+
+  Instruction* instr = new CallInstruction(Opcode::CALL, type, basicBlock, function_name);
+  basicBlock->pushback_instr(instr);
+  increase_n_users(first, second);
+  return instr;
+}
+
 IRBuilder::~IRBuilder() {
   for (auto& tmp_param : _params) {
     delete tmp_param;

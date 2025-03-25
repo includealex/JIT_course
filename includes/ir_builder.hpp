@@ -89,6 +89,11 @@ class IRBuilder final {
   Instruction* createPHI(Type type, BasicBlock* basic_block);
   Instruction* createPARAM(Type type);
   Instruction* createCALL(Type type, BasicBlock* basicBlock, std::string function_name);
+  Instruction* createCALL(Type type,
+                          BasicBlock* basicBlock,
+                          std::string function_name,
+                          Instruction* first,
+                          Instruction* second);
 
  private:
   bool check_foo_exists(std::string function_name);

@@ -320,12 +320,14 @@ void Optimizer::apply_inline(Graph* graph, IRBuilder* builder) {
         auto* splitted = graph->split_BasicBlock(call_instr, single_block);
         single_block->add_succs_true(callee_graph->get_root());
 
-        for (auto& tmp : graph->get_blocks()) {
-          graph->addBasicBlock(tmp);
+        for (auto& tmp_block : graph->get_blocks()) {
+          graph->addBasicBlock(tmp_block);
         }
 
         if (callee_func->get_params().size() != 0) {
-          continue;
+          if (call_instr->get_src_insts().size() == 2) {
+            callee_func->set_params(call_instr->get_src_insts());
+          }
         }
 
         for (auto& tmp_block : callee_graph->get_ret_blocks()) {
