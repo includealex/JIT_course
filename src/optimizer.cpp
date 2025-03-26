@@ -317,11 +317,11 @@ void Optimizer::apply_inline(Graph* graph, IRBuilder* builder) {
 
         auto callee_graph = callee_func->get_graph();
 
-        auto* splitted = graph->split_BasicBlock(call_instr, single_block);
+        auto* splitted = cur_graph->split_BasicBlock(call_instr, single_block);
         single_block->add_succs_true(callee_graph->get_root());
 
-        for (auto& tmp_block : graph->get_blocks()) {
-          graph->addBasicBlock(tmp_block);
+        for (auto& tmp_block : callee_graph->get_blocks()) {
+          cur_graph->addBasicBlock(tmp_block);
         }
 
         if (callee_func->get_params().size() != 0) {
