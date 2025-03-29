@@ -326,6 +326,10 @@ void Optimizer::apply_inline(Graph* graph, IRBuilder* builder) {
 
         if (callee_func->get_params().size() != 0) {
           if (call_instr->get_src_insts().size() == 2) {
+            for (auto& tmp_param : callee_func->get_params()) {
+              delete tmp_param;
+            }
+
             callee_func->set_params(call_instr->get_src_insts());
           }
         }
@@ -334,7 +338,8 @@ void Optimizer::apply_inline(Graph* graph, IRBuilder* builder) {
           tmp_block->add_succs_true(splitted);
         }
 
-        graph->addBasicBlock(splitted);
+        cur_graph->addBasicBlock(splitted);
+        callee_graph->clear_blocks_pointers();
       }
     }
   }
