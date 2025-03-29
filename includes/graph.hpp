@@ -15,6 +15,7 @@ class Graph final {
   Graph() = default;
   ~Graph();
 
+  void clear_blocks_pointers();
   void copy_graph() const;
   void addBasicBlock(BasicBlock* block);
   BasicBlock* get_block(size_t index) const;

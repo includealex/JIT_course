@@ -2,6 +2,13 @@
 
 namespace custom {
 
+void Graph::clear_blocks_pointers() {
+  _blocks.clear();
+  _blocks_size = 0;
+  _return_blocks.clear();
+  return;
+}
+
 Graph::~Graph() {
   for (BasicBlock* block : _blocks) {
     if (block == nullptr) {

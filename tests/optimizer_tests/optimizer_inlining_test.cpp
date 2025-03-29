@@ -28,6 +28,9 @@ TEST(OptimizerTest, InliningGetterTailCall) {
   optimizer.apply_inline(foo_graph, &builder);
 
   ASSERT_EQ(foo_graph->basic_blocks_num(), 3);
+
+  delete foo;
+  delete bar;
 }
 
 TEST(OptimizerTest, InliningGetterTailCallTwoImms) {
@@ -54,6 +57,9 @@ TEST(OptimizerTest, InliningGetterTailCallTwoImms) {
   optimizer.apply_inline(foo_graph, &builder);
 
   ASSERT_EQ(foo_graph->basic_blocks_num(), 3);
+
+  delete foo;
+  delete bar;
 }
 
 }  // namespace custom

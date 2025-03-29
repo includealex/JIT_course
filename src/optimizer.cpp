@@ -317,15 +317,19 @@ void Optimizer::apply_inline(Graph* graph, IRBuilder* builder) {
 
         auto callee_graph = callee_func->get_graph();
 
-        auto* splitted = graph->split_BasicBlock(call_instr, single_block);
+        auto* splitted = cur_graph->split_BasicBlock(call_instr, single_block);
         single_block->add_succs_true(callee_graph->get_root());
 
-        for (auto& tmp_block : graph->get_blocks()) {
-          graph->addBasicBlock(tmp_block);
+        for (auto& tmp_block : callee_graph->get_blocks()) {
+          cur_graph->addBasicBlock(tmp_block);
         }
 
         if (callee_func->get_params().size() != 0) {
           if (call_instr->get_src_insts().size() == 2) {
+            for (auto& tmp_param : callee_func->get_params()) {
+              delete tmp_param;
+            }
+
             callee_func->set_params(call_instr->get_src_insts());
           }
         }
@@ -334,7 +338,8 @@ void Optimizer::apply_inline(Graph* graph, IRBuilder* builder) {
           tmp_block->add_succs_true(splitted);
         }
 
-        graph->addBasicBlock(splitted);
+        cur_graph->addBasicBlock(splitted);
+        callee_graph->clear_blocks_pointers();
       }
     }
   }
