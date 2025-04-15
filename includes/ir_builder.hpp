@@ -86,6 +86,7 @@ class IRBuilder final {
                          Instruction* first,
                          Instruction* second);
   Instruction* createNEQ(Type type, BasicBlock* basic_block, Instruction* first);
+  Instruction* createNULLCHECK(Type type, BasicBlock* basic_block, Instruction* first);
   Instruction* createPHI(Type type, BasicBlock* basic_block);
   Instruction* createPARAM(Type type);
   Instruction* createCALL(Type type, BasicBlock* basicBlock, std::string function_name);

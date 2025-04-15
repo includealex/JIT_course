@@ -158,6 +158,26 @@ bool DominTree::dominates(size_t maybe_dominator_idx, size_t maybe_successor_idx
   return false;
 }
 
+bool DominTree::dominates_instr(Instruction* first, Instruction* second) {
+  auto* bb_first = first->getBB();
+  auto* bb_second = second->getBB();
+  if (bb_first != bb_second) {
+    auto first_idx = find_node_by_index(bb_first->get_id())->idx;
+    auto second_idx = find_node_by_index(bb_second->get_id())->idx;
+    return dominates(first_idx, second_idx);
+  }
+
+  auto* next_instr = first->get_next();
+  while (next_instr != nullptr) {
+    if (next_instr == second) {
+      return true;
+    }
+    next_instr = next_instr->get_next();
+  }
+
+  return false;
+}
+
 bool DominTree::is_dominated(size_t maybe_successor_idx, size_t maybe_dominator_idx) {
   return dominates(maybe_dominator_idx, maybe_successor_idx);
 }

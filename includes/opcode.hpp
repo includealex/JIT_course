@@ -26,7 +26,8 @@ enum class Opcode {
   RETI = 19,
   JA = 20,
   PARAM = 21,
-  CALL = 22
+  CALL = 22,
+  NULLCHECK = 23
 };
 
 }  // namespace custom

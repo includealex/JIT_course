@@ -6,6 +6,52 @@
 
 namespace custom {
 
+void Optimizer::eliminate_checks(Graph* graph, IRBuilder* builder) {
+  RPO rpo;
+  rpo.run_rpo(graph->get_root());
+  auto rpo_order = rpo.get_rpo_ids_arr();
+
+  DominTree dt;
+  dt.build_tree(graph);
+
+  std::set<std::pair<BasicBlock*, Instruction*>> to_delete;
+
+  std::vector<Opcode> checked_opcodes = {Opcode::NULLCHECK};
+
+  for (auto& cur_opc : checked_opcodes) {
+    for (auto& tmp_bb_idx : rpo_order) {
+      auto* tmp_bb = graph->get_block(tmp_bb_idx);
+
+      auto* start_inst = tmp_bb->get_first_inst();
+      auto* next_inst = start_inst->get_next();
+
+      while (next_inst != nullptr) {
+        if (next_inst->getOpcode() != cur_opc) {
+          next_inst = next_inst->get_next();
+          continue;
+        }
+
+        auto users = next_inst->get_src_insts()[0]->get_users_instrs();
+
+        for (auto& tmp_user : users) {
+          if (tmp_user->getOpcode() == cur_opc) {
+            if (dt.dominates_instr(next_inst, tmp_user)) {
+              auto* user_bb = tmp_user->getBB();
+              to_delete.insert(std::pair{user_bb, tmp_user});
+            }
+          }
+        }
+
+        next_inst = next_inst->get_next();
+      }
+    }
+  }
+  for (auto& [tmp_bb, tmp_inst] : to_delete) {
+    tmp_bb->remove_instruction(tmp_inst);
+  }
+  to_delete.clear();
+}
+
 void Optimizer::replace_movi_with_constants(BasicBlock* block) {
   for (Instruction* instr = block->get_first_inst(); instr; instr = instr->get_next()) {
     auto src_ins_vec = instr->get_src_insts();

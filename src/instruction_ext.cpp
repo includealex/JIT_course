@@ -98,6 +98,16 @@ void PhiInstruction::AddPhiUsage(Instruction* first, Instruction* second) {
 
 NeqInstruction::NeqInstruction(Opcode opcode, Type type, BasicBlock* basicBlock, Instruction* instr)
     : Instruction(opcode, type, basicBlock) {
+  assert(opcode == Opcode::NEQ);
+  add_src_inst(instr);
+}
+
+NullCheckInstruction::NullCheckInstruction(Opcode opcode,
+                                           Type type,
+                                           BasicBlock* basicBlock,
+                                           Instruction* instr)
+    : Instruction(opcode, type, basicBlock) {
+  assert(opcode == Opcode::NULLCHECK);
   add_src_inst(instr);
 }
 

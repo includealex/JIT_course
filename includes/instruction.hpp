@@ -61,6 +61,8 @@ class Instruction {
   void add_user();
   void sub_user();
   std::size_t get_users();
+  void add_user_inst(Instruction* instr);
+  std::vector<Instruction*> get_users_instrs() const;
 
   std::string get_called_name() const;
   void set_called_name(std::string name);
@@ -86,6 +88,8 @@ class Instruction {
   std::vector<Instruction*> _src_insts = std::vector<Instruction*>{};
   std::size_t _n_users = 0;
   std::string _called_name = "";
+
+  std::vector<Instruction*> _users_instrs;
 };
 
 }  // namespace custom
