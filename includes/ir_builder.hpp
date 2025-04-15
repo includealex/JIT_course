@@ -85,6 +85,7 @@ class IRBuilder final {
                          BasicBlock* basic_block,
                          Instruction* first,
                          Instruction* second);
+  Instruction* createNEQ(Type type, BasicBlock* basic_block, Instruction* first, ImmType imm);
   Instruction* createNEQ(Type type, BasicBlock* basic_block, Instruction* first);
   Instruction* createNULLCHECK(Type type, BasicBlock* basic_block, Instruction* first);
   Instruction* createBOUNDSCHECK(Type type,

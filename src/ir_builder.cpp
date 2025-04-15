@@ -267,6 +267,17 @@ Instruction* IRBuilder::createCMP(Type type,
 Instruction* IRBuilder::createNEQ(Type type,
                                   BasicBlock* basic_block,
                                   Instruction* first,
+                                  ImmType imm) {
+  Instruction* instr = new InstructionFromInstrAndImm(Opcode::NEQ, type, basic_block, first, imm);
+  basic_block->pushback_instr(instr);
+  increase_n_users(first);
+  first->add_user_inst(instr);
+  return instr;
+}
+
+Instruction* IRBuilder::createNEQ(Type type,
+                                  BasicBlock* basic_block,
+                                  Instruction* first,
                                   Instruction* second) {
   Instruction* instr = new InstructionFrom2Instr(Opcode::NEQ, type, basic_block, first, second);
   basic_block->pushback_instr(instr);
