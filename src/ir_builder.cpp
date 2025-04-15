@@ -164,6 +164,18 @@ Instruction* IRBuilder::createMULI(Type type,
   return instr;
 }
 
+Instruction* IRBuilder::createBOUNDSCHECK(Type type,
+                                          BasicBlock* basic_block,
+                                          Instruction* first,
+                                          ImmType imm) {
+  Instruction* instr =
+      new InstructionFromInstrAndImm(Opcode::BOUNDSCHECK, type, basic_block, first, imm);
+  basic_block->pushback_instr(instr);
+  increase_n_users(first);
+  first->add_user_inst(instr);
+  return instr;
+}
+
 Instruction* IRBuilder::createMULI(Type type,
                                    BasicBlock* basic_block,
                                    ImmType first_imm,

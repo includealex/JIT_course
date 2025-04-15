@@ -16,7 +16,7 @@ void Optimizer::eliminate_checks(Graph* graph, IRBuilder* builder) {
 
   std::set<std::pair<BasicBlock*, Instruction*>> to_delete;
 
-  std::vector<Opcode> checked_opcodes = {Opcode::NULLCHECK};
+  std::vector<Opcode> checked_opcodes = {Opcode::NULLCHECK, Opcode::BOUNDSCHECK};
 
   for (auto& cur_opc : checked_opcodes) {
     for (auto& tmp_bb_idx : rpo_order) {
@@ -37,7 +37,15 @@ void Optimizer::eliminate_checks(Graph* graph, IRBuilder* builder) {
           if (tmp_user->getOpcode() == cur_opc) {
             if (dt.dominates_instr(next_inst, tmp_user)) {
               auto* user_bb = tmp_user->getBB();
-              to_delete.insert(std::pair{user_bb, tmp_user});
+              if (cur_opc == Opcode::BOUNDSCHECK) {
+                auto cur_imm = next_inst->get_imm();
+                auto next_imm = tmp_user->get_imm();
+                if (next_imm <= cur_imm) {
+                  to_delete.insert(std::pair{user_bb, tmp_user});
+                }
+              } else {
+                to_delete.insert(std::pair{user_bb, tmp_user});
+              }
             }
           }
         }

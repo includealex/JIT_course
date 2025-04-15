@@ -117,7 +117,7 @@ InstructionFromInstrAndImm::InstructionFromInstrAndImm(
   assert((opcode == Opcode::MUL) or (opcode == Opcode::MULI) or (opcode == Opcode::SUB) or
          (opcode == Opcode::SUBI) or (opcode == Opcode::ADD) or (opcode == Opcode::ADDI) or
          (opcode == Opcode::ASHR) or (opcode == Opcode::ASHRI) or (opcode == Opcode::XOR) or
-         (opcode == Opcode::CMP) or (opcode == Opcode::NEQ));
+         (opcode == Opcode::CMP) or (opcode == Opcode::NEQ) or (opcode == Opcode::BOUNDSCHECK));
   _imm = imm;
   add_src_inst(instr);
 }

@@ -87,6 +87,10 @@ class IRBuilder final {
                          Instruction* second);
   Instruction* createNEQ(Type type, BasicBlock* basic_block, Instruction* first);
   Instruction* createNULLCHECK(Type type, BasicBlock* basic_block, Instruction* first);
+  Instruction* createBOUNDSCHECK(Type type,
+                                 BasicBlock* basic_block,
+                                 Instruction* first,
+                                 ImmType first_imm);
   Instruction* createPHI(Type type, BasicBlock* basic_block);
   Instruction* createPARAM(Type type);
   Instruction* createCALL(Type type, BasicBlock* basicBlock, std::string function_name);
