@@ -89,6 +89,18 @@ void Instruction::add_src_inst(Instruction* instr) {
   _src_insts.push_back(instr);
 }
 
+void Instruction::add_user_inst(Instruction* instr) {
+  if (std::find(_users_instrs.begin(), _users_instrs.end(), instr) != _users_instrs.end()) {
+    return;
+  }
+
+  _users_instrs.push_back(instr);
+}
+
+std::vector<Instruction*> Instruction::get_users_instrs() const {
+  return _users_instrs;
+}
+
 std::vector<Instruction*> Instruction::get_src_insts() {
   return _src_insts;
 }

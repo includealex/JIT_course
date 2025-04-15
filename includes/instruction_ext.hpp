@@ -56,6 +56,11 @@ class NeqInstruction : public Instruction {
   NeqInstruction(Opcode opcode, Type type, BasicBlock* basicBlock, Instruction* instr);
 };
 
+class NullCheckInstruction : public Instruction {
+ public:
+  NullCheckInstruction(Opcode opcode, Type type, BasicBlock* basicBlock, Instruction* instr);
+};
+
 class PhiInstruction : public Instruction {
  public:
   PhiInstruction(Opcode opcode, Type type, BasicBlock* basicBlock);

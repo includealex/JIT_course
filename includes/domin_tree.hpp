@@ -25,6 +25,7 @@ class DominTree final {
   DTNode* find_node_by_index(size_t target_idx);
   ~DominTree();
 
+  bool dominates_instr(Instruction* first, Instruction* second);
   bool dominates(size_t maybe_dominator_idx, size_t maybe_successor_idx);
   bool is_dominated(size_t maybe_successor_idx, size_t maybe_dominator_idx);
 

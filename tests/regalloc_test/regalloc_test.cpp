@@ -29,7 +29,7 @@ TEST(FloatRegallocTest, FirstExample) {
   auto* v3 = builder.createPHI(Type::myu64, B);
   auto* v4 = builder.createPHI(Type::myu64, B);
   auto* v5 = builder.createCMP(Type::myu64, B, v4, v0);
-  auto* v6 = builder.createNEQ(Type::myu64, B, v5, 0);
+  auto* v6 = builder.createNEQ(Type::myu64, B, v5, static_cast<ImmType>(0));
   auto* v7 = builder.createMUL(Type::myu64, C, v3, v4);
   auto* v8 = builder.createSUB(Type::myu64, C, v4, v0);
   auto* v9 = builder.createADD(Type::myu64, D, v2, v3);

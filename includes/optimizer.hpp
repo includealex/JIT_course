@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "basic_block.hpp"
+#include "domin_tree.hpp"
 #include "graph.hpp"
 #include "instruction_ext.hpp"
 #include "ir_builder.hpp"
@@ -17,6 +18,7 @@ class Optimizer {
   void constant_fold(Graph* graph, IRBuilder* builder);
   void peephole(Graph* graph, IRBuilder* builder);
   void apply_inline(Graph* graph, IRBuilder* builder);
+  void eliminate_checks(Graph* graph, IRBuilder* builder);
 
  private:
   void replace_movi_with_constants(BasicBlock* block);

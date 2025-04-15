@@ -98,6 +98,16 @@ void PhiInstruction::AddPhiUsage(Instruction* first, Instruction* second) {
 
 NeqInstruction::NeqInstruction(Opcode opcode, Type type, BasicBlock* basicBlock, Instruction* instr)
     : Instruction(opcode, type, basicBlock) {
+  assert(opcode == Opcode::NEQ);
+  add_src_inst(instr);
+}
+
+NullCheckInstruction::NullCheckInstruction(Opcode opcode,
+                                           Type type,
+                                           BasicBlock* basicBlock,
+                                           Instruction* instr)
+    : Instruction(opcode, type, basicBlock) {
+  assert(opcode == Opcode::NULLCHECK);
   add_src_inst(instr);
 }
 
@@ -107,7 +117,7 @@ InstructionFromInstrAndImm::InstructionFromInstrAndImm(
   assert((opcode == Opcode::MUL) or (opcode == Opcode::MULI) or (opcode == Opcode::SUB) or
          (opcode == Opcode::SUBI) or (opcode == Opcode::ADD) or (opcode == Opcode::ADDI) or
          (opcode == Opcode::ASHR) or (opcode == Opcode::ASHRI) or (opcode == Opcode::XOR) or
-         (opcode == Opcode::CMP) or (opcode == Opcode::NEQ));
+         (opcode == Opcode::CMP) or (opcode == Opcode::NEQ) or (opcode == Opcode::BOUNDSCHECK));
   _imm = imm;
   add_src_inst(instr);
 }
